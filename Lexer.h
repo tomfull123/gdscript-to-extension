@@ -32,6 +32,7 @@ enum class TokenType
 	IntLiteral,
 
 	ColonSeparator,
+	ArrowSeparator,
 	OpenBracketSeparator,
 	CloseBracketSeparator,
 	OpenCurlyBracketSeparator,
@@ -268,13 +269,6 @@ private:
 			if (inputStream_.peek() == '=') token->value += inputStream_.next();
 			else if (inputStream_.peek() == '>') token->value += inputStream_.next();
 		}
-		else if (value == "/")
-		{
-			char peek = inputStream_.peek();
-
-			if (peek == '/') token->value += inputStream_.next();
-			else if (peek == '*') token->value += inputStream_.next();
-		}
 		else if (value == "!") // !=
 		{
 			if (inputStream_.peek() == '=') token->value += inputStream_.next();
@@ -287,31 +281,15 @@ private:
 		{
 			if (inputStream_.peek() == '|') token->value += inputStream_.next();
 		}
-		else if (value == "?") // ??
-		{
-			if (inputStream_.peek() == '?')
-			{
-				token->value += inputStream_.next();
-				if (inputStream_.peek() == '=') token->value += inputStream_.next();
-			}
-		}
-		else if (value == ".") // ...
-		{
-			if (inputStream_.peek() == '.')
-			{
-				token->value += inputStream_.next();
-				if (inputStream_.peek() == '.') token->value += inputStream_.next();
-			}
-		}
-		else if (value == "+") // +=, ++
+		else if (value == "+") // +=
 		{
 			char peek = inputStream_.peek();
-			if (peek == '=' || peek == '+') token->value += inputStream_.next();
+			if (peek == '=') token->value += inputStream_.next();
 		}
-		else if (value == "-") // -+, --
+		else if (value == "-") // -+, ->
 		{
 			char peek = inputStream_.peek();
-			if (peek == '=' || peek == '-') token->value += inputStream_.next();
+			if (peek == '=' || peek == '>') token->value += inputStream_.next();
 		}
 
 		token->type = getSeparatorTokenType(token->value);
@@ -333,6 +311,7 @@ private:
 	TokenType getSeparatorTokenType(const std::string& value) const
 	{
 		if (value == ":") return TokenType::ColonSeparator;
+		if (value == "->") return TokenType::ArrowSeparator;
 		if (value == "(") return TokenType::OpenBracketSeparator;
 		if (value == ")") return TokenType::CloseBracketSeparator;
 		if (value == "{") return TokenType::OpenCurlyBracketSeparator;

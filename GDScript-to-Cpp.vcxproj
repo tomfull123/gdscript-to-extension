@@ -133,11 +133,19 @@
     <ClCompile Include="Parser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AbstractSyntaxTree.h" />
+    <ClInclude Include="ClassDefinitionSyntaxNode.h" />
     <ClInclude Include="FileIO.h" />
+    <ClInclude Include="FunctionBodySyntaxNode.h" />
+    <ClInclude Include="FunctionDefinitionSyntaxNode.h" />
+    <ClInclude Include="FunctionPrototypeSyntaxNode.h" />
     <ClInclude Include="InputStream.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="ParserError.h" />
+    <ClInclude Include="SyntaxNode.h" />
     <ClInclude Include="TokenStream.h" />
+    <ClInclude Include="VariableDefinitionSyntaxNode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
