@@ -5,6 +5,16 @@
 #include "ParserError.h"
 #include "ClassDefinitionSyntaxNode.h"
 #include "FunctionDefinitionSyntaxNode.h"
+#include "ReturnSyntaxNode.h"
+#include "BreakSyntaxNode.h"
+#include "ContinueSyntaxNode.h"
+#include "IfSyntaxNode.h"
+#include "VariableSyntaxNode.h"
+#include "CallSyntaxNode.h"
+#include "LiteralValueSyntaxNode.h"
+#include "AssignmentSyntaxNode.h"
+#include "EqualityOperatorSyntaxNode.h"
+#include "NotOperatorSyntaxNode.h"
 
 class Parser
 {
@@ -12,6 +22,8 @@ public:
 	explicit Parser(const std::vector<Token*>& tokens);
 
 	void buildAST(AbstractSyntaxTree* ast);
+
+	const std::vector<ParserError>& getErrors() const { return errors_; }
 
 private:
 	TokenStream stream_;
@@ -43,25 +55,49 @@ private:
 
 	SyntaxNode* addUnexpectedNextTokenError()
 	{
-		return addUnexpectedTokenError(stream_.next());
+		return addUnexpectedTokenError(next());
+	}
+
+	Token* next()
+	{
+		return stream_.next();
+	}
+
+	Token* peek(unsigned int offset = 0)
+	{
+		return stream_.peek(offset);
+	}
+
+	bool end() const
+	{
+		return stream_.end();
+	}
+
+	Token* consume(TokenType tokenType)
+	{
+		if (isNextTokenType(tokenType))
+		{
+			return next();
+		}
+
+		addUnexpectedNextTokenError();
+		return nullptr;
 	}
 
 	Type* parseType()
 	{
-		const Token* type = stream_.next();
+		const Token* type = next();
 
 		return new Type(type->value);
 	}
 
 	VariableDefinitionSyntaxNode* parseArgDefinition()
 	{
-		if (!isNextTokenType(TokenType::Identifier)) return (VariableDefinitionSyntaxNode*)addUnexpectedNextTokenError();
+		Token* name = consume(TokenType::Identifier);
 
-		Token* name = stream_.next();
+		if (!name) return nullptr;
 
-		if (!isNextTokenType(TokenType::ColonSeparator)) return (VariableDefinitionSyntaxNode*)addUnexpectedNextTokenError();
-
-		stream_.next(); // eat :
+		if (!consume(TokenType::ColonSeparator)) return nullptr;
 
 		Type* dataType = parseType();
 
@@ -70,15 +106,13 @@ private:
 
 	FunctionPrototypeSyntaxNode* parseFunctionProtoype()
 	{
-		stream_.next(); // eat func
+		consume(TokenType::FuncKeyword); // eat func
 
-		if (!isNextTokenType(TokenType::Identifier)) return (FunctionPrototypeSyntaxNode*)addUnexpectedNextTokenError();
+		Token* name = consume(TokenType::Identifier);
 
-		Token* name = stream_.next();
+		if (!name) return nullptr;
 
-		if (!isNextTokenType(TokenType::OpenBracketSeparator)) return (FunctionPrototypeSyntaxNode*)addUnexpectedNextTokenError();
-
-		stream_.next(); // eat (
+		if (!consume(TokenType::OpenBracketSeparator)) return nullptr;
 
 		std::vector<VariableDefinitionSyntaxNode*> argDefs;
 
@@ -90,7 +124,7 @@ private:
 			{
 				argDefs.push_back(argDef);
 
-				if (isNextTokenType(TokenType::CommaSeparator)) stream_.next(); // eat ,
+				if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
 				else if (!isNextTokenType(TokenType::CloseBracketSeparator)) return (FunctionPrototypeSyntaxNode*)addUnexpectedNextTokenError();
 			}
 			else
@@ -99,19 +133,17 @@ private:
 			}
 		}
 
-		stream_.next(); // eat )
+		next(); // eat )
 
 		Type* returnType = nullptr;
 
 		if (isNextTokenType(TokenType::ArrowSeparator))
 		{
-			stream_.next(); // eat ->
+			next(); // eat ->
 			returnType = parseType();
 		}
 
-		if (!isNextTokenType(TokenType::ColonSeparator)) return (FunctionPrototypeSyntaxNode*)addUnexpectedNextTokenError();
-
-		stream_.next(); // eat :
+		if (!consume(TokenType::ColonSeparator)) return nullptr;
 
 		return new FunctionPrototypeSyntaxNode(name, argDefs, returnType, false);
 	}
@@ -120,10 +152,12 @@ private:
 	{
 		std::vector<SyntaxNode*> nodes;
 
-		while (!stream_.end())
+		while (!stream_.end() && !isNextTokenType(TokenType::EndOfBlock))
 		{
 			nodes.push_back(parseExpression());
 		}
+
+		if (isNextTokenType(TokenType::EndOfBlock)) next();
 
 		return new FunctionBodySyntaxNode(nodes);
 	}
@@ -141,22 +175,256 @@ private:
 		return new FunctionDefinitionSyntaxNode(prototype, body);
 	}
 
+	Token* parseClassName()
+	{
+		consume(TokenType::ClassNameKeyword); // eat class_name
+
+		return consume(TokenType::Identifier);
+	}
+
+	VariableDefinitionSyntaxNode* parseVariableDefinition()
+	{
+		auto varOrConst = next();
+
+		auto name = consume(TokenType::Identifier);
+
+		if (!name) return nullptr;
+
+		Type* type = nullptr;
+
+		if (isNextTokenType(TokenType::ColonSeparator))
+		{
+			next(); // eat :
+			type = parseType();
+		}
+
+		return new VariableDefinitionSyntaxNode(name, type);
+	}
+
 	ClassDefinitionSyntaxNode* parseScriptBody()
 	{
-		std::vector<FunctionDefinitionSyntaxNode*> functionDefinitions;
+		Token* name = nullptr;
+		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
+		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
 
-		while (!stream_.end())
+		while (!end())
 		{
-			const auto* t = stream_.peek();
+			const auto* t = peek();
 
 			switch (t->type)
 			{
+			case TokenType::ClassNameKeyword:
+				name = parseClassName();
+				break;
 			case TokenType::FuncKeyword:
-				functionDefinitions.push_back(parseFunction());
+				memberFunctionDefinitions.push_back(parseFunction());
+				break;
+			case TokenType::VarKeyword:
+			case TokenType::ConstKeyword:
+				memberVariableDefinitions.push_back(parseVariableDefinition());
+				break;
+			default:
+				return (ClassDefinitionSyntaxNode*)addUnexpectedNextTokenError();
 			}
 		}
 
-		return new ClassDefinitionSyntaxNode();
+		return new ClassDefinitionSyntaxNode(name);
+	}
+
+	LiteralValueSyntaxNode* parseLiteralValue()
+	{
+		auto value = next();
+		TokenType type = value->type;
+
+		switch (type)
+		{
+		case TokenType::IntLiteral: return new LiteralValueSyntaxNode(value, new Type("int"));
+		case TokenType::FloatLiteral: return new LiteralValueSyntaxNode(value, new Type("float"));
+		}
+
+		return (LiteralValueSyntaxNode*)addUnexpectedTokenError(value);
+	}
+
+	NotOperatorSyntaxNode* parseNotOperator()
+	{
+		if (auto token = consume(TokenType::NotOperator))
+		{
+			ValueSyntaxNode* condition = parseValueExpression();
+
+			return new NotOperatorSyntaxNode(token, condition);
+		}
+
+		return nullptr;
+	}
+
+	ValueSyntaxNode* parseSingleValueObject()
+	{
+		Token* value = peek();
+		TokenType type = value->type;
+
+		switch (type)
+		{
+		case TokenType::IntLiteral:
+		{
+			auto literalValue = parseLiteralValue();
+
+			return literalValue;
+		}
+		case TokenType::Identifier: return parseVariableOrFunctionCall(true);
+		case TokenType::NotOperator: return parseNotOperator();
+		}
+
+		return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+	}
+
+	ValueSyntaxNode* parseValueExpression()
+	{
+		int bracketCount = 0;
+
+		while (isNextTokenType(TokenType::OpenBracketSeparator))
+		{
+			next(); // eat (
+			bracketCount++;
+		}
+
+		ValueSyntaxNode* lhs = parseSingleValueObject();
+
+		if (!lhs) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+
+		while (true)
+		{
+			// Bool operators
+			if (isNextTokenType(TokenType::EqualityOperator) || isNextTokenType(TokenType::NotEqualityOperator)
+				|| isNextTokenType(TokenType::GreaterThanSeparator) || isNextTokenType(TokenType::GreaterThanEqualSeparator)
+				|| isNextTokenType(TokenType::LessThanSeparator) || isNextTokenType(TokenType::LessThanEqualSeparator))
+			{
+				Token* boolOperator = next();
+
+				ValueSyntaxNode* rhs = parseValueExpression();
+
+				if (!rhs) return nullptr;
+
+				lhs = new EqualityOperatorSyntaxNode(boolOperator, lhs, rhs);
+
+				continue;
+			}
+
+			break;
+		}
+
+		return lhs;
+	}
+
+	ReturnSyntaxNode* parseReturnStatement()
+	{
+		if (!consume(TokenType::ReturnKeyword)) return nullptr;
+
+		return new ReturnSyntaxNode(parseValueExpression());
+	}
+
+	BreakSyntaxNode* parseBreakStatement()
+	{
+		if (!consume(TokenType::BreakKeyword)) return nullptr;
+
+		return new BreakSyntaxNode();
+	}
+
+	ContinueSyntaxNode* parseContinueStatement()
+	{
+		if (!consume(TokenType::ContinueKeyword)) return nullptr;
+
+		return new ContinueSyntaxNode();
+	}
+
+	ValueSyntaxNode* parseVariableOrFunctionCall(bool asValue, ValueSyntaxNode* instance = nullptr)
+	{
+		auto name = consume(TokenType::Identifier);
+
+		if (!name) return nullptr;
+
+		if (isNextTokenType(TokenType::DotSeparator))
+		{
+			next(); // eat .
+
+			if (isNextTokenType(TokenType::Identifier))
+			{
+				return parseVariableOrFunctionCall(asValue, new VariableSyntaxNode(name, instance));
+			}
+		}
+
+		// Function call
+		if (isNextTokenType(TokenType::OpenBracketSeparator))
+		{
+			next(); // eat (
+
+			std::vector<ValueSyntaxNode*> args;
+
+			while (!isNextTokenType(TokenType::CloseBracketSeparator))
+			{
+				auto e = parseValueExpression();
+				if (e)
+				{
+					args.push_back(e);
+					if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
+					else if (!isNextTokenType(TokenType::CloseBracketSeparator)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+				}
+				else
+				{
+					return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+				}
+			}
+
+			if (!consume(TokenType::CloseBracketSeparator)) return nullptr;
+
+			auto call = new CallSyntaxNode();
+
+			return call;
+		}
+
+		VariableSyntaxNode* variable = new VariableSyntaxNode(name, instance);
+
+		if (asValue)
+		{
+			return variable;
+		}
+		else
+		{
+			// Variable assignment
+			if (isNextTokenType(TokenType::AssignmentOperator))
+			{
+				next(); // eat =
+
+				ValueSyntaxNode* assignmentValue = parseValueExpression();
+
+				if (!assignmentValue) return nullptr;
+
+				return new AssignmentSyntaxNode(variable, assignmentValue);
+			}
+		}
+
+		return nullptr;
+	}
+
+	IfSyntaxNode* parseIfStatement()
+	{
+		next(); // eat if
+
+		ValueSyntaxNode* condition = parseValueExpression();
+
+		if (!condition) return nullptr;
+
+		if (!consume(TokenType::ColonSeparator)) return nullptr;
+
+		std::vector<SyntaxNode*> thenExpressions;
+
+		while (!isNextTokenType(TokenType::EndOfBlock))
+		{
+			thenExpressions.push_back(parseExpression());
+		}
+
+		next(); // eat EndOfBlock
+
+		return new IfSyntaxNode(condition, thenExpressions, {});
 	}
 
 	SyntaxNode* parseExpression()
@@ -176,13 +444,13 @@ private:
 			return parseIfStatement();
 		case TokenType::VarKeyword:
 		case TokenType::ConstKeyword:
-			return parseVariableDefinition(Visibility::Public, "", false);
+			return parseVariableDefinition();
 		case TokenType::WhileKeyword:
-			return parseWhileLoop();
+			//return parseWhileLoop();
 		case TokenType::ForKeyword:
-			return parseForLoop();
+			//return parseForLoop();
 		default:
-			return (SyntaxNode*)addUnexpectedTokenError(stream_.next());
+			return (SyntaxNode*)addUnexpectedNextTokenError();
 		}
 	}
 };

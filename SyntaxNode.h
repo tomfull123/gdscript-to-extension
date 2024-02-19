@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TokenStream.h"
+
 struct Type
 {
 	explicit Type(const std::string& Name) :
@@ -10,6 +12,11 @@ struct Type
 };
 
 class SyntaxNode
+{
+public:
+};
+
+class ValueSyntaxNode : public SyntaxNode
 {
 public:
 };

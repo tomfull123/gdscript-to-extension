@@ -8,6 +8,7 @@ enum class TokenType
 {
 	Identifier,
 	Error,
+	EndOfBlock,
 
 	FuncKeyword,
 	VarKeyword,
@@ -79,12 +80,17 @@ public:
 
 	Token* readNext()
 	{
-		std::string whitespace = readWhile(isWhitespace);
+		readWhile(isWhitespace);
+
+		if (isNewLine(inputStream_.peek())) readIndents();
+
+		if (pendingIndent_ > 0) return createIndent();
 
 		if (end()) return nullptr;
 
 		char ch = inputStream_.peek();
 		//std::cout << "parsing character: " << ch << ", Line: " << inputStream_.getLineNumber() << std::endl;
+
 		if (isIdentifierStart(ch)) return readIdentifierOrKeyword();
 
 		//if (isStringLiteralStart(ch)) return readStringLiteral();
@@ -114,6 +120,8 @@ public:
 
 private:
 	InputStream inputStream_;
+	int currentIndent_ = 0;
+	int pendingIndent_ = 0;
 
 	const std::vector<char> separators = {
 		'(',
@@ -371,6 +379,37 @@ private:
 		return token;
 	}
 
+	Token* createIndent()
+	{
+		pendingIndent_--;
+
+		Token* token = new Token();
+
+		token->type = TokenType::EndOfBlock;
+
+		return token;
+	}
+
+	void readIndents()
+	{
+		int indent = 0;
+
+		while (inputStream_.peek() == '\n' || inputStream_.peek() == '\t')
+		{
+			auto value = inputStream_.next();
+
+			if (value == '\t') indent++;
+			else indent = 0;
+		}
+
+		if (indent < currentIndent_)
+		{
+			pendingIndent_ = currentIndent_ - indent;
+		}
+
+		currentIndent_ = indent;
+	}
+
 	template<class Function>
 	std::string readWhile(const Function& function)
 	{
@@ -402,6 +441,6 @@ private:
 
 	static bool isWhitespace(const char& ch)
 	{
-		return isspace(ch);
+		return ch == ' ';
 	}
 };

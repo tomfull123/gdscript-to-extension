@@ -128,17 +128,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FileIO.cpp" />
-    <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractSyntaxTree.h" />
+    <ClInclude Include="AssignmentSyntaxNode.h" />
+    <ClInclude Include="BreakSyntaxNode.h" />
+    <ClInclude Include="CallSyntaxNode.h" />
     <ClInclude Include="ClassDefinitionSyntaxNode.h" />
+    <ClInclude Include="ContinueSyntaxNode.h" />
+    <ClInclude Include="EqualityOperatorSyntaxNode.h" />
     <ClInclude Include="FileIO.h" />
     <ClInclude Include="FunctionBodySyntaxNode.h" />
     <ClInclude Include="FunctionDefinitionSyntaxNode.h" />
     <ClInclude Include="FunctionPrototypeSyntaxNode.h" />
+    <ClInclude Include="IfSyntaxNode.h" />
+    <ClInclude Include="LiteralValueSyntaxNode.h" />
+    <ClInclude Include="NotOperatorSyntaxNode.h" />
+    <ClInclude Include="ReturnSyntaxNode.h" />
     <ClInclude Include="InputStream.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="Parser.h" />
@@ -146,6 +154,7 @@
     <ClInclude Include="SyntaxNode.h" />
     <ClInclude Include="TokenStream.h" />
     <ClInclude Include="VariableDefinitionSyntaxNode.h" />
+    <ClInclude Include="VariableSyntaxNode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
