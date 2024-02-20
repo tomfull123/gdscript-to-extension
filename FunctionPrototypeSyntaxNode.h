@@ -3,8 +3,9 @@
 #include "SyntaxNode.h"
 #include "VariableDefinitionSyntaxNode.h"
 
-struct FunctionPrototypeSyntaxNode
+class FunctionPrototypeSyntaxNode
 {
+public:
 	FunctionPrototypeSyntaxNode(
 		Token* name,
 		const std::vector<VariableDefinitionSyntaxNode*>& argDefs,
@@ -29,6 +30,7 @@ struct FunctionPrototypeSyntaxNode
 		return returnType_->name + " " + name_->value + "(" + argsString + ")";
 	}
 
+private:
 	Token* name_;
 	std::vector<VariableDefinitionSyntaxNode*> argDefs_;
 	Type* returnType_;

@@ -3,8 +3,9 @@
 #include "SyntaxNode.h"
 #include "VariableSyntaxNode.h"
 
-struct AssignmentSyntaxNode : public ValueSyntaxNode
+class AssignmentSyntaxNode : public ValueSyntaxNode
 {
+public:
 	AssignmentSyntaxNode(
 		VariableSyntaxNode* variable,
 		ValueSyntaxNode* assignmentValue
@@ -18,6 +19,7 @@ struct AssignmentSyntaxNode : public ValueSyntaxNode
 		return "";
 	}
 
+private:
 	VariableSyntaxNode* variable_;
 	ValueSyntaxNode* assignmentValue_;
 };

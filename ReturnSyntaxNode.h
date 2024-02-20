@@ -2,8 +2,9 @@
 
 #include "SyntaxNode.h"
 
-struct ReturnSyntaxNode : public SyntaxNode
+class ReturnSyntaxNode : public SyntaxNode
 {
+public:
 	explicit ReturnSyntaxNode(ValueSyntaxNode* value) :
 		value_(value)
 	{}
@@ -13,5 +14,6 @@ struct ReturnSyntaxNode : public SyntaxNode
 		return "return " + value_->toCpp();
 	}
 
+private:
 	ValueSyntaxNode* value_;
 };

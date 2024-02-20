@@ -2,8 +2,9 @@
 
 #include "SyntaxNode.h"
 
-struct ContinueSyntaxNode : public SyntaxNode
+class ContinueSyntaxNode : public SyntaxNode
 {
+public:
 	std::string toCpp() override
 	{
 		return "";

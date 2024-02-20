@@ -2,8 +2,9 @@
 
 #include "SyntaxNode.h"
 
-struct VariableSyntaxNode : public ValueSyntaxNode
+class VariableSyntaxNode : public ValueSyntaxNode
 {
+public:
 	VariableSyntaxNode(Token* name, ValueSyntaxNode* parentInstance) :
 		name_(name),
 		parentInstance_(parentInstance)
@@ -14,6 +15,7 @@ struct VariableSyntaxNode : public ValueSyntaxNode
 		return "";
 	}
 
+private:
 	Token* name_;
 	ValueSyntaxNode* parentInstance_;
 };

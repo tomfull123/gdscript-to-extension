@@ -3,8 +3,9 @@
 #include "FunctionDefinitionSyntaxNode.h"
 #include "VariableDefinitionSyntaxNode.h"
 
-struct ClassDefinitionSyntaxNode
+class ClassDefinitionSyntaxNode
 {
+public:
 	ClassDefinitionSyntaxNode(
 		Token* name,
 		const std::vector<FunctionDefinitionSyntaxNode*>& memberFunctionDefinitions,
@@ -37,6 +38,7 @@ struct ClassDefinitionSyntaxNode
 			"}\n";
 	}
 
+private:
 	Token* name_;
 	std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions_;
 	std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions_;

@@ -2,8 +2,9 @@
 
 #include "SyntaxNode.h"
 
-struct VariableDefinitionSyntaxNode : public SyntaxNode
+class VariableDefinitionSyntaxNode : public SyntaxNode
 {
+public:
 	VariableDefinitionSyntaxNode(
 		Token* name,
 		Type* dataType
@@ -18,6 +19,7 @@ struct VariableDefinitionSyntaxNode : public SyntaxNode
 		return "";
 	}
 
+private:
 	Token* name_;
 	Type* dataType_;
 };

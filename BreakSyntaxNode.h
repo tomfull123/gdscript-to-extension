@@ -2,8 +2,9 @@
 
 #include "SyntaxNode.h"
 
-struct BreakSyntaxNode : public SyntaxNode
+class BreakSyntaxNode : public SyntaxNode
 {
+public:
 	std::string toCpp() override
 	{
 		return "break;\n";

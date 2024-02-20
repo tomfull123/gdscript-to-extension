@@ -2,10 +2,12 @@
 
 #include "SyntaxNode.h"
 
-struct CallSyntaxNode : public ValueSyntaxNode
+class CallSyntaxNode : public ValueSyntaxNode
 {
+public:
 	std::string toCpp() override
 	{
 		return "";
 	}
+private:
 };

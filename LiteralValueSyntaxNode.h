@@ -2,8 +2,9 @@
 
 #include "SyntaxNode.h"
 
-struct LiteralValueSyntaxNode : public ValueSyntaxNode
+class LiteralValueSyntaxNode : public ValueSyntaxNode
 {
+public:
 	LiteralValueSyntaxNode(
 		Token* value,
 		Type* type
@@ -17,6 +18,7 @@ struct LiteralValueSyntaxNode : public ValueSyntaxNode
 		return "";
 	}
 
+private:
 	Token* value_;
 	Type* type_;
 };
