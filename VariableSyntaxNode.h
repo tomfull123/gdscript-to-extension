@@ -10,6 +10,11 @@ public:
 		parentInstance_(parentInstance)
 	{}
 
+	std::string toCpp() override
+	{
+		return "";
+	}
+
 private:
 	Token* name_;
 	ValueSyntaxNode* parentInstance_;

@@ -18,6 +18,18 @@ public:
 		isStatic_(isStatic)
 	{}
 
+	std::string toCpp()
+	{
+		std::string argsString;
+
+		for (auto arg : argDefs_)
+		{
+			argsString += arg->toCpp();
+		}
+
+		return returnType_->name + " " + name_->value + "(" + argsString + ")";
+	}
+
 private:
 	Token* name_;
 	std::vector<VariableDefinitionSyntaxNode*> argDefs_;

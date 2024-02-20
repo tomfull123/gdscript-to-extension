@@ -14,6 +14,11 @@ public:
 		assignmentValue_(assignmentValue)
 	{}
 
+	std::string toCpp() override
+	{
+		return "";
+	}
+
 private:
 	VariableSyntaxNode* variable_;
 	ValueSyntaxNode* assignmentValue_;

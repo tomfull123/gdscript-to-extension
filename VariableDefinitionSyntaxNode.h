@@ -14,6 +14,11 @@ public:
 	{
 	}
 
+	std::string toCpp() override
+	{
+		return "";
+	}
+
 private:
 	Token* name_;
 	Type* dataType_;

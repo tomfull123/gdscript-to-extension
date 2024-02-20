@@ -5,4 +5,8 @@
 class ContinueSyntaxNode : public SyntaxNode
 {
 public:
+	std::string toCpp() override
+	{
+		return "";
+	}
 };

@@ -44,5 +44,13 @@ int main(int argc, char* argv[])
 		hasErrors = true;
 	}
 
+	if (!hasErrors)
+	{
+		for (auto c : ast->classes)
+		{
+			c->toCpp();
+		}
+	}
+
 	return 0;
 }

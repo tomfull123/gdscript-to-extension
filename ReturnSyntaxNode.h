@@ -9,6 +9,11 @@ public:
 		value_(value)
 	{}
 
+	std::string toCpp() override
+	{
+		return "return " + value_->toCpp();
+	}
+
 private:
 	ValueSyntaxNode* value_;
 };

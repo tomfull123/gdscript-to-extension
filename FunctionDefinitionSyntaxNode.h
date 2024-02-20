@@ -14,6 +14,11 @@ public:
 		body_(body)
 	{}
 
+	std::string toCpp() override
+	{
+		return "";
+	}
+
 private:
 	FunctionPrototypeSyntaxNode* prototype_;
 	FunctionBodySyntaxNode* body_;

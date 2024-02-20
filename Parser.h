@@ -228,7 +228,7 @@ private:
 			}
 		}
 
-		return new ClassDefinitionSyntaxNode(name);
+		return new ClassDefinitionSyntaxNode(name, memberFunctionDefinitions, memberVariableDefinitions);
 	}
 
 	LiteralValueSyntaxNode* parseLiteralValue()

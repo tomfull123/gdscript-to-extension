@@ -12,6 +12,12 @@ public:
 		token_(token),
 		value_(value)
 	{}
+
+	std::string toCpp() override
+	{
+		return "!" + value_->toCpp();
+	}
+
 private:
 	Token* token_;
 	ValueSyntaxNode* value_;

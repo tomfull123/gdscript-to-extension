@@ -13,6 +13,11 @@ public:
 		type_(type)
 	{}
 
+	std::string toCpp() override
+	{
+		return "";
+	}
+
 private:
 	Token* value_;
 	Type* type_;

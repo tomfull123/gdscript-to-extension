@@ -15,6 +15,11 @@ public:
 		rhs_(rhs)
 	{}
 
+	std::string toCpp() override
+	{
+		return "(" + lhs_->toCpp() + " " + operatorToken_->value + " " + rhs_->toCpp() + ")";
+	}
+
 private:
 	Token* operatorToken_;
 	ValueSyntaxNode* lhs_;

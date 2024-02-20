@@ -14,6 +14,7 @@ struct Type
 class SyntaxNode
 {
 public:
+	virtual std::string toCpp() = 0;
 };
 
 class ValueSyntaxNode : public SyntaxNode
