@@ -3,9 +3,8 @@
 #include <vector>
 #include "SyntaxNode.h"
 
-class FunctionBodySyntaxNode
+struct FunctionBodySyntaxNode
 {
-public:
 	explicit FunctionBodySyntaxNode(
 		const std::vector<SyntaxNode*>& nodes
 	) :
@@ -27,6 +26,5 @@ public:
 			"}\n";
 	}
 
-private:
 	std::vector<SyntaxNode*> nodes_;
 };

@@ -3,9 +3,8 @@
 #include "SyntaxNode.h"
 #include <vector>
 
-class IfSyntaxNode : public SyntaxNode
+struct IfSyntaxNode : public SyntaxNode
 {
-public:
 	IfSyntaxNode(
 		SyntaxNode* condition,
 		const std::vector<SyntaxNode*>& thenNodes,
@@ -45,7 +44,6 @@ public:
 			+ elseString;
 	}
 
-private:
 	SyntaxNode* condition_;
 	std::vector<SyntaxNode*> thenNodes_;
 	std::vector<SyntaxNode*> elseNodes_;

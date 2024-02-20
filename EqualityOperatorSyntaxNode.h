@@ -2,9 +2,8 @@
 
 #include "SyntaxNode.h"
 
-class EqualityOperatorSyntaxNode : public ValueSyntaxNode
+struct EqualityOperatorSyntaxNode : public ValueSyntaxNode
 {
-public:
 	EqualityOperatorSyntaxNode(
 		Token* operatorToken,
 		ValueSyntaxNode* lhs,
@@ -20,7 +19,6 @@ public:
 		return "(" + lhs_->toCpp() + " " + operatorToken_->value + " " + rhs_->toCpp() + ")";
 	}
 
-private:
 	Token* operatorToken_;
 	ValueSyntaxNode* lhs_;
 	ValueSyntaxNode* rhs_;

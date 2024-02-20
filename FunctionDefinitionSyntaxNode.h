@@ -3,9 +3,8 @@
 #include "FunctionPrototypeSyntaxNode.h"
 #include "FunctionBodySyntaxNode.h"
 
-class FunctionDefinitionSyntaxNode : public SyntaxNode
+struct FunctionDefinitionSyntaxNode : public SyntaxNode
 {
-public:
 	FunctionDefinitionSyntaxNode(
 		FunctionPrototypeSyntaxNode* prototype,
 		FunctionBodySyntaxNode* body
@@ -19,7 +18,6 @@ public:
 		return "";
 	}
 
-private:
 	FunctionPrototypeSyntaxNode* prototype_;
 	FunctionBodySyntaxNode* body_;
 };

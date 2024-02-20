@@ -11,13 +11,11 @@ struct Type
 	std::string name;
 };
 
-class SyntaxNode
+struct SyntaxNode
 {
-public:
 	virtual std::string toCpp() = 0;
 };
 
-class ValueSyntaxNode : public SyntaxNode
+struct ValueSyntaxNode : public SyntaxNode
 {
-public:
 };

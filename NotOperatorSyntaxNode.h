@@ -2,9 +2,8 @@
 
 #include "SyntaxNode.h"
 
-class NotOperatorSyntaxNode : public ValueSyntaxNode
+struct NotOperatorSyntaxNode : public ValueSyntaxNode
 {
-public:
 	NotOperatorSyntaxNode(
 		Token* token,
 		ValueSyntaxNode* value
@@ -18,7 +17,6 @@ public:
 		return "!" + value_->toCpp();
 	}
 
-private:
 	Token* token_;
 	ValueSyntaxNode* value_;
 };
