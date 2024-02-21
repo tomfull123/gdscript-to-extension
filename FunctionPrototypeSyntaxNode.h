@@ -3,7 +3,7 @@
 #include "SyntaxNode.h"
 #include "VariableDefinitionSyntaxNode.h"
 
-class FunctionPrototypeSyntaxNode
+class FunctionPrototypeSyntaxNode : public SyntaxNode
 {
 public:
 	FunctionPrototypeSyntaxNode(
@@ -18,13 +18,13 @@ public:
 		isStatic_(isStatic)
 	{}
 
-	std::string toCpp()
+	std::string toCpp(CppData* data)
 	{
 		std::string argsString;
 
 		for (auto arg : argDefs_)
 		{
-			argsString += arg->toCpp();
+			argsString += arg->toCpp(data);
 		}
 
 		return returnType_->name + " " + name_->value + "(" + argsString + ")";

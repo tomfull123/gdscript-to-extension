@@ -10,7 +10,7 @@ public:
 		parentInstance_(parentInstance)
 	{}
 
-	std::string toCpp() override
+	std::string toCpp(CppData* data) override
 	{
 		return "";
 	}

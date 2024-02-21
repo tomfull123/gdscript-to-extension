@@ -1,6 +1,19 @@
 #pragma once
 
 #include "TokenStream.h"
+#include <unordered_set>
+#include <unordered_map>
+
+const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
+	{"int", "int"},
+	{"float", "float"},
+	{"String", "std::string"},
+	{ "StringName", "std::string" },
+};
+
+const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {
+	{"std::string", "<string>"},
+};
 
 struct Type
 {
@@ -11,10 +24,31 @@ struct Type
 	std::string name;
 };
 
+struct CppData
+{
+	std::unordered_set<std::string> types;
+
+	std::string toCppType(Type* type)
+	{
+		if (type)
+		{
+			auto it = GDTYPES_TO_CPPTYPES.find(type->name);
+
+			if (it != GDTYPES_TO_CPPTYPES.end())
+			{
+				types.emplace(it->second);
+				return it->second;
+			}
+		}
+
+		throw "Type not found";
+	}
+};
+
 class SyntaxNode
 {
 public:
-	virtual std::string toCpp() = 0;
+	virtual std::string toCpp(CppData* data) = 0;
 };
 
 class ValueSyntaxNode : public SyntaxNode

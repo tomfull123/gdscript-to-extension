@@ -5,7 +5,7 @@
 class CallSyntaxNode : public ValueSyntaxNode
 {
 public:
-	std::string toCpp() override
+	std::string toCpp(CppData* data) override
 	{
 		return "";
 	}

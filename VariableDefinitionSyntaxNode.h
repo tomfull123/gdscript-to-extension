@@ -14,9 +14,13 @@ public:
 	{
 	}
 
-	std::string toCpp() override
+	std::string toCpp(CppData* data) override
 	{
-		return "";
+		std::string code = data->toCppType(dataType_) + " " + name_->value;
+
+		code += ";\n";
+
+		return code;
 	}
 
 private:

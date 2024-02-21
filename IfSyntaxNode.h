@@ -16,13 +16,13 @@ public:
 		elseNodes_(elseNodes)
 	{}
 
-	std::string toCpp() override
+	std::string toCpp(CppData* data) override
 	{
 		std::string thenString;
 
 		for (auto n : thenNodes_)
 		{
-			thenString += n->toCpp();
+			thenString += n->toCpp(data);
 		}
 
 		std::string elseString;
@@ -33,12 +33,12 @@ public:
 				"{\n";
 			for (auto n : elseNodes_)
 			{
-				elseString += n->toCpp();
+				elseString += n->toCpp(data);
 			}
 			elseString += "}\n";
 		}
 
-		return "if (" + condition_->toCpp() + ")"
+		return "if (" + condition_->toCpp(data) + ")"
 			"{\n"
 			+ thenString +
 			"}\n"

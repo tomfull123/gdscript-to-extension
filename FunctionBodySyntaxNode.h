@@ -3,7 +3,7 @@
 #include <vector>
 #include "SyntaxNode.h"
 
-class FunctionBodySyntaxNode
+class FunctionBodySyntaxNode : public SyntaxNode
 {
 public:
 	explicit FunctionBodySyntaxNode(
@@ -12,13 +12,13 @@ public:
 		nodes_(nodes)
 	{}
 
-	std::string toCpp()
+	std::string toCpp(CppData* data)
 	{
 		std::string nodesString;
 
 		for (auto node : nodes_)
 		{
-			nodesString += node->toCpp();
+			nodesString += node->toCpp(data);
 		}
 
 		return ""

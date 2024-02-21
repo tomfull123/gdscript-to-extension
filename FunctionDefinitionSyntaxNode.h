@@ -14,9 +14,11 @@ public:
 		body_(body)
 	{}
 
-	std::string toCpp() override
+	std::string toCpp(CppData* data) override
 	{
-		return "";
+		return ""
+			+ prototype_->toCpp(data) + "\n"
+			+ body_->toCpp(data);
 	}
 
 private:

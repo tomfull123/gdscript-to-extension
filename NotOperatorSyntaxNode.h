@@ -13,9 +13,9 @@ public:
 		value_(value)
 	{}
 
-	std::string toCpp() override
+	std::string toCpp(CppData* data) override
 	{
-		return "!" + value_->toCpp();
+		return "!" + value_->toCpp(data);
 	}
 
 private:
