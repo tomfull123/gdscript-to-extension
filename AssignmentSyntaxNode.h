@@ -14,17 +14,6 @@ public:
 		assignmentValue_(assignmentValue)
 	{}
 
-	Type* getType() override
-	{
-		return variable_->getType();
-	}
-
-	void resolveType() override
-	{
-		variable_->resolveType();
-		if (assignmentValue_) assignmentValue_->resolveType();
-	}
-
 	std::string toCpp(CppData* data) override
 	{
 		return "";

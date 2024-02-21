@@ -9,11 +9,6 @@ public:
 		value_(value)
 	{}
 
-	void resolveType() override
-	{
-		value_->resolveType();
-	}
-
 	std::string toCpp(CppData* data) override
 	{
 		return "return " + value_->toCpp(data);

@@ -97,26 +97,11 @@ private:
 
 		if (!name) return nullptr;
 
-		Type* type = nullptr;
+		if (!consume(TokenType::ColonSeparator)) return nullptr;
 
-		if (isNextTokenType(TokenType::ColonSeparator))
-		{
-			next(); // eat :
-			if (!isNextTokenType(TokenType::AssignmentOperator))
-			{
-				type = parseType();
-			}
-		}
+		Type* dataType = parseType();
 
-		ValueSyntaxNode* assignmentValue = nullptr;
-
-		if (isNextTokenType(TokenType::AssignmentOperator))
-		{
-			next(); // eat =
-			assignmentValue = parseValueExpression();
-		}
-
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue);
+		return new VariableDefinitionSyntaxNode(name, dataType);
 	}
 
 	FunctionPrototypeSyntaxNode* parseFunctionProtoype()
@@ -210,21 +195,10 @@ private:
 		if (isNextTokenType(TokenType::ColonSeparator))
 		{
 			next(); // eat :
-			if (!isNextTokenType(TokenType::AssignmentOperator))
-			{
-				type = parseType();
-			}
+			type = parseType();
 		}
 
-		ValueSyntaxNode* assignmentValue = nullptr;
-
-		if (isNextTokenType(TokenType::AssignmentOperator))
-		{
-			next(); // eat =
-			assignmentValue = parseValueExpression();
-		}
-
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue);
+		return new VariableDefinitionSyntaxNode(name, type);
 	}
 
 	ClassDefinitionSyntaxNode* parseScriptBody()
@@ -233,9 +207,7 @@ private:
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
 
-		bool endOfClass = false;
-
-		while (!end() && !endOfClass)
+		while (!end())
 		{
 			const auto* t = peek();
 
@@ -250,9 +222,6 @@ private:
 			case TokenType::VarKeyword:
 			case TokenType::ConstKeyword:
 				memberVariableDefinitions.push_back(parseVariableDefinition());
-				break;
-			case TokenType::EndOfBlock:
-				endOfClass = true;
 				break;
 			default:
 				return (ClassDefinitionSyntaxNode*)addUnexpectedNextTokenError();
@@ -407,7 +376,7 @@ private:
 
 			if (!consume(TokenType::CloseBracketSeparator)) return nullptr;
 
-			auto call = new CallSyntaxNode(instance, name, args);
+			auto call = new CallSyntaxNode();
 
 			return call;
 		}

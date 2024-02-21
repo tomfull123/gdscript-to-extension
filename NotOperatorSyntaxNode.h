@@ -10,19 +10,8 @@ public:
 		ValueSyntaxNode* value
 	) :
 		token_(token),
-		value_(value),
-		type_(new Type("bool"))
+		value_(value)
 	{}
-
-	Type* getType() override
-	{
-		return type_;
-	}
-
-	void resolveType() override
-	{
-		value_->resolveType();
-	}
 
 	std::string toCpp(CppData* data) override
 	{
@@ -32,5 +21,4 @@ public:
 private:
 	Token* token_;
 	ValueSyntaxNode* value_;
-	Type* type_;
 };

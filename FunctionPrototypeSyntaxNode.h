@@ -18,11 +18,6 @@ public:
 		isStatic_(isStatic)
 	{}
 
-	void resolveType() override
-	{
-		for (auto arg : argDefs_) arg->resolveType();
-	}
-
 	std::string toCpp(CppData* data)
 	{
 		std::string argsString;

@@ -12,11 +12,6 @@ public:
 		nodes_(nodes)
 	{}
 
-	void resolveType() override
-	{
-		for (auto n : nodes_) n->resolveType();
-	}
-
 	std::string toCpp(CppData* data)
 	{
 		std::string nodesString;

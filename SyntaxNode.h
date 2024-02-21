@@ -48,14 +48,10 @@ struct CppData
 class SyntaxNode
 {
 public:
-
-	virtual void resolveType() = 0;
-
 	virtual std::string toCpp(CppData* data) = 0;
 };
 
 class ValueSyntaxNode : public SyntaxNode
 {
 public:
-	virtual Type* getType() = 0;
 };

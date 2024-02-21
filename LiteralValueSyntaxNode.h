@@ -13,15 +13,6 @@ public:
 		type_(type)
 	{}
 
-	Type* getType() override
-	{
-		return type_;
-	}
-
-	void resolveType() override
-	{
-	}
-
 	std::string toCpp(CppData* data) override
 	{
 		return "";
