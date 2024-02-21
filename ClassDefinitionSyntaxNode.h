@@ -16,6 +16,15 @@ public:
 		memberVariableDefinitions_(memberVariableDefinitions)
 	{}
 
+	void resolveType() override
+	{
+		for (auto v : memberVariableDefinitions_)
+			v->resolveType();
+
+		for (auto f : memberFunctionDefinitions_)
+			f->resolveType();
+	}
+
 	std::string toCpp(CppData* data) override
 	{
 		std::string className = name_->value;

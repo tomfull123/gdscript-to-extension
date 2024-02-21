@@ -7,11 +7,19 @@ class VariableDefinitionSyntaxNode : public SyntaxNode
 public:
 	VariableDefinitionSyntaxNode(
 		Token* name,
-		Type* dataType
+		Type* dataType,
+		ValueSyntaxNode* initialValue
 	) :
 		name_(name),
-		dataType_(dataType)
+		dataType_(dataType),
+		initialValue_(initialValue)
 	{
+	}
+
+	void resolveType() override
+	{
+		if (initialValue_) initialValue_->resolveType();
+		if (!dataType_) dataType_ = initialValue_->getType();
 	}
 
 	std::string toCpp(CppData* data) override
@@ -26,4 +34,5 @@ public:
 private:
 	Token* name_;
 	Type* dataType_;
+	ValueSyntaxNode* initialValue_;
 };

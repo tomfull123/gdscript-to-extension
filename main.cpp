@@ -49,6 +49,7 @@ int main(int argc, char* argv[])
 		for (auto c : ast->classes)
 		{
 			CppData* data = new CppData();
+			c->resolveType();
 			std::string classCode = c->toCpp(data);
 			std::ofstream headerFile("C:/Dev/Godot/Sandbox/gameplay/actions/action.h");
 			headerFile << classCode;

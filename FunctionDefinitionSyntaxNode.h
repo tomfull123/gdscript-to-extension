@@ -14,6 +14,12 @@ public:
 		body_(body)
 	{}
 
+	void resolveType() override
+	{
+		prototype_->resolveType();
+		body_->resolveType();
+	}
+
 	std::string toCpp(CppData* data) override
 	{
 		return ""

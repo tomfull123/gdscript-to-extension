@@ -16,6 +16,13 @@ public:
 		elseNodes_(elseNodes)
 	{}
 
+	void resolveType() override
+	{
+		condition_->resolveType();
+		for (auto n : thenNodes_) n->resolveType();
+		for (auto n : elseNodes_) n->resolveType();
+	}
+
 	std::string toCpp(CppData* data) override
 	{
 		std::string thenString;

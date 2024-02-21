@@ -10,6 +10,16 @@ public:
 		parentInstance_(parentInstance)
 	{}
 
+	Type* getType() override
+	{
+		return nullptr;
+	}
+
+	void resolveType() override
+	{
+		if (parentInstance_) parentInstance_->resolveType();
+	}
+
 	std::string toCpp(CppData* data) override
 	{
 		return "";
