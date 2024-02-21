@@ -49,7 +49,7 @@ public:
 			"\t\t\t\n"
 			"\t\t}\n"
 			"\t}\n"
-			"}\n";
+			"};\n";
 	}
 
 private:

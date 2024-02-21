@@ -16,13 +16,20 @@ public:
 		elseNodes_(elseNodes)
 	{}
 
+	bool needsSemiColon() override
+	{
+		return false;
+	}
+
 	std::string toCpp(CppData* data) override
 	{
 		std::string thenString;
 
 		for (auto n : thenNodes_)
 		{
-			thenString += n->toCpp(data) + ";\n";
+			thenString += n->toCpp(data);
+			if (n->needsSemiColon()) thenString += ";";
+			thenString += "\n";
 		}
 
 		std::string elseString;
@@ -33,12 +40,14 @@ public:
 				"{\n";
 			for (auto n : elseNodes_)
 			{
-				elseString += n->toCpp(data) + ";\n";
+				elseString += n->toCpp(data);
+				if (n->needsSemiColon()) elseString += ";";
+				elseString += "\n";
 			}
 			elseString += "}\n";
 		}
 
-		return "if (" + condition_->toCpp(data) + ")"
+		return "if (" + condition_->toCpp(data) + ")\n"
 			"{\n"
 			+ thenString +
 			"}\n"

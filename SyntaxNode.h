@@ -49,6 +49,12 @@ struct CppData
 class SyntaxNode
 {
 public:
+
+	virtual bool needsSemiColon()
+	{
+		return true;
+	}
+
 	virtual std::string toCpp(CppData* data) = 0;
 };
 

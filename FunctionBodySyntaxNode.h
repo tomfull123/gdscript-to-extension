@@ -18,7 +18,9 @@ public:
 
 		for (auto node : nodes_)
 		{
-			nodesString += node->toCpp(data) + ";\n";
+			nodesString += node->toCpp(data);
+			if (node->needsSemiColon()) nodesString += ";";
+			nodesString += "\n";
 		}
 
 		return ""
