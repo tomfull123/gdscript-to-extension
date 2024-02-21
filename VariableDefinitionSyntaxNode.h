@@ -7,10 +7,12 @@ class VariableDefinitionSyntaxNode : public SyntaxNode
 public:
 	VariableDefinitionSyntaxNode(
 		Token* name,
-		Type* dataType
+		Type* dataType,
+		ValueSyntaxNode* initialValue
 	) :
 		name_(name),
-		dataType_(dataType)
+		dataType_(dataType),
+		initialValue_(initialValue)
 	{
 	}
 
@@ -18,7 +20,7 @@ public:
 	{
 		std::string code = data->toCppType(dataType_) + " " + name_->value;
 
-		code += ";\n";
+		if (initialValue_) code += " = " + initialValue_->toCpp(data);
 
 		return code;
 	}
@@ -26,4 +28,5 @@ public:
 private:
 	Token* name_;
 	Type* dataType_;
+	ValueSyntaxNode* initialValue_;
 };

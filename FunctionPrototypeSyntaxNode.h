@@ -22,9 +22,11 @@ public:
 	{
 		std::string argsString;
 
-		for (auto arg : argDefs_)
+		for (int a = 0; a < argDefs_.size(); a++)
 		{
+			auto arg = argDefs_[a];
 			argsString += arg->toCpp(data);
+			if (a < argDefs_.size() - 1) argsString += ", ";
 		}
 
 		return returnType_->name + " " + name_->value + "(" + argsString + ")";

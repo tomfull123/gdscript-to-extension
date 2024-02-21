@@ -30,18 +30,19 @@ struct CppData
 
 	std::string toCppType(Type* type)
 	{
-		if (type)
-		{
-			auto it = GDTYPES_TO_CPPTYPES.find(type->name);
+		if (!type) return "auto";
 
-			if (it != GDTYPES_TO_CPPTYPES.end())
-			{
-				types.emplace(it->second);
-				return it->second;
-			}
+		auto it = GDTYPES_TO_CPPTYPES.find(type->name);
+
+		if (it != GDTYPES_TO_CPPTYPES.end())
+		{
+			types.emplace(it->second);
+			return it->second;
 		}
 
-		throw "Type not found";
+		types.emplace(type->name);
+
+		return type->name;
 	}
 };
 

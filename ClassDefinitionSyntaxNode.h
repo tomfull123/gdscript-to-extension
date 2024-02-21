@@ -23,12 +23,12 @@ public:
 		std::string memberVariableDefinitionString;
 
 		for (auto v : memberVariableDefinitions_)
-			memberVariableDefinitionString += "\t\t" + v->toCpp(data);
+			memberVariableDefinitionString += "\t\t" + v->toCpp(data) + ";\n";
 
 		std::string memberFunctionDefinitionString;
 
 		for (auto f : memberFunctionDefinitions_)
-			memberFunctionDefinitionString += "\t\t" + f->toCpp(data);
+			memberFunctionDefinitionString += "\t\t" + f->toCpp(data) + "\n";
 
 		std::string includesCode = cppIncludes(data);
 
@@ -42,6 +42,7 @@ public:
 			+ memberFunctionDefinitionString +
 			"\tprivate:\n"
 			+ memberVariableDefinitionString +
+			"\n"
 			"\tprotected:\n"
 			"\t\tstatic void _bind_methods()\n"
 			"\t\t{\n"

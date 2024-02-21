@@ -22,7 +22,7 @@ public:
 
 		for (auto n : thenNodes_)
 		{
-			thenString += n->toCpp(data);
+			thenString += n->toCpp(data) + ";\n";
 		}
 
 		std::string elseString;
@@ -33,7 +33,7 @@ public:
 				"{\n";
 			for (auto n : elseNodes_)
 			{
-				elseString += n->toCpp(data);
+				elseString += n->toCpp(data) + ";\n";
 			}
 			elseString += "}\n";
 		}

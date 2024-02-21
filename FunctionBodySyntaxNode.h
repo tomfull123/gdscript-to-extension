@@ -18,7 +18,7 @@ public:
 
 		for (auto node : nodes_)
 		{
-			nodesString += node->toCpp(data);
+			nodesString += node->toCpp(data) + ";\n";
 		}
 
 		return ""

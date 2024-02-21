@@ -16,7 +16,7 @@ public:
 
 	std::string toCpp(CppData* data) override
 	{
-		return "";
+		return variable_->toCpp(data) + " = " + assignmentValue_->toCpp(data);
 	}
 
 private:

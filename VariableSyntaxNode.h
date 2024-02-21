@@ -12,7 +12,7 @@ public:
 
 	std::string toCpp(CppData* data) override
 	{
-		return "";
+		return name_->value;
 	}
 
 private:
