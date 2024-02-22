@@ -65,13 +65,19 @@ private:
 
 		if (!types.empty())
 		{
+			std::unordered_set<std::string> includes;
 			for (const auto& type : types)
 			{
 				auto it = CPPTYPES_TO_INCLUDE_PATH.find(type);
 
 				if (it == CPPTYPES_TO_INCLUDE_PATH.end()) continue;
 
-				code += "#include " + it->second + "\n";
+				includes.emplace(it->second);
+			}
+
+			for (const auto& include : includes)
+			{
+				code += "#include " + include + "\n";
 			}
 
 			code += "\n";
