@@ -10,11 +10,17 @@ public:
 		parentInstance_(parentInstance)
 	{}
 
+	bool hasParent() const
+	{
+		if (parentInstance_) return true;
+		return false;
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		std::string code;
 
-		if (parentInstance_) code += parentInstance_->toCpp(data, indents) + "->";
+		if (parentInstance_) code += parentInstance_->toCpp(data, indents) + "->" + "set_";
 
 		auto varDef = data->variableDefinitions[name_->value];
 
