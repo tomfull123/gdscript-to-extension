@@ -18,6 +18,8 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
+		data->variableDefinitions[name_->value] = this;
+
 		std::string code = indents + data->toCppType(dataType_) + " " + name_->value;
 
 		if (initialValue_) code += " = " + initialValue_->toCpp(data, "");

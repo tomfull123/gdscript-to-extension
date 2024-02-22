@@ -24,9 +24,12 @@ struct Type
 	std::string name;
 };
 
+class VariableDefinitionSyntaxNode;
+
 struct CppData
 {
 	std::unordered_set<std::string> types;
+	std::unordered_map<std::string, VariableDefinitionSyntaxNode*> variableDefinitions;
 
 	std::string toCppType(Type* type)
 	{

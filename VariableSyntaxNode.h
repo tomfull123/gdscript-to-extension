@@ -16,7 +16,18 @@ public:
 
 		if (parentInstance_) code += parentInstance_->toCpp(data, indents) + ".";
 
-		return code + name_->value;
+		code += name_->value;
+
+		if (!parentInstance_)
+		{
+			auto varDef = data->variableDefinitions[name_->value];
+			if (!varDef) // static call
+			{
+				data->toCppType(new Type(name_->value));
+			}
+		}
+
+		return code;
 	}
 
 private:
