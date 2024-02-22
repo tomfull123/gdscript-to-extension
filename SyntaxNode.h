@@ -7,12 +7,17 @@
 const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"int", "int"},
 	{"float", "float"},
-	{"String", "std::string"},
-	{ "StringName", "std::string" },
+	{"InputMap", "InputMap::get_singleton()"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {
 	{"std::string", "<string>"},
+	{"RefCounted", "<godot_cpp/classes/ref.hpp>"},
+	{"InputMap::get_singleton()", "<godot_cpp/classes/input_map.hpp>"},
+	{"InputEventMouseButton", "<godot_cpp/classes/input_event_mouse_button.hpp>"},
+	{"InputEventKey", "<godot_cpp/classes/input_event_key.hpp>"},
+	{"MouseButton", "<godot_cpp/classes/input_event_mouse_button.hpp>"},
+	{"FastNoiseLite", "<godot_cpp/classes/fast_noise_lite.hpp>"},
 };
 
 struct Type
