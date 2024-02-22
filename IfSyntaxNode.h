@@ -21,13 +21,13 @@ public:
 		return false;
 	}
 
-	std::string toCpp(CppData* data) override
+	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		std::string thenString;
 
 		for (auto n : thenNodes_)
 		{
-			thenString += n->toCpp(data);
+			thenString += n->toCpp(data, indents + "\t");
 			if (n->needsSemiColon()) thenString += ";";
 			thenString += "\n";
 		}
@@ -36,21 +36,21 @@ public:
 
 		if (!elseNodes_.empty())
 		{
-			elseString = "else\n"
-				"{\n";
+			elseString = "\n" + indents + "else\n"
+				+ indents + "{\n";
 			for (auto n : elseNodes_)
 			{
-				elseString += n->toCpp(data);
+				elseString += n->toCpp(data, indents + "\t");
 				if (n->needsSemiColon()) elseString += ";";
 				elseString += "\n";
 			}
-			elseString += "}\n";
+			elseString += indents + "}";
 		}
 
-		return "if (" + condition_->toCpp(data) + ")\n"
-			"{\n"
-			+ thenString +
-			"}\n"
+		return indents + "if (" + condition_->toCpp(data, "") + ")\n"
+			+ indents + "{\n"
+			+ thenString
+			+ indents + "}"
 			+ elseString;
 	}
 

@@ -15,9 +15,9 @@ public:
 		rhs_(rhs)
 	{}
 
-	std::string toCpp(CppData* data) override
+	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return "(" + lhs_->toCpp(data) + " " + operatorToken_->value + " " + rhs_->toCpp(data) + ")";
+		return "(" + lhs_->toCpp(data, "") + " " + operatorToken_->value + " " + rhs_->toCpp(data, "") + ")";
 	}
 
 private:

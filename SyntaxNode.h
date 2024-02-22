@@ -55,7 +55,7 @@ public:
 		return true;
 	}
 
-	virtual std::string toCpp(CppData* data) = 0;
+	virtual std::string toCpp(CppData* data, const std::string& indents) = 0;
 };
 
 class ValueSyntaxNode : public SyntaxNode

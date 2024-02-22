@@ -9,9 +9,9 @@ public:
 		value_(value)
 	{}
 
-	std::string toCpp(CppData* data) override
+	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return "return " + value_->toCpp(data);
+		return indents + "return " + value_->toCpp(data, "");
 	}
 
 private:

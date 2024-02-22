@@ -13,7 +13,7 @@ public:
 		type_(type)
 	{}
 
-	std::string toCpp(CppData* data) override
+	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		return "";
 	}

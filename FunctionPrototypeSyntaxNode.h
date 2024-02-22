@@ -18,18 +18,18 @@ public:
 		isStatic_(isStatic)
 	{}
 
-	std::string toCpp(CppData* data)
+	std::string toCpp(CppData* data, const std::string& indents)
 	{
 		std::string argsString;
 
 		for (int a = 0; a < argDefs_.size(); a++)
 		{
 			auto arg = argDefs_[a];
-			argsString += arg->toCpp(data);
+			argsString += arg->toCpp(data, "");
 			if (a < argDefs_.size() - 1) argsString += ", ";
 		}
 
-		return returnType_->name + " " + name_->value + "(" + argsString + ")";
+		return indents + returnType_->name + " " + name_->value + "(" + argsString + ")";
 	}
 
 private:

@@ -14,9 +14,9 @@ public:
 		assignmentValue_(assignmentValue)
 	{}
 
-	std::string toCpp(CppData* data) override
+	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return variable_->toCpp(data) + " = " + assignmentValue_->toCpp(data);
+		return indents + variable_->toCpp(data, indents) + " = " + assignmentValue_->toCpp(data, "");
 	}
 
 private:

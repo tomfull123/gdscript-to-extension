@@ -5,8 +5,8 @@
 class BreakSyntaxNode : public SyntaxNode
 {
 public:
-	std::string toCpp(CppData* data) override
+	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return "break;\n";
+		return indents + "break;\n";
 	}
 };

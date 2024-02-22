@@ -14,11 +14,11 @@ public:
 		body_(body)
 	{}
 
-	std::string toCpp(CppData* data) override
+	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		return ""
-			+ prototype_->toCpp(data) + "\n"
-			+ body_->toCpp(data);
+			+ prototype_->toCpp(data, indents) + "\n"
+			+ body_->toCpp(data, indents);
 	}
 
 private:

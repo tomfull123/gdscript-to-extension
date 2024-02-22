@@ -16,19 +16,19 @@ public:
 		memberVariableDefinitions_(memberVariableDefinitions)
 	{}
 
-	std::string toCpp(CppData* data) override
+	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		std::string className = name_->value;
 
 		std::string memberVariableDefinitionString;
 
 		for (auto v : memberVariableDefinitions_)
-			memberVariableDefinitionString += "\t\t" + v->toCpp(data) + ";\n";
+			memberVariableDefinitionString += indents + v->toCpp(data, "\t\t") + ";\n";
 
 		std::string memberFunctionDefinitionString;
 
 		for (auto f : memberFunctionDefinitions_)
-			memberFunctionDefinitionString += "\t\t" + f->toCpp(data) + "\n";
+			memberFunctionDefinitionString += indents + f->toCpp(data, "\t\t") + "\n";
 
 		std::string includesCode = cppIncludes(data);
 

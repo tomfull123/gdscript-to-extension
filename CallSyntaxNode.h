@@ -15,18 +15,18 @@ public:
 		args_(args)
 	{}
 
-	std::string toCpp(CppData* data) override
+	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		std::string code;
+		std::string code = indents;
 
-		if (instance_) code += instance_->toCpp(data) + ".";
+		if (instance_) code += instance_->toCpp(data, indents) + ".";
 
 		std::string argsString;
 
 		for (int a = 0; a < args_.size(); a++)
 		{
 			auto arg = args_[a];
-			argsString += arg->toCpp(data);
+			argsString += arg->toCpp(data, "");
 			if (a < args_.size() - 1) argsString += ", ";
 		}
 

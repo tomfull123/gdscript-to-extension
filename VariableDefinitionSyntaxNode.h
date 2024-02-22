@@ -16,11 +16,11 @@ public:
 	{
 	}
 
-	std::string toCpp(CppData* data) override
+	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		std::string code = data->toCppType(dataType_) + " " + name_->value;
+		std::string code = indents + data->toCppType(dataType_) + " " + name_->value;
 
-		if (initialValue_) code += " = " + initialValue_->toCpp(data);
+		if (initialValue_) code += " = " + initialValue_->toCpp(data, "");
 
 		return code;
 	}
