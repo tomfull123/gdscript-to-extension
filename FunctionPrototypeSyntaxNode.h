@@ -18,6 +18,11 @@ public:
 		isStatic_(isStatic)
 	{}
 
+	bool isPrivate() const
+	{
+		return name_->value[0] == '_';
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents)
 	{
 		std::string argsString;

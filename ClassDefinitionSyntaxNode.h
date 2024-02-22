@@ -25,10 +25,16 @@ public:
 		for (auto v : memberVariableDefinitions_)
 			memberVariableDefinitionString += indents + v->toCpp(data, "\t\t") + ";\n";
 
-		std::string memberFunctionDefinitionString;
+		std::string publicMemberFunctionDefinitionString;
+		std::string privateMemberFunctionDefinitionString;
 
 		for (auto f : memberFunctionDefinitions_)
-			memberFunctionDefinitionString += indents + f->toCpp(data, "\t\t") + "\n";
+		{
+			std::string functionDefString = indents + f->toCpp(data, "\t\t") + "\n";
+
+			if (f->isPrivate()) privateMemberFunctionDefinitionString += functionDefString;
+			else publicMemberFunctionDefinitionString += functionDefString;
+		}
 
 		Type* inherits = new Type("RefCounted");
 
@@ -44,17 +50,19 @@ public:
 			"\t{\n"
 			"\t\tGDCLASS(" + className + ", " + inherits->name + ")\n"
 			"\tpublic:\n"
-			+ memberFunctionDefinitionString +
+			+ publicMemberFunctionDefinitionString +
 			"\tprivate:\n"
 			+ memberVariableDefinitionString +
+			"\n"
+			+ privateMemberFunctionDefinitionString +
 			"\n"
 			"\tprotected:\n"
 			"\t\tstatic void _bind_methods()\n"
 			"\t\t{\n"
 			"\t\t\t\n"
 			"\t\t}\n"
-			"\t}\n"
-			"};\n";
+			"\t};\n"
+			"}\n";
 	}
 
 private:

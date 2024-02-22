@@ -14,6 +14,11 @@ public:
 		body_(body)
 	{}
 
+	bool isPrivate() const
+	{
+		return prototype_->isPrivate();
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		return ""
