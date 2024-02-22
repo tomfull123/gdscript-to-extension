@@ -30,14 +30,19 @@ public:
 		for (auto f : memberFunctionDefinitions_)
 			memberFunctionDefinitionString += indents + f->toCpp(data, "\t\t") + "\n";
 
+		Type* inherits = new Type("RefCounted");
+
+		data->toCppType(inherits);
+
 		std::string includesCode = cppIncludes(data);
 
 		return "#pragma once\n\n"
 			+ includesCode +
 			"namespace godot\n"
 			"{\n"
-			"\tclass " + className + "\n"
+			"\tclass " + className + " : public " + inherits->name + "\n"
 			"\t{\n"
+			"\t\tGDCLASS(" + className + ", " + inherits->name + ")\n"
 			"\tpublic:\n"
 			+ memberFunctionDefinitionString +
 			"\tprivate:\n"
