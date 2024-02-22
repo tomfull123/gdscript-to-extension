@@ -12,7 +12,11 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return name_->value;
+		std::string code;
+
+		if (parentInstance_) code += parentInstance_->toCpp(data, indents) + ".";
+
+		return code + name_->value;
 	}
 
 private:
