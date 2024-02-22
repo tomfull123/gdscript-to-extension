@@ -14,18 +14,13 @@ public:
 	{
 		std::string code;
 
-		if (parentInstance_) code += parentInstance_->toCpp(data, indents) + ".";
+		if (parentInstance_) code += parentInstance_->toCpp(data, indents) + "->";
 
-		code += name_->value;
+		auto varDef = data->variableDefinitions[name_->value];
 
-		if (!parentInstance_)
-		{
-			auto varDef = data->variableDefinitions[name_->value];
-			if (!varDef) // static call
-			{
-				data->toCppType(new Type(name_->value));
-			}
-		}
+		// static call
+		if (!parentInstance_ && !varDef) code += data->toCppType(new Type(name_->value));
+		else code += name_->value;
 
 		return code;
 	}

@@ -19,7 +19,20 @@ public:
 	{
 		std::string code = indents;
 
-		if (instance_) code += instance_->toCpp(data, indents) + ".";
+		bool isConstructorCall = name_->value == "new";
+
+		if (instance_)
+		{
+			if (isConstructorCall)
+			{
+				code += "Ref<";
+			}
+
+			code += instance_->toCpp(data, indents);
+
+			if (!isConstructorCall) code += "->";
+			else code += ">";
+		}
 
 		std::string argsString;
 
@@ -30,7 +43,12 @@ public:
 			if (a < args_.size() - 1) argsString += ", ";
 		}
 
-		code += name_->value + "(" + argsString + ")";
+		if (!isConstructorCall)
+		{
+			code += name_->value;
+		}
+
+		code += "(" + argsString + ")";
 
 		return code;
 	}
