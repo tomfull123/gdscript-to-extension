@@ -394,7 +394,7 @@ private:
 	{
 		int indent = 0;
 
-		while (inputStream_.peek() == '\n' || inputStream_.peek() == '\t')
+		while (isNewLine(inputStream_.peek()) || inputStream_.peek() == '\t')
 		{
 			auto value = inputStream_.next();
 
