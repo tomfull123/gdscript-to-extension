@@ -24,8 +24,8 @@ struct TranspileTest : testing::Test
 
 		for (auto c : ast->classes)
 		{
-			CppData* data = new CppData();
-			return c->toCpp(data);
+			CppData* data = new CppData("Test");
+			return c->toCpp(data, "");
 		}
 	}
 };

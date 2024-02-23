@@ -18,7 +18,15 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		std::string className = name_->value;
+		std::string className;
+
+		if (name_) className = name_->value;
+		else
+		{
+			auto fileName = data->fileName;
+			char firstLetter = std::toupper(fileName[0]);
+			className = firstLetter + fileName.substr(1);
+		}
 
 		std::string memberVariableDefinitionString;
 
