@@ -28,6 +28,7 @@ enum class TokenType
 	StaticKeyword,
 	BreakKeyword,
 	ContinueKeyword,
+	PassKeyword,
 
 	FloatLiteral,
 	IntLiteral,
@@ -184,6 +185,7 @@ private:
 		if (value == "static") return TokenType::StaticKeyword;
 		if (value == "break") return TokenType::BreakKeyword;
 		if (value == "continue") return TokenType::ContinueKeyword;
+		if (value == "pass") return TokenType::PassKeyword;
 
 		return TokenType::Identifier;
 	}

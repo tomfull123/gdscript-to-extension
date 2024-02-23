@@ -169,7 +169,8 @@ private:
 
 		while (!stream_.end() && !isNextTokenType(TokenType::EndOfBlock))
 		{
-			nodes.push_back(parseExpression());
+			if (isNextTokenType(TokenType::PassKeyword)) next(); // eat pass
+			else nodes.push_back(parseExpression());
 		}
 
 		if (isNextTokenType(TokenType::EndOfBlock)) next();
