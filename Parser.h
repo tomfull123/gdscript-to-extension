@@ -170,8 +170,8 @@ private:
 
 		while (!stream_.end() && !isNextTokenType(TokenType::EndOfBlock))
 		{
-			if (isNextTokenType(TokenType::PassKeyword)) next(); // eat pass
-			else nodes.push_back(parseExpression());
+			auto ex = parseExpression();
+			if (ex) nodes.push_back(ex);
 		}
 
 		if (isNextTokenType(TokenType::EndOfBlock)) next();
@@ -464,7 +464,8 @@ private:
 
 		while (!isNextTokenType(TokenType::EndOfBlock))
 		{
-			thenExpressions.push_back(parseExpression());
+			auto ex = parseExpression();
+			if (ex) thenExpressions.push_back(ex);
 		}
 
 		next(); // eat EndOfBlock
@@ -490,6 +491,9 @@ private:
 		case TokenType::VarKeyword:
 		case TokenType::ConstKeyword:
 			return parseVariableDefinition();
+		case TokenType::PassKeyword:
+			next(); // eat pass
+			return nullptr;
 		case TokenType::WhileKeyword:
 			//return parseWhileLoop();
 		case TokenType::ForKeyword:
