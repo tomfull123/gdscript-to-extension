@@ -66,7 +66,6 @@ public:
 			+ memberVariableDefinitionString +
 			"\n"
 			+ privateMemberFunctionDefinitionString +
-			"\n"
 			"\tprotected:\n"
 			"\t\tstatic void _bind_methods()\n"
 			"\t\t{\n"
