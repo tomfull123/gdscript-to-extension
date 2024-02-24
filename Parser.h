@@ -17,6 +17,7 @@
 #include "NotOperatorSyntaxNode.h"
 #include "BooleanLiteralSyntaxNode.h"
 #include "SignalDefinitionSyntaxNode.h"
+#include "ArrayValueSyntaxNode.h"
 
 struct Result
 {
@@ -119,9 +120,19 @@ private:
 
 	Type* parseType()
 	{
-		const Token* type = next();
+		const Token* typeToken = next();
+		Type* subtype = nullptr;
 
-		return new Type(type->value);
+		if (isNextTokenType(TokenType::OpenSquareBracket))
+		{
+			next(); // eat [
+
+			subtype = parseType();
+
+			if (!consume(TokenType::CloseSquareBracket)) return nullptr;
+		}
+
+		return new Type(typeToken->value, subtype);
 	}
 
 	VariableDefinitionSyntaxNode* parseArgDefinition()
@@ -359,6 +370,25 @@ private:
 		return (BooleanLiteralSyntaxNode*)addUnexpectedTokenError(t);
 	}
 
+	ValueSyntaxNode* parseArrayValue()
+	{
+		if (!consume(TokenType::OpenSquareBracket)) return nullptr;
+
+		std::vector<ValueSyntaxNode*> expressions;
+
+		while (!isNextTokenType(TokenType::CloseSquareBracket))
+		{
+			auto ex = parseValueExpression();
+			if (ex) expressions.push_back(ex);
+
+			if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
+		}
+
+		next(); // eat ]
+
+		return new ArrayValueSyntaxNode(expressions);
+	}
+
 	ValueSyntaxNode* parseSingleValueObject()
 	{
 		Token* value = peek();
@@ -376,6 +406,7 @@ private:
 		case TokenType::NotOperator: return parseNotOperator();
 		case TokenType::TrueKeyword: return parseBooleanLiteral();
 		case TokenType::FalseKeyword: return parseBooleanLiteral();
+		case TokenType::OpenSquareBracket: return parseArrayValue();
 		}
 
 		return (ValueSyntaxNode*)addUnexpectedNextTokenError();

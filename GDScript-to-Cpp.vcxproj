@@ -133,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractSyntaxTree.h" />
+    <ClInclude Include="ArrayValueSyntaxNode.h" />
     <ClInclude Include="AssignmentSyntaxNode.h" />
     <ClInclude Include="BooleanLiteralSyntaxNode.h" />
     <ClInclude Include="BreakSyntaxNode.h" />

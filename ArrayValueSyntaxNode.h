@@ -1,0 +1,28 @@
+#pragma once
+
+#include "SyntaxNode.h"
+
+class ArrayValueSyntaxNode : public ValueSyntaxNode
+{
+public:
+	explicit ArrayValueSyntaxNode(
+		const std::vector<ValueSyntaxNode*>& expressions
+	) :
+		expressions_(expressions)
+	{}
+
+	std::string toCpp(CppData* data, const std::string& indents) override
+	{
+		std::string expressionsString;
+
+		for (auto e : expressions_)
+		{
+			expressionsString += indents + e->toCpp(data, indents) + "\n";
+		}
+
+		return "[" + expressionsString + "]";
+	}
+
+private:
+	std::vector<ValueSyntaxNode*> expressions_;
+};

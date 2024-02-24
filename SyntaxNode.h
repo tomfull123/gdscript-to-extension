@@ -23,11 +23,16 @@ const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {
 
 struct Type
 {
-	explicit Type(const std::string& Name) :
-		name(Name)
+	Type(
+		const std::string& name,
+		Type* subtype = nullptr
+	) :
+		name(name),
+		subtype(subtype)
 	{}
 
 	std::string name;
+	Type* subtype;
 };
 
 class VariableDefinitionSyntaxNode;

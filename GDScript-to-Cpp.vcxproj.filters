@@ -104,5 +104,8 @@
     <ClInclude Include="SignalDefinitionSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
+    <ClInclude Include="ArrayValueSyntaxNode.h">
+      <Filter>Header Files\SyntaxNodes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
