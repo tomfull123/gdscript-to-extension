@@ -15,7 +15,8 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents)
 	{
-		return "Signal " + name_->value + "()";
+		std::string signalType = data->toCppType(new Type("Signal"));
+		return indents + signalType + " " + name_->value + "()";
 	}
 
 private:

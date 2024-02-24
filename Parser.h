@@ -272,7 +272,7 @@ private:
 		return new VariableDefinitionSyntaxNode(name, type, assignmentValue);
 	}
 
-	SyntaxNode* parseSignalDefinitions()
+	SignalDefinitionSyntaxNode* parseSignalDefinitions()
 	{
 		next(); // eat signal
 
@@ -309,7 +309,7 @@ private:
 		Token* name = nullptr;
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
-		std::vector<SyntaxNode*> signalDefinitions;
+		std::vector<SignalDefinitionSyntaxNode*> signalDefinitions;
 
 		bool endOfClass = false;
 
@@ -343,7 +343,7 @@ private:
 			}
 		}
 
-		return new ClassDefinitionSyntaxNode(name, memberFunctionDefinitions, memberVariableDefinitions);
+		return new ClassDefinitionSyntaxNode(name, memberFunctionDefinitions, memberVariableDefinitions, signalDefinitions);
 	}
 
 	LiteralValueSyntaxNode* parseLiteralValue()

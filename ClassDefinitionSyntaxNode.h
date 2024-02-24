@@ -2,6 +2,7 @@
 
 #include "FunctionDefinitionSyntaxNode.h"
 #include "VariableDefinitionSyntaxNode.h"
+#include "SignalDefinitionSyntaxNode.h"
 
 class ClassDefinitionSyntaxNode : public SyntaxNode
 {
@@ -9,11 +10,13 @@ public:
 	ClassDefinitionSyntaxNode(
 		Token* name,
 		const std::vector<FunctionDefinitionSyntaxNode*>& memberFunctionDefinitions,
-		const std::vector<VariableDefinitionSyntaxNode*>& memberVariableDefinitions
+		const std::vector<VariableDefinitionSyntaxNode*>& memberVariableDefinitions,
+		const std::vector<SignalDefinitionSyntaxNode*>& signalDefinitions
 	) :
 		name_(name),
 		memberFunctionDefinitions_(memberFunctionDefinitions),
-		memberVariableDefinitions_(memberVariableDefinitions)
+		memberVariableDefinitions_(memberVariableDefinitions),
+		signalDefinitions_(signalDefinitions)
 	{}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
@@ -39,7 +42,7 @@ public:
 
 		for (auto f : memberFunctionDefinitions_)
 		{
-			std::string functionDefString = indents + f->toCpp(data, "\t\t") + "\n";
+			std::string functionDefString = f->toCpp(data, "\t\t") + "\n";
 
 			if (f->isPrivate()) privateMemberFunctionDefinitionString += functionDefString;
 			else
@@ -47,6 +50,11 @@ public:
 				publicMemberFunctionDefinitionString += functionDefString;
 				bindMethodsString += bindMethod(className, f->getName(), f->getArgDefs(), "\t\t\t");
 			}
+		}
+
+		for (auto s : signalDefinitions_)
+		{
+			memberVariableDefinitionString += s->toCpp(data, "\t\t") + ";\n";
 		}
 
 		Type* inherits = new Type("RefCounted");
@@ -79,6 +87,7 @@ private:
 	Token* name_;
 	std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions_;
 	std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions_;
+	std::vector<SignalDefinitionSyntaxNode*> signalDefinitions_;
 
 	std::string cppIncludes(const CppData* data) const
 	{
