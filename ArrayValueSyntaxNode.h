@@ -20,7 +20,7 @@ public:
 			expressionsString += indents + e->toCpp(data, indents) + "\n";
 		}
 
-		return "[" + expressionsString + "]";
+		return "{" + expressionsString + "}";
 	}
 
 private:
