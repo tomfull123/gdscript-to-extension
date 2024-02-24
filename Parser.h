@@ -295,6 +295,15 @@ private:
 		return new SignalDefinitionSyntaxNode(signalName, args);
 	}
 
+	void parseAnnotation()
+	{
+		next(); // eat warning_ignore
+
+		if (!consume(TokenType::OpenBracketSeparator)) return;
+		if (!consume(TokenType::StringLiteral)) return;
+		if (!consume(TokenType::CloseBracketSeparator)) return;
+	}
+
 	ClassDefinitionSyntaxNode* parseScriptBody()
 	{
 		Token* name = nullptr;
@@ -325,6 +334,9 @@ private:
 				break;
 			case TokenType::SignalKeyword:
 				signalDefinitions.push_back(parseSignalDefinitions());
+				break;
+			case TokenType::Annotation:
+				parseAnnotation();
 				break;
 			default:
 				return (ClassDefinitionSyntaxNode*)addUnexpectedNextTokenError();

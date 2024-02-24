@@ -33,6 +33,7 @@ enum class TokenType
 
 	FloatLiteral,
 	IntLiteral,
+	StringLiteral,
 
 	ColonSeparator,
 	ArrowSeparator,
@@ -57,6 +58,7 @@ enum class TokenType
 	OrOperator,
 	SingleLineComment,
 	MultiLineComment,
+	Annotation,
 };
 
 struct Token
@@ -95,13 +97,15 @@ public:
 
 		if (isIdentifierStart(ch)) return readIdentifierOrKeyword();
 
-		//if (isStringLiteralStart(ch)) return readStringLiteral();
+		if (isStringLiteralStart(ch)) return readStringLiteral();
 
 		if (isNumberLiteralStart(ch)) return readNumberLiteral();
 
 		//if (isCharLiteralStart(ch)) return readCharLiteral();
 
 		if (isSeparator(ch)) return readSeparator();
+
+		if (isAnnotationStart(ch)) return readAnnotation();
 
 		return readError();
 	}
@@ -320,6 +324,20 @@ private:
 		return token;
 	}
 
+	static bool isAnnotation(const char& ch)
+	{
+		return isalpha(ch) || ch == '_';
+	}
+
+	Token* readAnnotation()
+	{
+		inputStream_.next(); // eat @
+
+		Token* token = readToken(isAnnotation, TokenType::Annotation);
+
+		return token;
+	}
+
 	TokenType getSeparatorTokenType(const std::string& value) const
 	{
 		if (value == ":") return TokenType::ColonSeparator;
@@ -414,6 +432,24 @@ private:
 		currentIndent_ = indent;
 	}
 
+	Token* readStringLiteral()
+	{
+		Token* token = new Token();
+
+		token->lineNumber = inputStream_.getLineNumber();
+		token->columnNumber = inputStream_.getColumnNumber();
+
+		inputStream_.next(); // eat "
+
+		token->value = readUntil(isStringLiteral, false);
+		unescape(token->value);
+		token->type = TokenType::StringLiteral;
+
+		inputStream_.next(); // eat "
+
+		return token;
+	}
+
 	template<class Function>
 	std::string readWhile(const Function& function)
 	{
@@ -446,5 +482,27 @@ private:
 	static bool isWhitespace(const char& ch)
 	{
 		return ch == ' ';
+	}
+
+	static bool isAnnotationStart(const char& ch)
+	{
+		return ch == '@';
+	}
+
+	void unescape(std::string& str) const
+	{
+		replaceAll(str, "\\n", "\n");
+		replaceAll(str, "\\t", "\t");
+	}
+
+	void replaceAll(std::string& str, const std::string& from, const std::string& to) const
+	{
+		if (from.empty())
+			return;
+		size_t start_pos = 0;
+		while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+			str.replace(start_pos, from.length(), to);
+			start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+		}
 	}
 };
