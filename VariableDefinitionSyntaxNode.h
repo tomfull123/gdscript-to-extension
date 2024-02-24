@@ -25,7 +25,11 @@ public:
 	{
 		data->variableDefinitions[name_->value] = this;
 
-		std::string code = indents + data->toCppType(dataType_) + " " + name_->value;
+		std::string code = indents;
+
+		if (!initialValue_ && !dataType_) code += "Variant";
+		else code += data->toCppType(dataType_);
+		code += " " + name_->value;
 
 		if (initialValue_) code += " = " + initialValue_->toCpp(data, "");
 
