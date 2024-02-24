@@ -16,6 +16,7 @@
 #include "EqualityOperatorSyntaxNode.h"
 #include "NotOperatorSyntaxNode.h"
 #include "BooleanLiteralSyntaxNode.h"
+#include "SignalDefinitionSyntaxNode.h"
 
 struct Result
 {
@@ -260,11 +261,35 @@ private:
 		return new VariableDefinitionSyntaxNode(name, type, assignmentValue);
 	}
 
+	SyntaxNode* parseSignalDefinitions()
+	{
+		next(); // eat signal
+
+		auto signalName = consume(TokenType::Identifier);
+
+		if (!signalName) return nullptr;
+
+		if (!consume(TokenType::OpenBracketSeparator)) return nullptr;
+
+		std::vector<VariableDefinitionSyntaxNode*> args;
+
+		while (!isNextTokenType(TokenType::CloseBracketSeparator))
+		{
+			auto arg = parseArgDefinition();
+			if (arg) args.push_back(arg);
+		}
+
+		next(); // eat )
+
+		return new SignalDefinitionSyntaxNode(signalName, args);
+	}
+
 	ClassDefinitionSyntaxNode* parseScriptBody()
 	{
 		Token* name = nullptr;
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
+		std::vector<SyntaxNode*> signalDefinitions;
 
 		bool endOfClass = false;
 
@@ -286,6 +311,9 @@ private:
 				break;
 			case TokenType::EndOfBlock:
 				endOfClass = true;
+				break;
+			case TokenType::SignalKeyword:
+				signalDefinitions.push_back(parseSignalDefinitions());
 				break;
 			default:
 				return (ClassDefinitionSyntaxNode*)addUnexpectedNextTokenError();

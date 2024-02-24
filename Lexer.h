@@ -29,6 +29,7 @@ enum class TokenType
 	BreakKeyword,
 	ContinueKeyword,
 	PassKeyword,
+	SignalKeyword,
 
 	FloatLiteral,
 	IntLiteral,
@@ -186,6 +187,7 @@ private:
 		if (value == "break") return TokenType::BreakKeyword;
 		if (value == "continue") return TokenType::ContinueKeyword;
 		if (value == "pass") return TokenType::PassKeyword;
+		if (value == "signal") return TokenType::SignalKeyword;
 
 		return TokenType::Identifier;
 	}

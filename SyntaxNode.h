@@ -18,6 +18,7 @@ const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {
 	{"InputEventKey", "<godot_cpp/classes/input_event_key.hpp>"},
 	{"MouseButton", "<godot_cpp/classes/input_event_mouse_button.hpp>"},
 	{"FastNoiseLite", "<godot_cpp/classes/fast_noise_lite.hpp>"},
+	{"Signal", "<godot_cpp/classes/ref.hpp>"},
 };
 
 struct Type
