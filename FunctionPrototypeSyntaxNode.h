@@ -18,6 +18,16 @@ public:
 		isStatic_(isStatic)
 	{}
 
+	std::string getName() const
+	{
+		return name_->value;
+	}
+
+	std::vector<VariableDefinitionSyntaxNode*> getArgDefs() const
+	{
+		return argDefs_;
+	}
+
 	bool isPrivate() const
 	{
 		return name_->value[0] == '_';

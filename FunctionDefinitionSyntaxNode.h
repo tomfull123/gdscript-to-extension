@@ -14,6 +14,16 @@ public:
 		body_(body)
 	{}
 
+	std::string getName() const
+	{
+		return prototype_->getName();
+	}
+
+	std::vector<VariableDefinitionSyntaxNode*> getArgDefs() const
+	{
+		return prototype_->getArgDefs();
+	}
+
 	bool isPrivate() const
 	{
 		return prototype_->isPrivate();

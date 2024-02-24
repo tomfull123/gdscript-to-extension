@@ -16,6 +16,11 @@ public:
 	{
 	}
 
+	std::string getName() const
+	{
+		return name_->value;
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		data->variableDefinitions[name_->value] = this;

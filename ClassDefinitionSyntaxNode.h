@@ -35,23 +35,26 @@ public:
 
 		std::string publicMemberFunctionDefinitionString;
 		std::string privateMemberFunctionDefinitionString;
+		std::string bindMethodsString;
 
 		for (auto f : memberFunctionDefinitions_)
 		{
 			std::string functionDefString = indents + f->toCpp(data, "\t\t") + "\n";
 
 			if (f->isPrivate()) privateMemberFunctionDefinitionString += functionDefString;
-			else publicMemberFunctionDefinitionString += functionDefString;
+			else
+			{
+				publicMemberFunctionDefinitionString += functionDefString;
+				bindMethodsString += bindMethod(className, f->getName(), f->getArgDefs(), "\t\t\t");
+			}
 		}
 
 		Type* inherits = new Type("RefCounted");
 
 		data->toCppType(inherits);
 
-		std::string includesCode = cppIncludes(data);
-
 		return "#pragma once\n\n"
-			+ includesCode +
+			+ cppIncludes(data) +
 			"namespace godot\n"
 			"{\n"
 			"\tclass " + className + " : public " + inherits->name + "\n"
@@ -67,7 +70,7 @@ public:
 			"\tprotected:\n"
 			"\t\tstatic void _bind_methods()\n"
 			"\t\t{\n"
-			"\t\t\t\n"
+			+ bindMethodsString +
 			"\t\t}\n"
 			"\t};\n"
 			"}\n";
@@ -105,5 +108,16 @@ private:
 		}
 
 		return code;
+	}
+
+	std::string bindMethod(const std::string& className, const std::string& functionName, const std::vector<VariableDefinitionSyntaxNode*>& argDefs, const std::string& indents)
+	{
+		std::string argsString;
+
+		for (auto argDef : argDefs) argsString += ", \"" + argDef->getName() + "\"";
+
+		return indents + "ClassDB::bind_method("
+			"D_METHOD(\"" + functionName + "\"" + argsString + "), "
+			"&" + className + "::" + functionName + ");\n";
 	}
 };
