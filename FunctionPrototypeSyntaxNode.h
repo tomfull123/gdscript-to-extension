@@ -16,7 +16,9 @@ public:
 		argDefs_(argDefs),
 		returnType_(returnType),
 		isStatic_(isStatic)
-	{}
+	{
+		if (!returnType_) returnType_ = new Type("void");
+	}
 
 	std::string getName() const
 	{
