@@ -470,6 +470,21 @@ private:
 
 		next(); // eat EndOfBlock
 
+		std::vector<SyntaxNode*> elseExpressions;
+
+		if (isNextTokenType(TokenType::ElseKeyword))
+		{
+			next(); // eat else
+
+			if (!consume(TokenType::ColonSeparator)) return nullptr;
+
+			while (!isNextTokenType(TokenType::EndOfBlock))
+			{
+				auto ex = parseExpression();
+				if (ex) elseExpressions.push_back(ex);
+			}
+		}
+
 		return new IfSyntaxNode(condition, thenExpressions, {});
 	}
 
