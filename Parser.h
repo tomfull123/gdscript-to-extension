@@ -16,7 +16,6 @@
 #include "EqualityOperatorSyntaxNode.h"
 #include "NotOperatorSyntaxNode.h"
 #include "BooleanLiteralSyntaxNode.h"
-#include "SignalDefinitionSyntaxNode.h"
 #include "ArrayValueSyntaxNode.h"
 
 struct Result
@@ -272,7 +271,7 @@ private:
 		return new VariableDefinitionSyntaxNode(name, type, assignmentValue);
 	}
 
-	SignalDefinitionSyntaxNode* parseSignalDefinitions()
+	VariableDefinitionSyntaxNode* parseSignalDefinitions()
 	{
 		next(); // eat signal
 
@@ -292,7 +291,7 @@ private:
 
 		next(); // eat )
 
-		return new SignalDefinitionSyntaxNode(signalName, args);
+		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr);
 	}
 
 	void parseAnnotation()
@@ -309,7 +308,6 @@ private:
 		Token* name = nullptr;
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
-		std::vector<SignalDefinitionSyntaxNode*> signalDefinitions;
 
 		bool endOfClass = false;
 
@@ -333,7 +331,7 @@ private:
 				endOfClass = true;
 				break;
 			case TokenType::SignalKeyword:
-				signalDefinitions.push_back(parseSignalDefinitions());
+				memberVariableDefinitions.push_back(parseSignalDefinitions());
 				break;
 			case TokenType::Annotation:
 				parseAnnotation();
@@ -343,7 +341,7 @@ private:
 			}
 		}
 
-		return new ClassDefinitionSyntaxNode(name, memberFunctionDefinitions, memberVariableDefinitions, signalDefinitions);
+		return new ClassDefinitionSyntaxNode(name, memberFunctionDefinitions, memberVariableDefinitions);
 	}
 
 	LiteralValueSyntaxNode* parseLiteralValue()

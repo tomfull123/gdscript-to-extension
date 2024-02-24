@@ -2,7 +2,6 @@
 
 #include "FunctionDefinitionSyntaxNode.h"
 #include "VariableDefinitionSyntaxNode.h"
-#include "SignalDefinitionSyntaxNode.h"
 
 class ClassDefinitionSyntaxNode : public SyntaxNode
 {
@@ -10,13 +9,11 @@ public:
 	ClassDefinitionSyntaxNode(
 		Token* name,
 		const std::vector<FunctionDefinitionSyntaxNode*>& memberFunctionDefinitions,
-		const std::vector<VariableDefinitionSyntaxNode*>& memberVariableDefinitions,
-		const std::vector<SignalDefinitionSyntaxNode*>& signalDefinitions
+		const std::vector<VariableDefinitionSyntaxNode*>& memberVariableDefinitions
 	) :
 		name_(name),
 		memberFunctionDefinitions_(memberFunctionDefinitions),
-		memberVariableDefinitions_(memberVariableDefinitions),
-		signalDefinitions_(signalDefinitions)
+		memberVariableDefinitions_(memberVariableDefinitions)
 	{}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
@@ -52,11 +49,6 @@ public:
 			}
 		}
 
-		for (auto s : signalDefinitions_)
-		{
-			memberVariableDefinitionString += s->toCpp(data, "\t\t") + ";\n";
-		}
-
 		Type* inherits = new Type("RefCounted");
 
 		data->toCppType(inherits);
@@ -87,7 +79,6 @@ private:
 	Token* name_;
 	std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions_;
 	std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions_;
-	std::vector<SignalDefinitionSyntaxNode*> signalDefinitions_;
 
 	std::string cppIncludes(const CppData* data) const
 	{

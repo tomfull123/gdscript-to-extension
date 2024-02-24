@@ -153,7 +153,6 @@
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="ParserError.h" />
-    <ClInclude Include="SignalDefinitionSyntaxNode.h" />
     <ClInclude Include="SyntaxNode.h" />
     <ClInclude Include="TokenStream.h" />
     <ClInclude Include="VariableDefinitionSyntaxNode.h" />

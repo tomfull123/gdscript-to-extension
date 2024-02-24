@@ -31,9 +31,11 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
+		std::string prototypeString = prototype_->toCpp(data, indents) + "\n";
+		std::string bodyString = body_->toCpp(data, indents);
 		return ""
-			+ prototype_->toCpp(data, indents) + "\n"
-			+ body_->toCpp(data, indents);
+			+ prototypeString
+			+ bodyString;
 	}
 
 private:

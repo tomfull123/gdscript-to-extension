@@ -7,7 +7,10 @@
 const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"int", "int"},
 	{"float", "float"},
+	{"String", "String"},
 	{"InputMap", "InputMap::get_singleton()"},
+	{"Key", "Key"},
+	{"MouseButton", "MouseButton"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {
@@ -61,7 +64,7 @@ struct CppData
 
 		types.emplace(type->name);
 
-		return type->name;
+		return "Ref<" + type->name + ">";
 	}
 };
 

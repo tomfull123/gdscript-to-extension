@@ -23,15 +23,9 @@ public:
 
 		if (instance_)
 		{
-			if (isConstructorCall)
-			{
-				code += "Ref<";
-			}
-
 			code += instance_->toCpp(data, indents);
 
 			if (!isConstructorCall) code += "->";
-			else code += ">";
 		}
 
 		std::string argsString;
