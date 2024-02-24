@@ -134,6 +134,7 @@
   <ItemGroup>
     <ClInclude Include="AbstractSyntaxTree.h" />
     <ClInclude Include="AssignmentSyntaxNode.h" />
+    <ClInclude Include="BooleanLiteralSyntaxNode.h" />
     <ClInclude Include="BreakSyntaxNode.h" />
     <ClInclude Include="CallSyntaxNode.h" />
     <ClInclude Include="ClassDefinitionSyntaxNode.h" />

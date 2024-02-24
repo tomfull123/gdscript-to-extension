@@ -15,6 +15,7 @@
 #include "AssignmentSyntaxNode.h"
 #include "EqualityOperatorSyntaxNode.h"
 #include "NotOperatorSyntaxNode.h"
+#include "BooleanLiteralSyntaxNode.h"
 
 class Parser
 {
@@ -289,6 +290,16 @@ private:
 		return nullptr;
 	}
 
+	BooleanLiteralSyntaxNode* parseBooleanLiteral()
+	{
+		Token* t = next();
+
+		if (t->type == TokenType::TrueKeyword) return new BooleanLiteralSyntaxNode(t, true);
+		if (t->type == TokenType::FalseKeyword) return new BooleanLiteralSyntaxNode(t, false);
+
+		return (BooleanLiteralSyntaxNode*)addUnexpectedTokenError(t);
+	}
+
 	ValueSyntaxNode* parseSingleValueObject()
 	{
 		Token* value = peek();
@@ -304,6 +315,8 @@ private:
 		}
 		case TokenType::Identifier: return parseVariableOrFunctionCall(true);
 		case TokenType::NotOperator: return parseNotOperator();
+		case TokenType::TrueKeyword: return parseBooleanLiteral();
+		case TokenType::FalseKeyword: return parseBooleanLiteral();
 		}
 
 		return (ValueSyntaxNode*)addUnexpectedNextTokenError();
