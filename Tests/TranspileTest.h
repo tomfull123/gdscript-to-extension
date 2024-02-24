@@ -8,21 +8,13 @@ struct TranspileTest : testing::Test
 {
 	std::string transpile(const std::string& input) const
 	{
-		AbstractSyntaxTree* ast = new AbstractSyntaxTree();
+		Result* result = Parser::parse(input);
 
-		Lexer lexer(input);
-
-		std::vector<Token*> tokens = lexer.readAllTokens();
-
-		Parser parser(tokens);
-
-		parser.buildAST(ast);
-
-		const auto& errors = parser.getErrors();
+		auto errors = result->errors;
 
 		if (!errors.empty()) return errors[0].message;
 
-		for (auto c : ast->classes)
+		for (auto c : result->ast->classes)
 		{
 			CppData* data = new CppData("Test");
 			return c->toCpp(data, "");

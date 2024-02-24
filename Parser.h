@@ -17,6 +17,20 @@
 #include "NotOperatorSyntaxNode.h"
 #include "BooleanLiteralSyntaxNode.h"
 
+struct Result
+{
+	Result(
+		AbstractSyntaxTree* ast,
+		const std::vector<ParserError>& errors
+	) :
+		ast(ast),
+		errors(errors)
+	{}
+
+	AbstractSyntaxTree* ast;
+	std::vector<ParserError> errors;
+};
+
 class Parser
 {
 public:
@@ -25,6 +39,23 @@ public:
 	void buildAST(AbstractSyntaxTree* ast);
 
 	const std::vector<ParserError>& getErrors() const { return errors_; }
+
+	static Result* parse(const std::string& input)
+	{
+		AbstractSyntaxTree* ast = new AbstractSyntaxTree();
+
+		Lexer lexer(input);
+
+		std::vector<Token*> tokens = lexer.readAllTokens();
+
+		Parser parser(tokens);
+
+		parser.buildAST(ast);
+
+		const auto& errors = parser.getErrors();
+
+		return new Result(ast, errors);
+	}
 
 private:
 	TokenStream stream_;
