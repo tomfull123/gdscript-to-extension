@@ -46,11 +46,17 @@ int main(int argc, char* argv[])
 
 	if (!hasErrors)
 	{
+		int fileNameExtensionStart = filePath.find_last_of(".");
+		int filePathLength = filePath.length();
+		std::string filePathWithoutExtension = filePath.substr(0, filePathLength - (filePathLength - fileNameExtensionStart));
+		int fileNameStart = filePathWithoutExtension.find_last_of("/") + 1;
+		std::string fileName = filePathWithoutExtension.substr(fileNameStart);
+
 		for (auto c : ast->classes)
 		{
-			CppData* data = new CppData("Action");
+			CppData* data = new CppData(fileName);
 			std::string classCode = c->toCpp(data, "");
-			std::ofstream headerFile("C:/Dev/Godot/Sandbox/gameplay/actions/action.h");
+			std::ofstream headerFile(filePathWithoutExtension + ".h");
 			headerFile << classCode;
 			headerFile.close();
 		}
