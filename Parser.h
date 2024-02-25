@@ -348,6 +348,8 @@ private:
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
 		std::vector<EnumDefinitionSyntaxNode*> enumDefinitions;
+		std::vector<FunctionDefinitionSyntaxNode*> staticFunctionDefinitions;
+		std::vector<VariableDefinitionSyntaxNode*> staticVariableDefinitions;
 
 		bool endOfClass = false;
 
@@ -379,12 +381,37 @@ private:
 			case TokenType::EnumKeyword:
 				enumDefinitions.push_back(parseEnumDefinition());
 				break;
+			case TokenType::StaticKeyword:
+				next(); // eat static
+
+				if (isNextTokenType(TokenType::FuncKeyword))
+				{
+					staticFunctionDefinitions.push_back(parseFunction());
+					break;
+				}
+
+				if (isNextTokenType(TokenType::VarKeyword) || isNextTokenType(TokenType::ConstKeyword))
+				{
+					staticVariableDefinitions.push_back(parseVariableDefinition());
+					break;
+				}
+
+				addUnexpectedNextTokenError();
+
+				break;
 			default:
 				return (ClassDefinitionSyntaxNode*)addUnexpectedNextTokenError();
 			}
 		}
 
-		return new ClassDefinitionSyntaxNode(name, memberFunctionDefinitions, memberVariableDefinitions, enumDefinitions);
+		return new ClassDefinitionSyntaxNode(
+			name,
+			memberFunctionDefinitions,
+			memberVariableDefinitions,
+			enumDefinitions,
+			staticFunctionDefinitions,
+			staticVariableDefinitions
+		);
 	}
 
 	LiteralValueSyntaxNode* parseLiteralValue()

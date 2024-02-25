@@ -2,6 +2,7 @@
 
 #include "FunctionDefinitionSyntaxNode.h"
 #include "VariableDefinitionSyntaxNode.h"
+#include "EnumDefinitionSyntaxNode.h"
 
 class ClassDefinitionSyntaxNode : public SyntaxNode
 {
@@ -9,11 +10,17 @@ public:
 	ClassDefinitionSyntaxNode(
 		Token* name,
 		const std::vector<FunctionDefinitionSyntaxNode*>& memberFunctionDefinitions,
-		const std::vector<VariableDefinitionSyntaxNode*>& memberVariableDefinitions
+		const std::vector<VariableDefinitionSyntaxNode*>& memberVariableDefinitions,
+		const std::vector<EnumDefinitionSyntaxNode*>& enumDefinitions,
+		const std::vector<FunctionDefinitionSyntaxNode*>& staticFunctionDefinitions,
+		const std::vector<VariableDefinitionSyntaxNode*>& staticVariableDefinitions
 	) :
 		name_(name),
 		memberFunctionDefinitions_(memberFunctionDefinitions),
-		memberVariableDefinitions_(memberVariableDefinitions)
+		memberVariableDefinitions_(memberVariableDefinitions),
+		enumDefinitions_(enumDefinitions),
+		staticFunctionDefinitions_(staticFunctionDefinitions),
+		staticVariableDefinitions_(staticVariableDefinitions)
 	{}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
@@ -27,6 +34,38 @@ public:
 			char firstLetter = std::toupper(fileName[0]);
 			className = firstLetter + fileName.substr(1);
 		}
+
+		std::string staticVariableDefinitionString;
+
+		for (auto v : staticVariableDefinitions_)
+			staticVariableDefinitionString += indents + v->toCpp(data, "\t\t") + ";\n";
+
+		std::string publicStaticFunctionDefinitionString;
+		std::string privateStaticFunctionDefinitionString;
+		std::string bindStaticMethodsString;
+
+		for (auto f : staticFunctionDefinitions_)
+		{
+			std::string functionDefString = f->toCpp(data, "\t\t") + "\n";
+
+			if (f->isPrivate()) privateStaticFunctionDefinitionString += functionDefString;
+			else
+			{
+				publicStaticFunctionDefinitionString += functionDefString;
+				bindStaticMethodsString += bindMethod(className, f->getName(), f->getArgDefs(), "\t\t\t");
+			}
+		}
+
+		std::string enumDefString;
+		std::vector<std::string> enumNames;
+
+		for (auto enumDef : enumDefinitions_)
+		{
+			enumDefString += enumDef->toCpp(data, "\t");
+			enumNames.push_back(enumDef->getName());
+		}
+
+		data->variableDefinitions.clear();
 
 		std::string memberVariableDefinitionString;
 
@@ -61,24 +100,31 @@ public:
 			"\t{\n"
 			"\t\tGDCLASS(" + className + ", " + inherits->name + ")\n"
 			"\tpublic:\n"
-			+ publicMemberFunctionDefinitionString +
+			+ publicMemberFunctionDefinitionString
+			+ publicStaticFunctionDefinitionString +
 			"\tprivate:\n"
-			+ memberVariableDefinitionString +
+			+ memberVariableDefinitionString
+			+ staticVariableDefinitionString +
 			"\n"
-			+ privateMemberFunctionDefinitionString +
+			+ privateMemberFunctionDefinitionString
+			+ privateStaticFunctionDefinitionString +
 			"\tprotected:\n"
 			"\t\tstatic void _bind_methods()\n"
 			"\t\t{\n"
 			+ bindMethodsString +
 			"\t\t}\n"
 			"\t};\n"
-			"}\n";
+			"}\n"
+			+ enumCasts(enumNames);
 	}
 
 private:
 	Token* name_;
 	std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions_;
 	std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions_;
+	std::vector<EnumDefinitionSyntaxNode*> enumDefinitions_;
+	std::vector<FunctionDefinitionSyntaxNode*> staticFunctionDefinitions_;
+	std::vector<VariableDefinitionSyntaxNode*> staticVariableDefinitions_;
 
 	std::string cppIncludes(const CppData* data) const
 	{
@@ -118,5 +164,17 @@ private:
 		return indents + "ClassDB::bind_method("
 			"D_METHOD(\"" + functionName + "\"" + argsString + "), "
 			"&" + className + "::" + functionName + ");\n";
+	}
+
+	std::string enumCasts(const std::vector<std::string>& enumNames)
+	{
+		std::string enumCasts;
+
+		for (const auto& enumName : enumNames)
+		{
+			enumCasts += "VARIANT_ENUM_CAST(" + enumName + ");\n";
+		}
+
+		return enumCasts;
 	}
 };
