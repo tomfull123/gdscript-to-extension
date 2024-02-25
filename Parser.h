@@ -18,6 +18,7 @@
 #include "BooleanLiteralSyntaxNode.h"
 #include "ArrayValueSyntaxNode.h"
 #include "EnumDefinitionSyntaxNode.h"
+#include "DictionaryValueSyntaxNode.h"
 
 struct Result
 {
@@ -470,6 +471,29 @@ private:
 		return new ArrayValueSyntaxNode(expressions);
 	}
 
+	ValueSyntaxNode* parseDictionaryValue()
+	{
+		next(); // eat {
+		std::map<ValueSyntaxNode*, ValueSyntaxNode*> values;
+
+		while (!isNextTokenType(TokenType::CloseCurlyBracketSeparator))
+		{
+			auto key = parseSingleValueObject();
+
+			if (!consume(TokenType::ColonSeparator)) return nullptr;
+
+			auto value = parseValueExpression();
+			if (value) values[key] = value;
+
+			if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
+			else if (!isNextTokenType(TokenType::CloseSquareBracket)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+		}
+
+		next(); // eat }
+
+		return new DictionaryValueSyntaxNode(values);
+	}
+
 	ValueSyntaxNode* parseSingleValueObject()
 	{
 		Token* value = peek();
@@ -478,6 +502,7 @@ private:
 		switch (type)
 		{
 		case TokenType::IntLiteral:
+		case TokenType::FloatLiteral:
 		{
 			auto literalValue = parseLiteralValue();
 
@@ -488,6 +513,7 @@ private:
 		case TokenType::TrueKeyword: return parseBooleanLiteral();
 		case TokenType::FalseKeyword: return parseBooleanLiteral();
 		case TokenType::OpenSquareBracket: return parseArrayValue();
+		case TokenType::OpenCurlyBracketSeparator: return parseDictionaryValue();
 		}
 
 		return (ValueSyntaxNode*)addUnexpectedNextTokenError();

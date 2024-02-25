@@ -140,6 +140,7 @@
     <ClInclude Include="CallSyntaxNode.h" />
     <ClInclude Include="ClassDefinitionSyntaxNode.h" />
     <ClInclude Include="ContinueSyntaxNode.h" />
+    <ClInclude Include="DictionaryValueSyntaxNode.h" />
     <ClInclude Include="EnumDefinitionSyntaxNode.h" />
     <ClInclude Include="EnumValueSyntaxNode.h" />
     <ClInclude Include="EqualityOperatorSyntaxNode.h" />
