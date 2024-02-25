@@ -28,6 +28,9 @@
     <ClCompile Include="SignalTests.cpp">
       <Filter>Source Files\Transpile</Filter>
     </ClCompile>
+    <ClCompile Include="EnumDefinitionTests.cpp">
+      <Filter>Source Files\Transpile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TranspileTest.h">

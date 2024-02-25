@@ -17,6 +17,7 @@
 #include "NotOperatorSyntaxNode.h"
 #include "BooleanLiteralSyntaxNode.h"
 #include "ArrayValueSyntaxNode.h"
+#include "EnumDefinitionSyntaxNode.h"
 
 struct Result
 {
@@ -306,11 +307,47 @@ private:
 		if (!consume(TokenType::CloseBracketSeparator)) return;
 	}
 
+	EnumValueSyntaxNode* parseEnumValueDefinition()
+	{
+		auto name = consume(TokenType::Identifier);
+		if (!name) return nullptr;
+		return new EnumValueSyntaxNode(name);
+	}
+
+	EnumDefinitionSyntaxNode* parseEnumDefinition()
+	{
+		next(); // eat enum
+
+		auto name = consume(TokenType::Identifier);
+
+		if (!name) return nullptr;
+
+		if (!consume(TokenType::OpenCurlyBracketSeparator)) return nullptr;
+
+		std::vector<EnumValueSyntaxNode*> values;
+
+		while (!isNextTokenType(TokenType::CloseCurlyBracketSeparator))
+		{
+			auto value = parseEnumValueDefinition();
+			if (value) values.push_back(value);
+
+			if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
+
+			if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
+			else if (!isNextTokenType(TokenType::CloseCurlyBracketSeparator)) return (EnumDefinitionSyntaxNode*)addUnexpectedNextTokenError();
+		}
+
+		next(); // eat }
+
+		return new EnumDefinitionSyntaxNode(name, values);
+	}
+
 	ClassDefinitionSyntaxNode* parseScriptBody()
 	{
 		Token* name = nullptr;
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
+		std::vector<EnumDefinitionSyntaxNode*> enumDefinitions;
 
 		bool endOfClass = false;
 
@@ -339,12 +376,15 @@ private:
 			case TokenType::Annotation:
 				parseAnnotation();
 				break;
+			case TokenType::EnumKeyword:
+				enumDefinitions.push_back(parseEnumDefinition());
+				break;
 			default:
 				return (ClassDefinitionSyntaxNode*)addUnexpectedNextTokenError();
 			}
 		}
 
-		return new ClassDefinitionSyntaxNode(name, memberFunctionDefinitions, memberVariableDefinitions);
+		return new ClassDefinitionSyntaxNode(name, memberFunctionDefinitions, memberVariableDefinitions, enumDefinitions);
 	}
 
 	LiteralValueSyntaxNode* parseLiteralValue()
@@ -395,6 +435,7 @@ private:
 			if (ex) expressions.push_back(ex);
 
 			if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
+			else if (!isNextTokenType(TokenType::CloseSquareBracket)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
 		}
 
 		next(); // eat ]
