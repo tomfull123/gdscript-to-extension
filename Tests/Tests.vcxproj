@@ -137,6 +137,7 @@
     <ClCompile Include="FunctionDefinitionTests.cpp" />
     <ClCompile Include="IfTests.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SignalTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TranspileTest.h" />

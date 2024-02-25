@@ -25,6 +25,9 @@
     <ClCompile Include="ArrayTests.cpp">
       <Filter>Source Files\Transpile</Filter>
     </ClCompile>
+    <ClCompile Include="SignalTests.cpp">
+      <Filter>Source Files\Transpile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TranspileTest.h">

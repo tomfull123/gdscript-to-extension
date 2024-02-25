@@ -279,17 +279,20 @@ private:
 
 		if (!signalName) return nullptr;
 
-		if (!consume(TokenType::OpenBracketSeparator)) return nullptr;
-
-		std::vector<VariableDefinitionSyntaxNode*> args;
-
-		while (!isNextTokenType(TokenType::CloseBracketSeparator))
+		if (isNextTokenType(TokenType::OpenBracketSeparator))
 		{
-			auto arg = parseArgDefinition();
-			if (arg) args.push_back(arg);
-		}
+			next(); // eat (
 
-		next(); // eat )
+			std::vector<VariableDefinitionSyntaxNode*> args;
+
+			while (!isNextTokenType(TokenType::CloseBracketSeparator))
+			{
+				auto arg = parseArgDefinition();
+				if (arg) args.push_back(arg);
+			}
+
+			next(); // eat )
+		}
 
 		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr);
 	}
