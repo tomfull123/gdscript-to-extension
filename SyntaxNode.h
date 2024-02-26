@@ -11,8 +11,13 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"InputMap", "InputMap::get_singleton()"},
 	{"Key", "Key"},
 	{"MouseButton", "MouseButton"},
+};
+
+const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS = {
 	{"absf", "abs"},
 	{"absi", "abs"},
+	{"minf", "std::min"},
+	{"mini", "std::min"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {
@@ -67,6 +72,21 @@ struct CppData
 		types.emplace(type->name);
 
 		return "Ref<" + type->name + ">";
+	}
+
+	std::string toCppFunction(const std::string& functionName)
+	{
+		auto it = GDFUNCTIONS_TO_CPPFUNCTIONS.find(functionName);
+
+		if (it != GDFUNCTIONS_TO_CPPFUNCTIONS.end())
+		{
+			types.emplace(it->second);
+			return it->second;
+		}
+
+		types.emplace(functionName);
+
+		return functionName;
 	}
 };
 

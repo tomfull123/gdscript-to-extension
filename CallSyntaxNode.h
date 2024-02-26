@@ -39,7 +39,7 @@ public:
 
 		if (!isConstructorCall)
 		{
-			code += name_->value;
+			code += data->toCppFunction(name_->value);
 		}
 
 		code += "(" + argsString + ")";
