@@ -21,6 +21,8 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
+		data->enumDefinitions[name_->value] = this;
+
 		std::string valuesString;
 
 		for (auto v : values_)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SyntaxNode.h"
+#include "EnumDefinitionSyntaxNode.h"
 
 class VariableSyntaxNode : public ValueSyntaxNode
 {
@@ -23,9 +24,10 @@ public:
 		if (parentInstance_) code += parentInstance_->toCpp(data, indents) + "->" + "set_";
 
 		auto varDef = data->variableDefinitions[name_->value];
+		auto enumDef = data->enumDefinitions[name_->value];
 
 		// static call
-		if (!parentInstance_ && !varDef) code += data->toCppType(new Type(name_->value));
+		if (!parentInstance_ && !varDef && !enumDef) code += data->toCppType(new Type(name_->value));
 		else code += name_->value;
 
 		return code;
