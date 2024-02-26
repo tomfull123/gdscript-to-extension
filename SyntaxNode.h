@@ -13,6 +13,7 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"InputMap", "InputMap::get_singleton()"},
 	{"Key", "Key"},
 	{"MouseButton", "MouseButton"},
+	{"Color", "Color"},
 };
 
 const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS = {
@@ -33,6 +34,10 @@ const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {
 	{"Signal", "<godot_cpp/classes/ref.hpp>"},
 };
 
+const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
+	{"Color", "::named"},
+};
+
 struct Type
 {
 	Type(
@@ -45,6 +50,32 @@ struct Type
 
 	std::string name;
 	Type* subtype;
+};
+
+struct CppData;
+
+class SyntaxNode
+{
+public:
+	virtual bool needsSemiColon()
+	{
+		return true;
+	}
+
+	virtual void hoist(CppData* data) = 0;
+
+	virtual std::string toCpp(CppData* data, const std::string& indents) = 0;
+};
+
+class ValueSyntaxNode : public SyntaxNode
+{
+public:
+	virtual bool hasParent() const
+	{
+		return false;
+	}
+
+	virtual std::string getName() = 0;
 };
 
 class VariableDefinitionSyntaxNode;
@@ -73,6 +104,7 @@ struct CppData
 		if (it != GDTYPES_TO_CPPTYPES.end())
 		{
 			types.emplace(it->second);
+
 			return it->second;
 		}
 
@@ -95,28 +127,22 @@ struct CppData
 
 		return functionName;
 	}
-};
 
-class SyntaxNode
-{
-public:
-	virtual bool needsSemiColon()
+	std::string toWrappedCppFunction(ValueSyntaxNode* parentInstance, Token* nameToken)
 	{
-		return true;
+		std::string name = nameToken->value;
+
+		if (parentInstance)
+		{
+			auto parentName = parentInstance->getName();
+			auto it = CPPTYPES_TO_FUNCTION.find(parentName);
+
+			if (it != CPPTYPES_TO_FUNCTION.end())
+			{
+				return it->second + "(\"" + name + "\")";
+			}
+		}
+
+		return name;
 	}
-
-	virtual void hoist(CppData* data) = 0;
-
-	virtual std::string toCpp(CppData* data, const std::string& indents) = 0;
-};
-
-class ValueSyntaxNode : public SyntaxNode
-{
-public:
-	virtual bool hasParent() const
-	{
-		return false;
-	}
-
-	virtual std::string getName() = 0;
 };

@@ -33,18 +33,24 @@ public:
 
 		if (parentInstance_)
 		{
-			auto parentEnumDef = data->enumDefinitions[parentInstance_->getName()];
+			code += parentInstance_->toCpp(data, indents);
+
+			auto parentName = parentInstance_->getName();
+			auto parentEnumDef = data->enumDefinitions[parentName];
 			if (parentEnumDef)
-				code += parentInstance_->toCpp(data, indents) + "::";
-			else
-				code += parentInstance_->toCpp(data, indents) + "->set_";
+				code += "::";
+			else if (CPPTYPES_TO_FUNCTION.find(parentName) == CPPTYPES_TO_FUNCTION.end())
+				code += "->set_";
 		}
 
 		auto varDef = data->variableDefinitions[name_->value];
 
 		// static call
 		if (!parentInstance_ && !varDef) code += data->toCppType(new Type(name_->value));
-		else code += name_->value;
+		else
+		{
+			code += data->toWrappedCppFunction(parentInstance_, name_);
+		}
 
 		return code;
 	}
