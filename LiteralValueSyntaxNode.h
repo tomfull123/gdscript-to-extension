@@ -15,6 +15,12 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
+		switch (value_->type)
+		{
+		case TokenType::FloatLiteral:
+			return value_->value + "f";
+		}
+
 		return value_->value;
 	}
 
