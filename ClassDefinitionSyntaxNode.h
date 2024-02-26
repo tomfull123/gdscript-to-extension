@@ -96,6 +96,7 @@ public:
 			+ cppIncludes(data) +
 			"namespace godot\n"
 			"{\n"
+			+ enumDefString +
 			"\tclass " + className + " : public " + inherits->name + "\n"
 			"\t{\n"
 			"\t\tGDCLASS(" + className + ", " + inherits->name + ")\n"
