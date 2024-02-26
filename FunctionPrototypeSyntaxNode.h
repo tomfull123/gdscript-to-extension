@@ -51,7 +51,11 @@ public:
 			if (a < argDefs_.size() - 1) argsString += ", ";
 		}
 
-		return indents + data->toCppType(returnType_) + " " + name_->value + "(" + argsString + ")";
+		std::string code = indents;
+
+		if (isStatic_) code += "static ";
+
+		return code + data->toCppType(returnType_) + " " + name_->value + "(" + argsString + ")";
 	}
 
 private:

@@ -167,7 +167,7 @@ private:
 		return new VariableDefinitionSyntaxNode(name, type, assignmentValue);
 	}
 
-	FunctionPrototypeSyntaxNode* parseFunctionProtoype()
+	FunctionPrototypeSyntaxNode* parseFunctionProtoype(bool isStatic)
 	{
 		consume(TokenType::FuncKeyword); // eat func
 
@@ -208,7 +208,7 @@ private:
 
 		if (!consume(TokenType::ColonSeparator)) return nullptr;
 
-		return new FunctionPrototypeSyntaxNode(name, argDefs, returnType, false);
+		return new FunctionPrototypeSyntaxNode(name, argDefs, returnType, isStatic);
 	}
 
 	FunctionBodySyntaxNode* parseFunctionBody()
@@ -226,9 +226,9 @@ private:
 		return new FunctionBodySyntaxNode(nodes);
 	}
 
-	FunctionDefinitionSyntaxNode* parseFunction()
+	FunctionDefinitionSyntaxNode* parseFunction(bool isStatic)
 	{
-		FunctionPrototypeSyntaxNode* prototype = parseFunctionProtoype();
+		FunctionPrototypeSyntaxNode* prototype = parseFunctionProtoype(isStatic);
 
 		if (!prototype) return nullptr;
 
@@ -367,7 +367,7 @@ private:
 				name = parseClassName();
 				break;
 			case TokenType::FuncKeyword:
-				memberFunctionDefinitions.push_back(parseFunction());
+				memberFunctionDefinitions.push_back(parseFunction(false));
 				break;
 			case TokenType::VarKeyword:
 			case TokenType::ConstKeyword:
@@ -390,7 +390,7 @@ private:
 
 				if (isNextTokenType(TokenType::FuncKeyword))
 				{
-					staticFunctionDefinitions.push_back(parseFunction());
+					staticFunctionDefinitions.push_back(parseFunction(true));
 					break;
 				}
 

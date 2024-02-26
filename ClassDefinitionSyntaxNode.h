@@ -61,7 +61,7 @@ public:
 			else
 			{
 				publicStaticFunctionDefinitionString += functionDefString;
-				bindStaticMethodsString += bindMethod(className, f->getName(), f->getArgDefs(), "\t\t\t");
+				bindStaticMethodsString += bindMethod(className, f, "\t\t\t", true);
 			}
 		}
 
@@ -91,7 +91,7 @@ public:
 			else
 			{
 				publicMemberFunctionDefinitionString += functionDefString;
-				bindMethodsString += bindMethod(className, f->getName(), f->getArgDefs(), "\t\t\t");
+				bindMethodsString += bindMethod(className, f, "\t\t\t", false);
 			}
 		}
 
@@ -119,7 +119,8 @@ public:
 			"\tprotected:\n"
 			"\t\tstatic void _bind_methods()\n"
 			"\t\t{\n"
-			+ bindMethodsString +
+			+ bindMethodsString
+			+ bindStaticMethodsString +
 			"\t\t}\n"
 			"\t};\n"
 			"}\n"
@@ -163,18 +164,25 @@ private:
 		return code;
 	}
 
-	std::string bindMethod(const std::string& className, const std::string& functionName, const std::vector<VariableDefinitionSyntaxNode*>& argDefs, const std::string& indents)
+	std::string bindMethod(const std::string& className, const FunctionDefinitionSyntaxNode* functionDefinition, const std::string& indents, bool isStatic) const
 	{
+		std::string functionName = functionDefinition->getName();
+		std::vector<VariableDefinitionSyntaxNode*> argDefs = functionDefinition->getArgDefs();
+
 		std::string argsString;
 
 		for (auto argDef : argDefs) argsString += ", \"" + argDef->getName() + "\"";
 
-		return indents + "ClassDB::bind_method("
-			"D_METHOD(\"" + functionName + "\"" + argsString + "), "
+		std::string code = indents;
+
+		if (isStatic) code += "ClassDB::bind_static_method";
+		else code += "ClassDB::bind_method";
+
+		return code + "(D_METHOD(\"" + functionName + "\"" + argsString + "), "
 			"&" + className + "::" + functionName + ");\n";
 	}
 
-	std::string enumCasts(const std::vector<std::string>& enumNames)
+	std::string enumCasts(const std::vector<std::string>& enumNames) const
 	{
 		std::string enumCasts;
 
