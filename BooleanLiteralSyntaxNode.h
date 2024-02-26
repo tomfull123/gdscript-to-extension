@@ -10,6 +10,10 @@ public:
 		value_(value)
 	{}
 
+	void hoist(CppData* data) override
+	{
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents)
 	{
 		if (value_) return "true";

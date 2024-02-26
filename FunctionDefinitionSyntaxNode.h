@@ -29,6 +29,12 @@ public:
 		return prototype_->isPrivate();
 	}
 
+	void hoist(CppData* data) override
+	{
+		prototype_->hoist(data);
+		body_->hoist(data);
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		std::string prototypeString = prototype_->toCpp(data, indents) + "\n";

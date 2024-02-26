@@ -14,6 +14,12 @@ public:
 		index_(index)
 	{}
 
+	void hoist(CppData* data) override
+	{
+		variable_->hoist(data);
+		index_->hoist(data);
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		return variable_->toCpp(data, indents) + "[" + index_->toCpp(data, "") + "]";

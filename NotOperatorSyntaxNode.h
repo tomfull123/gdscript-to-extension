@@ -13,6 +13,11 @@ public:
 		value_(value)
 	{}
 
+	void hoist(CppData* data) override
+	{
+		value_->hoist(data);
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		return "!" + value_->toCpp(data, "");

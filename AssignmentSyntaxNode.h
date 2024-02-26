@@ -14,6 +14,12 @@ public:
 		assignmentValue_(assignmentValue)
 	{}
 
+	void hoist(CppData* data) override
+	{
+		variable_->hoist(data);
+		assignmentValue_->hoist(data);
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		if (variable_->hasParent())

@@ -13,6 +13,10 @@ public:
 		type_(type)
 	{}
 
+	void hoist(CppData* data) override
+	{
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		switch (value_->type)

@@ -11,6 +11,11 @@ public:
 		expressions_(expressions)
 	{}
 
+	void hoist(CppData* data) override
+	{
+		for (auto e : expressions_) e->hoist(data);
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		std::string expressionsString;

@@ -35,7 +35,12 @@ public:
 		return name_->value[0] == '_';
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents)
+	void hoist(CppData* data) override
+	{
+		for (auto a : argDefs_) a->hoist(data);
+	}
+
+	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		std::string argsString;
 

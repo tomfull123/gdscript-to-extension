@@ -15,6 +15,12 @@ public:
 		rhs_(rhs)
 	{}
 
+	void hoist(CppData* data) override
+	{
+		lhs_->hoist(data);
+		rhs_->hoist(data);
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		return "(" + lhs_->toCpp(data, "") + " " + operatorToken_->value + " " + rhs_->toCpp(data, "") + ")";

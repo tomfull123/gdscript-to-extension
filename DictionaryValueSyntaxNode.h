@@ -13,6 +13,15 @@ public:
 		values_(values)
 	{}
 
+	void hoist(CppData* data) override
+	{
+		for (const auto& v : values_)
+		{
+			v.first->hoist(data);
+			v.second->hoist(data);
+		}
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		std::string valuesString;

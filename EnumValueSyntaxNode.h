@@ -9,6 +9,10 @@ public:
 		name_(name)
 	{}
 
+	void hoist(CppData* data) override
+	{
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		return name_->value;

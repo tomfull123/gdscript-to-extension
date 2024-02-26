@@ -97,11 +97,12 @@ struct CppData
 class SyntaxNode
 {
 public:
-
 	virtual bool needsSemiColon()
 	{
 		return true;
 	}
+
+	virtual void hoist(CppData* data) = 0;
 
 	virtual std::string toCpp(CppData* data, const std::string& indents) = 0;
 };

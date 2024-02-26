@@ -23,6 +23,15 @@ public:
 		staticVariableDefinitions_(staticVariableDefinitions)
 	{}
 
+	void hoist(CppData* data) override
+	{
+		for (auto enumDef : enumDefinitions_) enumDef->hoist(data);
+		for (auto v : staticVariableDefinitions_) v->hoist(data);
+		for (auto f : staticFunctionDefinitions_) f->hoist(data);
+		for (auto v : memberVariableDefinitions_) v->hoist(data);
+		for (auto f : memberFunctionDefinitions_) f->hoist(data);
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		std::string className;
@@ -64,8 +73,6 @@ public:
 			enumDefString += enumDef->toCpp(data, "\t");
 			enumNames.push_back(enumDef->getName());
 		}
-
-		data->variableDefinitions.clear();
 
 		std::string memberVariableDefinitionString;
 

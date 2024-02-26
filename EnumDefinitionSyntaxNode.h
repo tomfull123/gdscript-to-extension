@@ -19,10 +19,13 @@ public:
 		return name_->value;
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	void hoist(CppData* data) override
 	{
 		data->enumDefinitions[name_->value] = this;
+	}
 
+	std::string toCpp(CppData* data, const std::string& indents) override
+	{
 		std::string valuesString;
 
 		for (auto v : values_)

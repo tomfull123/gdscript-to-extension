@@ -21,10 +21,13 @@ public:
 		return name_->value;
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	void hoist(CppData* data) override
 	{
 		data->variableDefinitions[name_->value] = this;
+	}
 
+	std::string toCpp(CppData* data, const std::string& indents) override
+	{
 		std::string code = indents;
 
 		if (!initialValue_ && !dataType_) code += "Variant";

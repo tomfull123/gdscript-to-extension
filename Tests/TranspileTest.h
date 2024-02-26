@@ -10,14 +10,15 @@ struct TranspileTest : testing::Test
 	{
 		Result* result = Parser::parse(input);
 
-		auto errors = result->errors;
+		const auto& errors = result->errors;
 
 		if (!errors.empty()) return errors[0].message;
 
 		for (auto c : result->ast->classes)
 		{
-			CppData* data = new CppData("Test");
-			return c->toCpp(data, "");
+			CppData data("Test");
+			c->hoist(&data);
+			return c->toCpp(&data, "");
 		}
 	}
 };

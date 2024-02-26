@@ -12,7 +12,12 @@ public:
 		nodes_(nodes)
 	{}
 
-	std::string toCpp(CppData* data, const std::string& indents)
+	void hoist(CppData* data) override
+	{
+		for (auto n : nodes_) n->hoist(data);
+	}
+
+	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		std::string nodesString;
 

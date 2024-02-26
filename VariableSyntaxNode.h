@@ -17,6 +17,11 @@ public:
 		return false;
 	}
 
+	void hoist(CppData* data) override
+	{
+		if (parentInstance_) parentInstance_->hoist(data);
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		std::string code;

@@ -21,6 +21,13 @@ public:
 		return false;
 	}
 
+	void hoist(CppData* data) override
+	{
+		condition_->hoist(data);
+		for (auto n : thenNodes_) n->hoist(data);
+		for (auto n : elseNodes_) n->hoist(data);
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		std::string thenString;

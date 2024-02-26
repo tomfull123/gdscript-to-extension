@@ -15,6 +15,12 @@ public:
 		args_(args)
 	{}
 
+	void hoist(CppData* data) override
+	{
+		if (instance_) instance_->hoist(data);
+		for (auto a : args_) a->hoist(data);
+	}
+
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		std::string code;
