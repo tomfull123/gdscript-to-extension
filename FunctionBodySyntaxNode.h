@@ -23,7 +23,7 @@ public:
 
 		for (auto node : nodes_)
 		{
-			nodesString += node->toCpp(data, indents + "\t");
+			nodesString += indents + "\t" + node->toCpp(data, indents + "\t");
 			if (node->needsSemiColon()) nodesString += ";";
 			nodesString += "\n";
 		}

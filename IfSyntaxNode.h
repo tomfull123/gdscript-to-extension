@@ -34,7 +34,7 @@ public:
 
 		for (auto n : thenNodes_)
 		{
-			thenString += n->toCpp(data, indents + "\t");
+			thenString += indents + "\t" + n->toCpp(data, indents + "\t");
 			if (n->needsSemiColon()) thenString += ";";
 			thenString += "\n";
 		}
@@ -47,14 +47,14 @@ public:
 				+ indents + "{\n";
 			for (auto n : elseNodes_)
 			{
-				elseString += n->toCpp(data, indents + "\t");
+				elseString += indents + "\t" + n->toCpp(data, indents + "\t");
 				if (n->needsSemiColon()) elseString += ";";
 				elseString += "\n";
 			}
 			elseString += indents + "}";
 		}
 
-		return indents + "if (" + condition_->toCpp(data, "") + ")\n"
+		return "if (" + condition_->toCpp(data, "") + ")\n"
 			+ indents + "{\n"
 			+ thenString
 			+ indents + "}"

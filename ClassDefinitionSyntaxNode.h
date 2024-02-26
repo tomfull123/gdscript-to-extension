@@ -47,7 +47,7 @@ public:
 		std::string staticVariableDefinitionString;
 
 		for (auto v : staticVariableDefinitions_)
-			staticVariableDefinitionString += indents + v->toCpp(data, "\t\t") + ";\n";
+			staticVariableDefinitionString += "\t\t" + v->toCpp(data, "\t\t") + ";\n";
 
 		std::string publicStaticFunctionDefinitionString;
 		std::string privateStaticFunctionDefinitionString;
@@ -70,14 +70,14 @@ public:
 
 		for (auto enumDef : enumDefinitions_)
 		{
-			enumDefString += enumDef->toCpp(data, "\t");
+			enumDefString += "\t" + enumDef->toCpp(data, "\t");
 			enumNames.push_back(enumDef->getName());
 		}
 
 		std::string memberVariableDefinitionString;
 
 		for (auto v : memberVariableDefinitions_)
-			memberVariableDefinitionString += indents + v->toCpp(data, "\t\t") + ";\n";
+			memberVariableDefinitionString += "\t\t" + v->toCpp(data, "\t\t") + ";\n";
 
 		std::string publicMemberFunctionDefinitionString;
 		std::string privateMemberFunctionDefinitionString;

@@ -16,7 +16,7 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return indents + "return " + value_->toCpp(data, "");
+		return "return " + value_->toCpp(data, "");
 	}
 
 private:

@@ -30,13 +30,13 @@ public:
 
 		for (auto v : values_)
 		{
-			valuesString += v->toCpp(data, indents) + ",\n";
+			valuesString += indents + "\t" + v->toCpp(data, indents) + ",\n";
 		}
 
 		return "enum " + name_->value + "\n"
-			"{\n"
-			+ valuesString +
-			"};\n";
+			+ indents + "{\n"
+			+ valuesString
+			+ indents + "};\n";
 	}
 
 private:

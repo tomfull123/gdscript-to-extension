@@ -28,7 +28,7 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		std::string code = indents;
+		std::string code;
 
 		if (!initialValue_ && !dataType_) code += "Variant";
 		else code += data->toCppType(dataType_);
