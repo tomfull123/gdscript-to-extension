@@ -175,10 +175,10 @@ private:
 
 		std::string code = indents;
 
-		if (isStatic) code += "ClassDB::bind_static_method";
-		else code += "ClassDB::bind_method";
+		if (isStatic) code += "ClassDB::bind_static_method(\"" + className + "\", ";
+		else code += "ClassDB::bind_method(";
 
-		return code + "(D_METHOD(\"" + functionName + "\"" + argsString + "), "
+		return code + "D_METHOD(\"" + functionName + "\"" + argsString + "), "
 			"&" + className + "::" + functionName + ");\n";
 	}
 
