@@ -8,6 +8,8 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"int", "int"},
 	{"float", "float"},
 	{"String", "String"},
+	{"bool", "bool"},
+	{"void", "void"},
 	{"InputMap", "InputMap::get_singleton()"},
 	{"Key", "Key"},
 	{"MouseButton", "MouseButton"},

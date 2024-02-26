@@ -46,7 +46,7 @@ public:
 			if (a < argDefs_.size() - 1) argsString += ", ";
 		}
 
-		return indents + returnType_->name + " " + name_->value + "(" + argsString + ")";
+		return indents + data->toCppType(returnType_) + " " + name_->value + "(" + argsString + ")";
 	}
 
 private:
