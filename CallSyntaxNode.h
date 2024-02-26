@@ -17,7 +17,7 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		std::string code = indents;
+		std::string code;
 
 		bool isConstructorCall = name_->value == "new";
 

@@ -21,10 +21,10 @@ public:
 		{
 			auto key = v.first;
 			auto value = v.second;
-			valuesString += "{" + key->toCpp(data, indents) + "," + value->toCpp(data, "") + "},\n";
+			valuesString += indents + "\t{" + key->toCpp(data, indents) + "," + value->toCpp(data, "") + "},\n";
 		}
 
-		return "{" + valuesString + "}";
+		return "{\n" + valuesString + indents + "}";
 	}
 
 private:

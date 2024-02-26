@@ -10,7 +10,7 @@ public:
 		parentInstance_(parentInstance)
 	{}
 
-	bool hasParent() const
+	bool hasParent() const override
 	{
 		if (parentInstance_) return true;
 		return false;

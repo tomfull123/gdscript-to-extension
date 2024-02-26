@@ -19,6 +19,9 @@
 #include "ArrayValueSyntaxNode.h"
 #include "EnumDefinitionSyntaxNode.h"
 #include "DictionaryValueSyntaxNode.h"
+#include "MathOperatorSyntaxNode.h"
+#include "PrefixOperator.h"
+#include "ValueIndexValue.h"
 
 struct Result
 {
@@ -485,8 +488,10 @@ private:
 			auto value = parseValueExpression();
 			if (value) values[key] = value;
 
+			if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
+
 			if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
-			else if (!isNextTokenType(TokenType::CloseSquareBracket)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+			else if (!isNextTokenType(TokenType::CloseCurlyBracketSeparator)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
 		}
 
 		next(); // eat }
@@ -514,6 +519,16 @@ private:
 		case TokenType::FalseKeyword: return parseBooleanLiteral();
 		case TokenType::OpenSquareBracket: return parseArrayValue();
 		case TokenType::OpenCurlyBracketSeparator: return parseDictionaryValue();
+		case TokenType::Operator:
+		{
+			if (value->value == "-")
+			{
+				auto operatorToken = next(); // eat -
+
+				return new PrefixOperator(operatorToken, parseSingleValueObject());
+			}
+			break;
+		}
 		}
 
 		return (ValueSyntaxNode*)addUnexpectedNextTokenError();
@@ -551,6 +566,29 @@ private:
 				continue;
 			}
 
+			// Math operators
+			if (isNextTokenType(TokenType::Operator))
+			{
+				Token* operatorToken = next();
+
+				ValueSyntaxNode* rhs = nullptr;
+
+				rhs = parseValueExpression();
+
+				if (!rhs) return (ValueSyntaxNode*)addUnexpectedTokenError(next());
+
+				lhs = new MathOperatorSyntaxNode(operatorToken, lhs, rhs);
+
+				continue;
+			}
+
+			if (bracketCount > 0 && isNextTokenType(TokenType::CloseBracketSeparator))
+			{
+				next(); // eat )
+				bracketCount--;
+				continue;
+			}
+
 			break;
 		}
 
@@ -578,73 +616,108 @@ private:
 		return new ContinueSyntaxNode();
 	}
 
+	ValueSyntaxNode* parseValueIndexValue(ValueSyntaxNode* variable)
+	{
+		if (isNextTokenType(TokenType::OpenSquareBracket))
+		{
+			next(); // eat [
+
+			ValueSyntaxNode* indexNode = parseValueExpression();
+
+			if (!isNextTokenType(TokenType::CloseSquareBracket)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+
+			next(); // eat ]
+
+			return new ValueIndexValue(variable, indexNode);
+		}
+
+		return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+	}
+
 	ValueSyntaxNode* parseVariableOrFunctionCall(bool asValue, ValueSyntaxNode* instance = nullptr)
 	{
 		auto name = consume(TokenType::Identifier);
 
 		if (!name) return nullptr;
 
-		if (isNextTokenType(TokenType::DotSeparator))
+		ValueSyntaxNode* variable = new VariableSyntaxNode(name, instance);
+
+		while (true)
 		{
-			next(); // eat .
+			if (variable == nullptr) return nullptr;
 
-			if (isNextTokenType(TokenType::Identifier))
+			if (isNextTokenType(TokenType::DotSeparator))
 			{
-				return parseVariableOrFunctionCall(asValue, new VariableSyntaxNode(name, instance));
-			}
-		}
+				next(); // eat .
 
-		// Function call
-		if (isNextTokenType(TokenType::OpenBracketSeparator))
-		{
-			next(); // eat (
-
-			std::vector<ValueSyntaxNode*> args;
-
-			while (!isNextTokenType(TokenType::CloseBracketSeparator))
-			{
-				auto e = parseValueExpression();
-				if (e)
+				if (isNextTokenType(TokenType::Identifier))
 				{
-					args.push_back(e);
-					if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
-					else if (!isNextTokenType(TokenType::CloseBracketSeparator)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
-				}
-				else
-				{
-					return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+					variable = parseVariableOrFunctionCall(asValue, variable);
+					continue;
 				}
 			}
 
-			if (!consume(TokenType::CloseBracketSeparator)) return nullptr;
-
-			auto call = new CallSyntaxNode(instance, name, args);
-
-			return call;
-		}
-
-		VariableSyntaxNode* variable = new VariableSyntaxNode(name, instance);
-
-		if (asValue)
-		{
-			return variable;
-		}
-		else
-		{
-			// Variable assignment
-			if (isNextTokenType(TokenType::AssignmentOperator))
+			// Function call
+			if (isNextTokenType(TokenType::OpenBracketSeparator))
 			{
-				next(); // eat =
+				next(); // eat (
 
-				ValueSyntaxNode* assignmentValue = parseValueExpression();
+				std::vector<ValueSyntaxNode*> args;
 
-				if (!assignmentValue) return nullptr;
+				while (!isNextTokenType(TokenType::CloseBracketSeparator))
+				{
+					auto e = parseValueExpression();
+					if (e)
+					{
+						args.push_back(e);
 
-				return new AssignmentSyntaxNode(variable, assignmentValue);
+						if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
+
+						if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
+						else if (!isNextTokenType(TokenType::CloseBracketSeparator)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+					}
+					else
+					{
+						return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+					}
+				}
+
+				if (!consume(TokenType::CloseBracketSeparator)) return nullptr;
+
+				variable = new CallSyntaxNode(instance, name, args);
+				continue;
 			}
+
+			if (isNextTokenType(TokenType::OpenSquareBracket))
+			{
+				variable = parseValueIndexValue(variable);
+				continue;
+			}
+
+			if (asValue)
+			{
+				break;
+			}
+			else
+			{
+				// Variable assignment
+				if (isNextTokenType(TokenType::AssignmentOperator))
+				{
+					next(); // eat =
+
+					ValueSyntaxNode* assignmentValue = parseValueExpression();
+
+					if (!assignmentValue) return nullptr;
+
+					variable = new AssignmentSyntaxNode(variable, assignmentValue);
+
+					continue;
+				}
+			}
+			break;
 		}
 
-		return nullptr;
+		return variable;
 	}
 
 	IfSyntaxNode* parseIfStatement()
@@ -680,6 +753,8 @@ private:
 				auto ex = parseExpression();
 				if (ex) elseExpressions.push_back(ex);
 			}
+
+			next(); // eat EndOfBlock
 		}
 
 		return new IfSyntaxNode(condition, thenExpressions, {});

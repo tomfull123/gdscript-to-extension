@@ -150,7 +150,9 @@
     <ClInclude Include="FunctionPrototypeSyntaxNode.h" />
     <ClInclude Include="IfSyntaxNode.h" />
     <ClInclude Include="LiteralValueSyntaxNode.h" />
+    <ClInclude Include="MathOperatorSyntaxNode.h" />
     <ClInclude Include="NotOperatorSyntaxNode.h" />
+    <ClInclude Include="PrefixOperator.h" />
     <ClInclude Include="ReturnSyntaxNode.h" />
     <ClInclude Include="InputStream.h" />
     <ClInclude Include="Lexer.h" />
@@ -158,6 +160,7 @@
     <ClInclude Include="ParserError.h" />
     <ClInclude Include="SyntaxNode.h" />
     <ClInclude Include="TokenStream.h" />
+    <ClInclude Include="ValueIndexValue.h" />
     <ClInclude Include="VariableDefinitionSyntaxNode.h" />
     <ClInclude Include="VariableSyntaxNode.h" />
   </ItemGroup>

@@ -31,7 +31,7 @@ public:
 		else code += data->toCppType(dataType_);
 		code += " " + name_->value;
 
-		if (initialValue_) code += " = " + initialValue_->toCpp(data, "");
+		if (initialValue_) code += " = " + initialValue_->toCpp(data, indents);
 
 		return code;
 	}

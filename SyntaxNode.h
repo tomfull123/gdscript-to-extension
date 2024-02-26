@@ -83,4 +83,8 @@ public:
 class ValueSyntaxNode : public SyntaxNode
 {
 public:
+	virtual bool hasParent() const
+	{
+		return false;
+	}
 };

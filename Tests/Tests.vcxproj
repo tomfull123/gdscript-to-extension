@@ -134,11 +134,14 @@
   <ItemGroup>
     <ClCompile Include="ArrayTests.cpp" />
     <ClCompile Include="ClassNameTests.cpp" />
+    <ClCompile Include="DictionaryTests.cpp" />
     <ClCompile Include="EnumDefinitionTests.cpp" />
     <ClCompile Include="FunctionDefinitionTests.cpp" />
     <ClCompile Include="IfTests.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MathOperatorTests.cpp" />
     <ClCompile Include="SignalTests.cpp" />
+    <ClCompile Include="VariableDefinitionTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TranspileTest.h" />

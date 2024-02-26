@@ -7,7 +7,7 @@ class AssignmentSyntaxNode : public ValueSyntaxNode
 {
 public:
 	AssignmentSyntaxNode(
-		VariableSyntaxNode* variable,
+		ValueSyntaxNode* variable,
 		ValueSyntaxNode* assignmentValue
 	) :
 		variable_(variable),
@@ -22,6 +22,6 @@ public:
 	}
 
 private:
-	VariableSyntaxNode* variable_;
+	ValueSyntaxNode* variable_;
 	ValueSyntaxNode* assignmentValue_;
 };

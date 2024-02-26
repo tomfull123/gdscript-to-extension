@@ -150,6 +150,7 @@ private:
 		'*',
 		'&',
 		'|',
+		'#',
 	};
 
 	static bool isIdentifierStart(const char& ch)
