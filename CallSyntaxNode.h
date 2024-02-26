@@ -15,6 +15,11 @@ public:
 		args_(args)
 	{}
 
+	std::string getName() override
+	{
+		return name_->value;
+	}
+
 	void hoist(CppData* data) override
 	{
 		if (instance_) instance_->hoist(data);

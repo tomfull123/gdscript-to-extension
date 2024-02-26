@@ -15,6 +15,11 @@ public:
 		rhs_(rhs)
 	{}
 
+	std::string getName() override
+	{
+		return "";
+	}
+
 	void hoist(CppData* data) override
 	{
 		lhs_->hoist(data);

@@ -13,6 +13,11 @@ public:
 		values_(values)
 	{}
 
+	std::string getName() override
+	{
+		return "";
+	}
+
 	void hoist(CppData* data) override
 	{
 		for (const auto& v : values_)

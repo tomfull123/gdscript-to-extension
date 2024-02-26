@@ -17,6 +17,11 @@ public:
 		return false;
 	}
 
+	std::string getName() override
+	{
+		return name_->value;
+	}
+
 	void hoist(CppData* data) override
 	{
 		if (parentInstance_) parentInstance_->hoist(data);
@@ -26,13 +31,19 @@ public:
 	{
 		std::string code;
 
-		if (parentInstance_) code += parentInstance_->toCpp(data, indents) + "->" + "set_";
+		if (parentInstance_)
+		{
+			auto parentEnumDef = data->enumDefinitions[parentInstance_->getName()];
+			if (parentEnumDef)
+				code += parentInstance_->toCpp(data, indents) + "::";
+			else
+				code += parentInstance_->toCpp(data, indents) + "->set_";
+		}
 
 		auto varDef = data->variableDefinitions[name_->value];
-		auto enumDef = data->enumDefinitions[name_->value];
 
 		// static call
-		if (!parentInstance_ && !varDef && !enumDef) code += data->toCppType(new Type(name_->value));
+		if (!parentInstance_ && !varDef) code += data->toCppType(new Type(name_->value));
 		else code += name_->value;
 
 		return code;

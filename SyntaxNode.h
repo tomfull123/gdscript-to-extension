@@ -65,6 +65,9 @@ struct CppData
 	{
 		if (!type) return "auto";
 
+		auto enumDef = enumDefinitions[type->name];
+		if (enumDef) return type->name;
+
 		auto it = GDTYPES_TO_CPPTYPES.find(type->name);
 
 		if (it != GDTYPES_TO_CPPTYPES.end())
@@ -114,4 +117,6 @@ public:
 	{
 		return false;
 	}
+
+	virtual std::string getName() = 0;
 };

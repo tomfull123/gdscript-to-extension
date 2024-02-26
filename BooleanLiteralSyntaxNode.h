@@ -10,6 +10,11 @@ public:
 		value_(value)
 	{}
 
+	std::string getName() override
+	{
+		return "";
+	}
+
 	void hoist(CppData* data) override
 	{
 	}

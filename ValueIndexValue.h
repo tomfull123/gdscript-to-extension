@@ -14,6 +14,11 @@ public:
 		index_(index)
 	{}
 
+	std::string getName() override
+	{
+		return "";
+	}
+
 	void hoist(CppData* data) override
 	{
 		variable_->hoist(data);

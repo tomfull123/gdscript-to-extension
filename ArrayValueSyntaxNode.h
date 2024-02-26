@@ -11,6 +11,11 @@ public:
 		expressions_(expressions)
 	{}
 
+	std::string getName() override
+	{
+		return "";
+	}
+
 	void hoist(CppData* data) override
 	{
 		for (auto e : expressions_) e->hoist(data);
