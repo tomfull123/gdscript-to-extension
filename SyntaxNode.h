@@ -11,6 +11,8 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"InputMap", "InputMap::get_singleton()"},
 	{"Key", "Key"},
 	{"MouseButton", "MouseButton"},
+	{"absf", "abs"},
+	{"absi", "abs"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {

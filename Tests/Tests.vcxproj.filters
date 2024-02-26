@@ -40,6 +40,9 @@
     <ClCompile Include="DictionaryTests.cpp">
       <Filter>Source Files\Transpile</Filter>
     </ClCompile>
+    <ClCompile Include="GodotTypeTests.cpp">
+      <Filter>Source Files\Transpile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TranspileTest.h">

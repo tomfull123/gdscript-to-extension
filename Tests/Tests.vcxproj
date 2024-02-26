@@ -137,6 +137,7 @@
     <ClCompile Include="DictionaryTests.cpp" />
     <ClCompile Include="EnumDefinitionTests.cpp" />
     <ClCompile Include="FunctionDefinitionTests.cpp" />
+    <ClCompile Include="GodotTypeTests.cpp" />
     <ClCompile Include="IfTests.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathOperatorTests.cpp" />
