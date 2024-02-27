@@ -164,7 +164,7 @@ private:
 			assignmentValue = parseValueExpression();
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue);
+		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, false);
 	}
 
 	FunctionPrototypeSyntaxNode* parseFunctionProtoype(bool isStatic)
@@ -273,7 +273,7 @@ private:
 			assignmentValue = parseValueExpression();
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue);
+		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->type == TokenType::ConstKeyword);
 	}
 
 	VariableDefinitionSyntaxNode* parseSignalDefinitions()
@@ -299,7 +299,7 @@ private:
 			next(); // eat )
 		}
 
-		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr);
+		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false);
 	}
 
 	void parseAnnotation()

@@ -8,11 +8,13 @@ public:
 	VariableDefinitionSyntaxNode(
 		Token* name,
 		Type* dataType,
-		ValueSyntaxNode* initialValue
+		ValueSyntaxNode* initialValue,
+		bool isConstant
 	) :
 		name_(name),
 		dataType_(dataType),
-		initialValue_(initialValue)
+		initialValue_(initialValue),
+		isConstant_(isConstant)
 	{
 	}
 
@@ -30,6 +32,8 @@ public:
 	{
 		std::string code;
 
+		if (isConstant_) code += "const ";
+
 		if (!initialValue_ && !dataType_) code += "Variant";
 		else code += data->toCppType(dataType_);
 		code += " " + name_->value;
@@ -43,4 +47,5 @@ private:
 	Token* name_;
 	Type* dataType_;
 	ValueSyntaxNode* initialValue_;
+	bool isConstant_;
 };
