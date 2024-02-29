@@ -136,7 +136,7 @@ private:
 			if (!consume(TokenType::CloseSquareBracket)) return nullptr;
 		}
 
-		return new Type(typeToken->value, subtype);
+		return new Type(typeToken->value, { subtype });
 	}
 
 	VariableDefinitionSyntaxNode* parseArgDefinition()

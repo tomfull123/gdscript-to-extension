@@ -42,14 +42,20 @@ struct Type
 {
 	Type(
 		const std::string& name,
-		Type* subtype = nullptr
+		const std::vector<Type*>& subtypes = {}
 	) :
 		name(name),
-		subtype(subtype)
+		subtypes(subtypes)
 	{}
 
+	Type* subtype(int index)
+	{
+		if (index >= subtypes.size()) return nullptr;
+		return subtypes[index];
+	}
+
 	std::string name;
-	Type* subtype;
+	std::vector<Type*> subtypes;
 };
 
 struct CppData;

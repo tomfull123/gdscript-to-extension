@@ -17,7 +17,7 @@ public:
 	Type* getType() override
 	{
 		auto varType = variable_->getType();
-		if (varType) return varType->subtype;
+		if (varType) return varType->subtype(0);
 		return nullptr;
 	}
 
