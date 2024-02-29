@@ -125,18 +125,19 @@ private:
 	Type* parseType()
 	{
 		const Token* typeToken = next();
-		Type* subtype = nullptr;
+		std::vector<Type*> subtypes = {};
 
 		if (isNextTokenType(TokenType::OpenSquareBracket))
 		{
 			next(); // eat [
 
-			subtype = parseType();
+			auto subtype = parseType();
+			if (subtype) subtypes.push_back(subtype);
 
 			if (!consume(TokenType::CloseSquareBracket)) return nullptr;
 		}
 
-		return new Type(typeToken->value, { subtype });
+		return new Type(typeToken->value, subtypes);
 	}
 
 	VariableDefinitionSyntaxNode* parseArgDefinition()

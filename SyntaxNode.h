@@ -14,6 +14,7 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"Key", "Key"},
 	{"MouseButton", "MouseButton"},
 	{"Color", "Color"},
+	{"Dictionary", "std::map"},
 };
 
 const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS = {
@@ -25,6 +26,8 @@ const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS =
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {
 	{"std::string", "<string>"},
+	{"std::map", "<map>"},
+	{"std::unordered_map", "<unordered_map>"},
 	{"RefCounted", "<godot_cpp/classes/ref.hpp>"},
 	{"InputMap::get_singleton()", "<godot_cpp/classes/input_map.hpp>"},
 	{"InputEventMouseButton", "<godot_cpp/classes/input_event_mouse_button.hpp>"},
@@ -112,6 +115,25 @@ struct CppData
 		if (it != GDTYPES_TO_CPPTYPES.end())
 		{
 			types.emplace(it->second);
+
+			std::string subtypesString;
+
+			if (!type->subtypes.empty())
+			{
+				subtypesString += "<";
+
+				auto lastIndex = type->subtypes.size() - 1;
+
+				for (int i = 0; i < type->subtypes.size(); i++)
+				{
+					const Type* subtype = type->subtypes[i];
+					subtypesString += subtype->name;
+
+					if (i < lastIndex) subtypesString += ", ";
+				}
+
+				subtypesString += ">";
+			}
 
 			return it->second;
 		}
