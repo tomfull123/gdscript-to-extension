@@ -36,7 +36,15 @@ public:
 
 		if (isConstant_) code += "const ";
 
-		if (!initialValue_ && !dataType_) code += "Variant";
+		if (!dataType_)
+		{
+			if (initialValue_)
+			{
+				auto valueType = initialValue_->getType();
+				code += data->toCppType(valueType);
+			}
+			else code += "Variant";
+		}
 		else code += data->toCppType(dataType_);
 		code += " " + name_->value;
 
