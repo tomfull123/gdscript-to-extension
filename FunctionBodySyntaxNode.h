@@ -12,6 +12,11 @@ public:
 		nodes_(nodes)
 	{}
 
+	void resolveTypes(CppData* data) override
+	{
+		for (auto n : nodes_) n->resolveTypes(data);
+	}
+
 	void hoist(CppData* data) override
 	{
 		for (auto n : nodes_) n->hoist(data);

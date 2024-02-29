@@ -6,6 +6,10 @@ class BreakSyntaxNode : public SyntaxNode
 {
 public:
 
+	void resolveTypes(CppData* data) override
+	{
+	}
+
 	void hoist(CppData* data) override
 	{
 	}

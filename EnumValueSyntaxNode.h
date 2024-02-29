@@ -9,6 +9,10 @@ public:
 		name_(name)
 	{}
 
+	void resolveTypes(CppData* data) override
+	{
+	}
+
 	void hoist(CppData* data) override
 	{
 	}

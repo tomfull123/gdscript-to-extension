@@ -21,11 +21,15 @@ public:
 		return "";
 	}
 
+	void resolveTypes(CppData* data) override
+	{
+	}
+
 	void hoist(CppData* data) override
 	{
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents)
+	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		if (value_) return "true";
 		return "false";

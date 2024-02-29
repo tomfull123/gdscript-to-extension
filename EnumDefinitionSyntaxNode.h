@@ -19,9 +19,15 @@ public:
 		return name_->value;
 	}
 
+	void resolveTypes(CppData* data) override
+	{
+		for (auto v : values_) v->resolveTypes(data);
+	}
+
 	void hoist(CppData* data) override
 	{
 		data->enumDefinitions[name_->value] = this;
+		for (auto v : values_) v->hoist(data);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override

@@ -21,6 +21,13 @@ public:
 		return false;
 	}
 
+	void resolveTypes(CppData* data) override
+	{
+		condition_->resolveTypes(data);
+		for (auto n : thenNodes_) n->resolveTypes(data);
+		for (auto n : elseNodes_) n->resolveTypes(data);
+	}
+
 	void hoist(CppData* data) override
 	{
 		condition_->hoist(data);

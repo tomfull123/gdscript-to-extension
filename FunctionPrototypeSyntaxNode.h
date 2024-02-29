@@ -35,6 +35,11 @@ public:
 		return name_->value[0] == '_';
 	}
 
+	void resolveTypes(CppData* data) override
+	{
+		for (auto a : argDefs_) a->resolveTypes(data);
+	}
+
 	void hoist(CppData* data) override
 	{
 		for (auto a : argDefs_) a->hoist(data);

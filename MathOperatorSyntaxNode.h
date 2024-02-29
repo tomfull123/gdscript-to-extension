@@ -26,6 +26,12 @@ public:
 		return "";
 	}
 
+	void resolveTypes(CppData* data) override
+	{
+		lhs_->resolveTypes(data);
+		rhs_->resolveTypes(data);
+	}
+
 	void hoist(CppData* data) override
 	{
 		lhs_->hoist(data);

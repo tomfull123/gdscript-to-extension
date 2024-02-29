@@ -21,6 +21,11 @@ public:
 		return "";
 	}
 
+	void resolveTypes(CppData* data) override
+	{
+		for (auto e : expressions_) e->resolveTypes(data);
+	}
+
 	void hoist(CppData* data) override
 	{
 		for (auto e : expressions_) e->hoist(data);

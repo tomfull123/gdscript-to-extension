@@ -9,6 +9,11 @@ public:
 		value_(value)
 	{}
 
+	void resolveTypes(CppData* data) override
+	{
+		value_->resolveTypes(data);
+	}
+
 	void hoist(CppData* data) override
 	{
 		value_->hoist(data);

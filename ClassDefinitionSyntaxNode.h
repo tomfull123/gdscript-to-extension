@@ -23,6 +23,15 @@ public:
 		staticVariableDefinitions_(staticVariableDefinitions)
 	{}
 
+	void resolveTypes(CppData* data) override
+	{
+		for (auto enumDef : enumDefinitions_) enumDef->resolveTypes(data);
+		for (auto v : staticVariableDefinitions_) v->resolveTypes(data);
+		for (auto f : staticFunctionDefinitions_) f->resolveTypes(data);
+		for (auto v : memberVariableDefinitions_) v->resolveTypes(data);
+		for (auto f : memberFunctionDefinitions_) f->resolveTypes(data);
+	}
+
 	void hoist(CppData* data) override
 	{
 		for (auto enumDef : enumDefinitions_) enumDef->hoist(data);

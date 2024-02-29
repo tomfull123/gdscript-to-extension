@@ -23,6 +23,10 @@ public:
 		return "";
 	}
 
+	void resolveTypes(CppData* data) override
+	{
+	}
+
 	void hoist(CppData* data) override
 	{
 	}

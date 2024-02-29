@@ -25,6 +25,10 @@ public:
 		return name_->value;
 	}
 
+	void resolveTypes(CppData* data) override
+	{
+	}
+
 	void hoist(CppData* data) override
 	{
 		data->variableDefinitions[name_->value] = this;

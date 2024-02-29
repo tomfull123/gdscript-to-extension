@@ -27,6 +27,11 @@ public:
 		return name_->value;
 	}
 
+	void resolveTypes(CppData* data) override
+	{
+		if (parentInstance_) parentInstance_->resolveTypes(data);
+	}
+
 	void hoist(CppData* data) override
 	{
 		if (parentInstance_) parentInstance_->hoist(data);

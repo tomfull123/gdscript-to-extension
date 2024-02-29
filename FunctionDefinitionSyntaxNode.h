@@ -29,6 +29,12 @@ public:
 		return prototype_->isPrivate();
 	}
 
+	void resolveTypes(CppData* data) override
+	{
+		prototype_->resolveTypes(data);
+		body_->resolveTypes(data);
+	}
+
 	void hoist(CppData* data) override
 	{
 		prototype_->hoist(data);

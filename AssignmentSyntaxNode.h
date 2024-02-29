@@ -24,6 +24,12 @@ public:
 		return "";
 	}
 
+	void resolveTypes(CppData* data) override
+	{
+		variable_->resolveTypes(data);
+		assignmentValue_->resolveTypes(data);
+	}
+
 	void hoist(CppData* data) override
 	{
 		variable_->hoist(data);
