@@ -11,6 +11,11 @@ public:
 		expressions_(expressions)
 	{}
 
+	Type* getType() override
+	{
+		return nullptr;
+	}
+
 	std::string getName() override
 	{
 		return "";

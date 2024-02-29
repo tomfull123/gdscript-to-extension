@@ -13,6 +13,11 @@ public:
 		type_(type)
 	{}
 
+	Type* getType() override
+	{
+		return type_;
+	}
+
 	std::string getName() override
 	{
 		return "";

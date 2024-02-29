@@ -75,6 +75,8 @@ public:
 		return false;
 	}
 
+	virtual Type* getType() = 0;
+
 	virtual std::string getName() = 0;
 };
 

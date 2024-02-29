@@ -12,8 +12,14 @@ public:
 	) :
 		operatorToken_(operatorToken),
 		lhs_(lhs),
-		rhs_(rhs)
+		rhs_(rhs),
+		type_(new Type("bool"))
 	{}
+
+	Type* getType() override
+	{
+		return type_;
+	}
 
 	std::string getName() override
 	{
@@ -35,4 +41,5 @@ private:
 	Token* operatorToken_;
 	ValueSyntaxNode* lhs_;
 	ValueSyntaxNode* rhs_;
+	Type* type_;
 };

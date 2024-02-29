@@ -14,6 +14,11 @@ public:
 		assignmentValue_(assignmentValue)
 	{}
 
+	Type* getType() override
+	{
+		return variable_->getType();
+	}
+
 	std::string getName() override
 	{
 		return "";

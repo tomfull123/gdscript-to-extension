@@ -13,6 +13,11 @@ public:
 		value_(value)
 	{}
 
+	Type* getType() override
+	{
+		return nullptr;
+	}
+
 	std::string getName() override
 	{
 		return "";

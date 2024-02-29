@@ -164,7 +164,7 @@ private:
 			assignmentValue = parseValueExpression();
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, false);
+		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, false, false);
 	}
 
 	FunctionPrototypeSyntaxNode* parseFunctionProtoype(bool isStatic)
@@ -246,7 +246,7 @@ private:
 		return consume(TokenType::Identifier);
 	}
 
-	VariableDefinitionSyntaxNode* parseVariableDefinition()
+	VariableDefinitionSyntaxNode* parseVariableDefinition(bool isClassMember)
 	{
 		auto varOrConst = next();
 
@@ -273,7 +273,7 @@ private:
 			assignmentValue = parseValueExpression();
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->type == TokenType::ConstKeyword);
+		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->type == TokenType::ConstKeyword, isClassMember);
 	}
 
 	VariableDefinitionSyntaxNode* parseSignalDefinitions()
@@ -299,7 +299,7 @@ private:
 			next(); // eat )
 		}
 
-		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false);
+		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false, true);
 	}
 
 	void parseAnnotation()
@@ -371,7 +371,7 @@ private:
 				break;
 			case TokenType::VarKeyword:
 			case TokenType::ConstKeyword:
-				memberVariableDefinitions.push_back(parseVariableDefinition());
+				memberVariableDefinitions.push_back(parseVariableDefinition(true));
 				break;
 			case TokenType::EndOfBlock:
 				endOfClass = true;
@@ -396,7 +396,7 @@ private:
 
 				if (isNextTokenType(TokenType::VarKeyword) || isNextTokenType(TokenType::ConstKeyword))
 				{
-					staticVariableDefinitions.push_back(parseVariableDefinition());
+					staticVariableDefinitions.push_back(parseVariableDefinition(false));
 					break;
 				}
 
@@ -777,7 +777,7 @@ private:
 			return parseIfStatement();
 		case TokenType::VarKeyword:
 		case TokenType::ConstKeyword:
-			return parseVariableDefinition();
+			return parseVariableDefinition(false);
 		case TokenType::PassKeyword:
 			next(); // eat pass
 			return nullptr;
@@ -786,7 +786,7 @@ private:
 		case TokenType::ForKeyword:
 			//return parseForLoop();
 		default:
-			return (SyntaxNode*)addUnexpectedNextTokenError();
+			return addUnexpectedNextTokenError();
 		}
 	}
 };

@@ -17,6 +17,11 @@ public:
 		return false;
 	}
 
+	Type* getType() override
+	{
+		return nullptr;
+	}
+
 	std::string getName() override
 	{
 		return name_->value;

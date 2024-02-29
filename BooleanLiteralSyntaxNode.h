@@ -7,8 +7,14 @@ class BooleanLiteralSyntaxNode : public ValueSyntaxNode
 public:
 	BooleanLiteralSyntaxNode(Token* token, bool value) :
 		token_(token),
-		value_(value)
+		value_(value),
+		type_(new Type("bool"))
 	{}
+
+	Type* getType() override
+	{
+		return type_;
+	}
 
 	std::string getName() override
 	{
@@ -28,4 +34,5 @@ public:
 private:
 	Token* token_;
 	bool value_;
+	Type* type_;
 };

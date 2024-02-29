@@ -9,12 +9,14 @@ public:
 		Token* name,
 		Type* dataType,
 		ValueSyntaxNode* initialValue,
-		bool isConstant
+		bool isConstant,
+		bool isClassMember
 	) :
 		name_(name),
 		dataType_(dataType),
 		initialValue_(initialValue),
-		isConstant_(isConstant)
+		isConstant_(isConstant),
+		isClassMember_(isClassMember)
 	{
 	}
 
@@ -48,4 +50,5 @@ private:
 	Type* dataType_;
 	ValueSyntaxNode* initialValue_;
 	bool isConstant_;
+	bool isClassMember_;
 };

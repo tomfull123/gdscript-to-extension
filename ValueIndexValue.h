@@ -14,6 +14,13 @@ public:
 		index_(index)
 	{}
 
+	Type* getType() override
+	{
+		auto varType = variable_->getType();
+		if (varType) return varType->subtype;
+		return nullptr;
+	}
+
 	std::string getName() override
 	{
 		return "";
