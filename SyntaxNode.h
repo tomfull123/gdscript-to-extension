@@ -145,7 +145,8 @@ struct CppData
 
 		types.emplace(type->name);
 
-		return "Ref<" + type->name + ">";
+		if (isGodotType(type->name)) return "Ref<" + type->name + ">";
+		return type->name;
 	}
 
 	std::string toCppFunction(const std::string& functionName)
