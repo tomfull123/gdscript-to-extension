@@ -92,10 +92,14 @@ public:
 			enumNames.push_back(enumDef->getName());
 		}
 
-		std::string memberVariableDefinitionString;
+		std::string privateMemberVariableDefinitionString;
+		std::string publicMemberVariableDefinitionString;
 
 		for (auto v : memberVariableDefinitions_)
-			memberVariableDefinitionString += "\t\t" + v->toCpp(data, "\t\t") + ";\n";
+		{
+			if (v->isPrivate()) privateMemberVariableDefinitionString += "\t\t" + v->toCpp(data, "\t\t") + ";\n";
+			else publicMemberVariableDefinitionString += "\t\t" + v->toCpp(data, "\t\t") + ";\n";
+		}
 
 		std::string publicMemberFunctionDefinitionString;
 		std::string privateMemberFunctionDefinitionString;
@@ -128,9 +132,10 @@ public:
 			"\t\tGDCLASS(" + className + ", " + inherits->name + ")\n"
 			"\tpublic:\n"
 			+ publicMemberFunctionDefinitionString
-			+ publicStaticFunctionDefinitionString +
+			+ publicStaticFunctionDefinitionString
+			+ publicMemberVariableDefinitionString +
 			"\tprivate:\n"
-			+ memberVariableDefinitionString +
+			+ privateMemberVariableDefinitionString +
 			"\n"
 			+ privateMemberFunctionDefinitionString
 			+ privateStaticFunctionDefinitionString +

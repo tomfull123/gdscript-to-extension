@@ -30,6 +30,11 @@ public:
 		return name_->value;
 	}
 
+	bool isPrivate() const
+	{
+		return name_->value[0] == '_';
+	}
+
 	void hoist(CppData* data) override
 	{
 		data->variableDefinitions[name_->value] = this;
