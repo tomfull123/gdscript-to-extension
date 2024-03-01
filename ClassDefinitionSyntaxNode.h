@@ -169,11 +169,8 @@ private:
 			std::unordered_set<std::string> includes;
 			for (const auto& type : types)
 			{
-				auto it = CPPTYPES_TO_INCLUDE_PATH.find(type);
-
-				if (it == CPPTYPES_TO_INCLUDE_PATH.end()) continue;
-
-				includes.emplace(it->second);
+				auto include = data->getIncludePath(type);
+				if (include != "") includes.emplace(include);
 			}
 
 			for (const auto& include : includes)

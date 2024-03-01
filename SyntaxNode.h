@@ -28,6 +28,9 @@ const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {
 	{"std::string", "<string>"},
 	{"std::map", "<map>"},
 	{"std::unordered_map", "<unordered_map>"},
+};
+
+const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = {
 	{"RefCounted", "<godot_cpp/classes/ref.hpp>"},
 	{"InputMap::get_singleton()", "<godot_cpp/classes/input_map.hpp>"},
 	{"InputEventMouseButton", "<godot_cpp/classes/input_event_mouse_button.hpp>"},
@@ -176,5 +179,24 @@ struct CppData
 		}
 
 		return name;
+	}
+
+	std::string getIncludePath(const std::string& type) const
+	{
+		auto it = CPPTYPES_TO_INCLUDE_PATH.find(type);
+
+		if (it != CPPTYPES_TO_INCLUDE_PATH.end()) return it->second;
+
+		auto git = GODOTTYPES_TO_INCLUDE_PATH.find(type);
+
+		if (git != GODOTTYPES_TO_INCLUDE_PATH.end()) return git->second;
+
+		return "";
+	}
+
+	bool isGodotType(const std::string& type) const
+	{
+		auto it = GODOTTYPES_TO_INCLUDE_PATH.find(type);
+		return (it != GODOTTYPES_TO_INCLUDE_PATH.end());
 	}
 };
