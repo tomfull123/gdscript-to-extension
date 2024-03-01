@@ -17,6 +17,7 @@ public:
 
 	Type* getType() override
 	{
+		if (type_) return type_;
 		return nullptr;
 	}
 
@@ -41,6 +42,10 @@ public:
 	{
 		if (instance_) instance_->resolveTypes(data);
 		for (auto a : args_) a->resolveTypes(data);
+
+		bool isConstructorCall = name_->value == "new";
+
+		if (isConstructorCall && instance_) type_ = new Type(instance_->getName());
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
@@ -78,4 +83,5 @@ private:
 	ValueSyntaxNode* instance_;
 	Token* name_;
 	std::vector<ValueSyntaxNode*> args_;
+	Type* type_ = nullptr;
 };

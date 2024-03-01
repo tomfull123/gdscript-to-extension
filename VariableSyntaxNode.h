@@ -19,6 +19,9 @@ public:
 
 	Type* getType() override
 	{
+		if (type_) return type_;
+		if (variableDefinition_) return type_ = variableDefinition_->getType();
+		if (enumDefinition_) return type_ = new Type(enumDefinition_->getName());
 		return nullptr;
 	}
 
@@ -34,7 +37,13 @@ public:
 
 	void resolveDefinitions(CppData* data) override
 	{
-		if (parentInstance_) parentInstance_->resolveDefinitions(data);
+		variableDefinition_ = data->variableDefinitions[name_->value];
+
+		if (parentInstance_)
+		{
+			parentInstance_->resolveDefinitions(data);
+			if (!variableDefinition_) enumDefinition_ = data->enumDefinitions[parentInstance_->getName()];
+		}
 	}
 
 	void resolveTypes(CppData* data) override
@@ -73,4 +82,7 @@ public:
 private:
 	Token* name_;
 	ValueSyntaxNode* parentInstance_;
+	Type* type_ = nullptr;
+	VariableDefinitionSyntaxNode* variableDefinition_ = nullptr;
+	EnumDefinitionSyntaxNode* enumDefinition_ = nullptr;
 };

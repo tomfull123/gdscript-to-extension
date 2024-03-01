@@ -11,11 +11,12 @@ public:
 		const std::map<ValueSyntaxNode*, ValueSyntaxNode*>& values
 	) :
 		values_(values)
-	{}
+	{
+	}
 
 	Type* getType() override
 	{
-		return nullptr;
+		return type_;
 	}
 
 	std::string getName() override
@@ -48,13 +49,22 @@ public:
 			v.first->resolveTypes(data);
 			v.second->resolveTypes(data);
 		}
+
+		if (!values_.empty())
+		{
+			std::vector<Type*> subtypes;
+			auto value = values_.begin();
+			subtypes.push_back(value->first->getType());
+			subtypes.push_back(value->second->getType());
+			type_ = new Type("Dictionary", subtypes);
+		}
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		std::string valuesString;
 
-		for (auto v : values_)
+		for (const auto& v : values_)
 		{
 			auto key = v.first;
 			auto value = v.second;
@@ -66,4 +76,5 @@ public:
 
 private:
 	std::map<ValueSyntaxNode*, ValueSyntaxNode*> values_;
+	Type* type_;
 };

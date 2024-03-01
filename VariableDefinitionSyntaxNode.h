@@ -20,6 +20,11 @@ public:
 	{
 	}
 
+	Type* getType()
+	{
+		return dataType_;
+	}
+
 	std::string getName() const
 	{
 		return name_->value;
@@ -33,7 +38,7 @@ public:
 
 	void resolveDefinitions(CppData* data) override
 	{
-		if (initialValue_) initialValue_->resolveTypes(data);
+		if (initialValue_) initialValue_->resolveDefinitions(data);
 	}
 
 	void resolveTypes(CppData* data) override

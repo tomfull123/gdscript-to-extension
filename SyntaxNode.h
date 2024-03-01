@@ -124,8 +124,6 @@ struct CppData
 
 			if (!type->subtypes.empty())
 			{
-				subtypesString += "<";
-
 				auto lastIndex = type->subtypes.size() - 1;
 
 				for (int i = 0; i < type->subtypes.size(); i++)
@@ -136,10 +134,10 @@ struct CppData
 					if (i < lastIndex) subtypesString += ", ";
 				}
 
-				subtypesString += ">";
+				subtypesString = "<" + subtypesString + ">";
 			}
 
-			return it->second;
+			return it->second + subtypesString;
 		}
 
 		types.emplace(type->name);
