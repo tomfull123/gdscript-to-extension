@@ -6,11 +6,15 @@ class ContinueSyntaxNode : public SyntaxNode
 {
 public:
 
-	void resolveTypes(CppData* data) override
+	void hoist(CppData* data) override
 	{
 	}
 
-	void hoist(CppData* data) override
+	void resolveDefinitions(CppData* data) override
+	{
+	}
+
+	void resolveTypes(CppData* data) override
 	{
 	}
 

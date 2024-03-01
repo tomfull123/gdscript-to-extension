@@ -35,14 +35,19 @@ public:
 		return name_->value[0] == '_';
 	}
 
-	void resolveTypes(CppData* data) override
-	{
-		for (auto a : argDefs_) a->resolveTypes(data);
-	}
-
 	void hoist(CppData* data) override
 	{
 		for (auto a : argDefs_) a->hoist(data);
+	}
+
+	void resolveDefinitions(CppData* data) override
+	{
+		for (auto a : argDefs_) a->resolveDefinitions(data);
+	}
+
+	void resolveTypes(CppData* data) override
+	{
+		for (auto a : argDefs_) a->resolveTypes(data);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override

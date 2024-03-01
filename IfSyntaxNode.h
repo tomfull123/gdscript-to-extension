@@ -21,18 +21,25 @@ public:
 		return false;
 	}
 
-	void resolveTypes(CppData* data) override
-	{
-		condition_->resolveTypes(data);
-		for (auto n : thenNodes_) n->resolveTypes(data);
-		for (auto n : elseNodes_) n->resolveTypes(data);
-	}
-
 	void hoist(CppData* data) override
 	{
 		condition_->hoist(data);
 		for (auto n : thenNodes_) n->hoist(data);
 		for (auto n : elseNodes_) n->hoist(data);
+	}
+
+	void resolveDefinitions(CppData* data) override
+	{
+		condition_->resolveDefinitions(data);
+		for (auto n : thenNodes_) n->resolveDefinitions(data);
+		for (auto n : elseNodes_) n->resolveDefinitions(data);
+	}
+
+	void resolveTypes(CppData* data) override
+	{
+		condition_->resolveTypes(data);
+		for (auto n : thenNodes_) n->resolveTypes(data);
+		for (auto n : elseNodes_) n->resolveTypes(data);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override

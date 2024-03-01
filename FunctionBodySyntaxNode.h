@@ -12,14 +12,19 @@ public:
 		nodes_(nodes)
 	{}
 
-	void resolveTypes(CppData* data) override
-	{
-		for (auto n : nodes_) n->resolveTypes(data);
-	}
-
 	void hoist(CppData* data) override
 	{
 		for (auto n : nodes_) n->hoist(data);
+	}
+
+	void resolveDefinitions(CppData* data) override
+	{
+		for (auto n : nodes_) n->resolveDefinitions(data);
+	}
+
+	void resolveTypes(CppData* data) override
+	{
+		for (auto n : nodes_) n->resolveTypes(data);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override

@@ -18,6 +18,8 @@ struct TranspileTest : testing::Test
 		{
 			CppData data("Test");
 			c->hoist(&data);
+			c->resolveDefinitions(&data);
+			c->resolveTypes(&data);
 			return c->toCpp(&data, "");
 		}
 	}

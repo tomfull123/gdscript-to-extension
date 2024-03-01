@@ -45,6 +45,8 @@ int main(int argc, char* argv[])
 		{
 			auto data = CppData(fileName);
 			c->hoist(&data);
+			c->resolveDefinitions(&data);
+			c->resolveTypes(&data);
 			std::string classCode = c->toCpp(&data, "");
 			std::ofstream headerFile(filePathWithoutExtension + ".h");
 			headerFile << classCode;

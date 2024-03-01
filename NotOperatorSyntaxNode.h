@@ -25,14 +25,19 @@ public:
 		return "";
 	}
 
-	void resolveTypes(CppData* data) override
-	{
-		value_->resolveTypes(data);
-	}
-
 	void hoist(CppData* data) override
 	{
 		value_->hoist(data);
+	}
+
+	void resolveDefinitions(CppData* data) override
+	{
+		value_->resolveDefinitions(data);
+	}
+
+	void resolveTypes(CppData* data) override
+	{
+		value_->resolveTypes(data);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override

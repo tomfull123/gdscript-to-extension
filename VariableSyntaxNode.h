@@ -27,14 +27,19 @@ public:
 		return name_->value;
 	}
 
-	void resolveTypes(CppData* data) override
-	{
-		if (parentInstance_) parentInstance_->resolveTypes(data);
-	}
-
 	void hoist(CppData* data) override
 	{
 		if (parentInstance_) parentInstance_->hoist(data);
+	}
+
+	void resolveDefinitions(CppData* data) override
+	{
+		if (parentInstance_) parentInstance_->resolveDefinitions(data);
+	}
+
+	void resolveTypes(CppData* data) override
+	{
+		if (parentInstance_) parentInstance_->resolveTypes(data);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override

@@ -26,16 +26,22 @@ public:
 		return "";
 	}
 
-	void resolveTypes(CppData* data) override
-	{
-		lhs_->resolveTypes(data);
-		rhs_->resolveTypes(data);
-	}
-
 	void hoist(CppData* data) override
 	{
 		lhs_->hoist(data);
 		rhs_->hoist(data);
+	}
+
+	void resolveDefinitions(CppData* data) override
+	{
+		lhs_->resolveDefinitions(data);
+		rhs_->resolveDefinitions(data);
+	}
+
+	void resolveTypes(CppData* data) override
+	{
+		lhs_->resolveTypes(data);
+		rhs_->resolveTypes(data);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override

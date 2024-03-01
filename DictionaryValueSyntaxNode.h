@@ -23,21 +23,30 @@ public:
 		return "";
 	}
 
-	void resolveTypes(CppData* data) override
-	{
-		for (const auto& v : values_)
-		{
-			v.first->resolveTypes(data);
-			v.second->resolveTypes(data);
-		}
-	}
-
 	void hoist(CppData* data) override
 	{
 		for (const auto& v : values_)
 		{
 			v.first->hoist(data);
 			v.second->hoist(data);
+		}
+	}
+
+	void resolveDefinitions(CppData* data) override
+	{
+		for (const auto& v : values_)
+		{
+			v.first->resolveDefinitions(data);
+			v.second->resolveDefinitions(data);
+		}
+	}
+
+	void resolveTypes(CppData* data) override
+	{
+		for (const auto& v : values_)
+		{
+			v.first->resolveTypes(data);
+			v.second->resolveTypes(data);
 		}
 	}
 

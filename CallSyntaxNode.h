@@ -25,16 +25,22 @@ public:
 		return name_->value;
 	}
 
-	void resolveTypes(CppData* data) override
-	{
-		if (instance_) instance_->resolveTypes(data);
-		for (auto a : args_) a->resolveTypes(data);
-	}
-
 	void hoist(CppData* data) override
 	{
 		if (instance_) instance_->hoist(data);
 		for (auto a : args_) a->hoist(data);
+	}
+
+	void resolveDefinitions(CppData* data) override
+	{
+		if (instance_) instance_->resolveDefinitions(data);
+		for (auto a : args_) a->resolveDefinitions(data);
+	}
+
+	void resolveTypes(CppData* data) override
+	{
+		if (instance_) instance_->resolveTypes(data);
+		for (auto a : args_) a->resolveTypes(data);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override

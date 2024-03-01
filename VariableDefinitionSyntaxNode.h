@@ -25,15 +25,20 @@ public:
 		return name_->value;
 	}
 
-	void resolveTypes(CppData* data) override
-	{
-		if (initialValue_) initialValue_->resolveTypes(data);
-	}
-
 	void hoist(CppData* data) override
 	{
 		data->variableDefinitions[name_->value] = this;
 		if (initialValue_) initialValue_->hoist(data);
+	}
+
+	void resolveDefinitions(CppData* data) override
+	{
+		if (initialValue_) initialValue_->resolveTypes(data);
+	}
+
+	void resolveTypes(CppData* data) override
+	{
+		if (initialValue_) initialValue_->resolveTypes(data);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override

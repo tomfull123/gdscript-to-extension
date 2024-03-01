@@ -29,16 +29,22 @@ public:
 		return prototype_->isPrivate();
 	}
 
-	void resolveTypes(CppData* data) override
-	{
-		prototype_->resolveTypes(data);
-		body_->resolveTypes(data);
-	}
-
 	void hoist(CppData* data) override
 	{
 		prototype_->hoist(data);
 		body_->hoist(data);
+	}
+
+	void resolveDefinitions(CppData* data) override
+	{
+		prototype_->resolveDefinitions(data);
+		body_->resolveDefinitions(data);
+	}
+
+	void resolveTypes(CppData* data) override
+	{
+		prototype_->resolveTypes(data);
+		body_->resolveTypes(data);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
