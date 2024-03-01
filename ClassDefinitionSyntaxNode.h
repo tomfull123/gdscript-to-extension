@@ -121,7 +121,8 @@ public:
 			+ cppIncludes(data) +
 			"namespace godot\n"
 			"{\n"
-			+ enumDefString +
+			+ enumDefString
+			+ staticVariableDefinitionString +
 			"\tclass " + className + " : public " + inherits->name + "\n"
 			"\t{\n"
 			"\t\tGDCLASS(" + className + ", " + inherits->name + ")\n"
@@ -129,8 +130,7 @@ public:
 			+ publicMemberFunctionDefinitionString
 			+ publicStaticFunctionDefinitionString +
 			"\tprivate:\n"
-			+ memberVariableDefinitionString
-			+ staticVariableDefinitionString +
+			+ memberVariableDefinitionString +
 			"\n"
 			+ privateMemberFunctionDefinitionString
 			+ privateStaticFunctionDefinitionString +
