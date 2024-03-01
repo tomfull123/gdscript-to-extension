@@ -163,7 +163,7 @@ struct CppData
 		return functionName;
 	}
 
-	std::string toWrappedCppFunction(ValueSyntaxNode* parentInstance, Token* nameToken)
+	std::string toWrappedCppFunction(ValueSyntaxNode* parentInstance, Token* nameToken) const
 	{
 		std::string name = nameToken->value;
 
