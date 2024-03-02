@@ -23,6 +23,7 @@
 #include "PrefixOperator.h"
 #include "ValueIndexValue.h"
 #include "PreloadSyntaxNode.h"
+#include "BooleanOperatorSyntaxNode.h"
 
 struct Result
 {
@@ -607,10 +608,20 @@ private:
 
 				rhs = parseValueExpression();
 
-				if (!rhs) return (ValueSyntaxNode*)addUnexpectedTokenError(next());
+				if (!rhs) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
 
 				lhs = new MathOperatorSyntaxNode(operatorToken, lhs, rhs);
 
+				continue;
+			}
+
+			if (isNextTokenType(TokenType::AndOperator) || isNextTokenType(TokenType::OrOperator))
+			{
+				auto booleanOperator = next(); // eat && or ||
+
+				ValueSyntaxNode* rhs = parseValueExpression();
+
+				lhs = new BooleanOperatorSyntaxNode(booleanOperator, lhs, rhs);
 				continue;
 			}
 
