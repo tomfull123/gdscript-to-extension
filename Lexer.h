@@ -30,6 +30,7 @@ enum class TokenType
 	ContinueKeyword,
 	PassKeyword,
 	SignalKeyword,
+	PreloadKeyword,
 
 	FloatLiteral,
 	IntLiteral,
@@ -195,6 +196,7 @@ private:
 		if (value == "continue") return TokenType::ContinueKeyword;
 		if (value == "pass") return TokenType::PassKeyword;
 		if (value == "signal") return TokenType::SignalKeyword;
+		if (value == "preload") return TokenType::PreloadKeyword;
 
 		return TokenType::Identifier;
 	}

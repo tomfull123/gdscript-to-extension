@@ -153,6 +153,7 @@
     <ClInclude Include="MathOperatorSyntaxNode.h" />
     <ClInclude Include="NotOperatorSyntaxNode.h" />
     <ClInclude Include="PrefixOperator.h" />
+    <ClInclude Include="PreloadSyntaxNode.h" />
     <ClInclude Include="ReturnSyntaxNode.h" />
     <ClInclude Include="InputStream.h" />
     <ClInclude Include="Lexer.h" />

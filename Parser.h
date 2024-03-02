@@ -22,6 +22,7 @@
 #include "MathOperatorSyntaxNode.h"
 #include "PrefixOperator.h"
 #include "ValueIndexValue.h"
+#include "PreloadSyntaxNode.h"
 
 struct Result
 {
@@ -515,6 +516,19 @@ private:
 		return new DictionaryValueSyntaxNode(values);
 	}
 
+	ValueSyntaxNode* parsePreload()
+	{
+		if (!consume(TokenType::PreloadKeyword)) return nullptr;
+		if (!consume(TokenType::OpenBracketSeparator)) return nullptr;
+		auto preloadPath = consume(TokenType::StringLiteral);
+
+		if (!preloadPath) return nullptr;
+
+		if (!consume(TokenType::CloseBracketSeparator)) return nullptr;
+
+		return new PreloadSyntaxNode(preloadPath);
+	}
+
 	ValueSyntaxNode* parseSingleValueObject()
 	{
 		Token* value = peek();
@@ -545,6 +559,8 @@ private:
 			}
 			break;
 		}
+		case TokenType::PreloadKeyword:
+			return parsePreload();
 		}
 
 		return (ValueSyntaxNode*)addUnexpectedNextTokenError();

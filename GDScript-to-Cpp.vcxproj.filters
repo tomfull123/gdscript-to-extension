@@ -122,5 +122,8 @@
     <ClInclude Include="ValueIndexValue.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
+    <ClInclude Include="PreloadSyntaxNode.h">
+      <Filter>Header Files\SyntaxNodes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
