@@ -11,22 +11,26 @@ public:
 
 	void hoist(CppData* data) override
 	{
-		value_->hoist(data);
+		if (value_) value_->hoist(data);
 	}
 
 	void resolveDefinitions(CppData* data) override
 	{
-		value_->resolveDefinitions(data);
+		if (value_) value_->resolveDefinitions(data);
 	}
 
 	void resolveTypes(CppData* data) override
 	{
-		value_->resolveTypes(data);
+		if (value_) value_->resolveTypes(data);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return "return " + value_->toCpp(data, "");
+		std::string code = "return";
+
+		if (value_) code += " " + value_->toCpp(data, "");
+
+		return code;
 	}
 
 private:

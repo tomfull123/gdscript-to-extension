@@ -642,7 +642,14 @@ private:
 	{
 		if (!consume(TokenType::ReturnKeyword)) return nullptr;
 
-		return new ReturnSyntaxNode(parseValueExpression());
+		ValueSyntaxNode* value = nullptr;
+
+		if (!isNextTokenType(TokenType::EndOfBlock))
+		{
+			value = parseValueExpression();
+		}
+
+		return new ReturnSyntaxNode(value);
 	}
 
 	BreakSyntaxNode* parseBreakStatement()
