@@ -305,11 +305,14 @@ private:
 
 	void parseAnnotation()
 	{
-		next(); // eat warning_ignore
+		next(); // eat warning_ignore or tool
 
-		if (!consume(TokenType::OpenBracketSeparator)) return;
-		if (!consume(TokenType::StringLiteral)) return;
-		if (!consume(TokenType::CloseBracketSeparator)) return;
+		if (isNextTokenType(TokenType::OpenBracketSeparator))
+		{
+			if (!consume(TokenType::OpenBracketSeparator)) return;
+			if (!consume(TokenType::StringLiteral)) return;
+			if (!consume(TokenType::CloseBracketSeparator)) return;
+		}
 	}
 
 	EnumValueSyntaxNode* parseEnumValueDefinition()
@@ -347,9 +350,17 @@ private:
 		return new EnumDefinitionSyntaxNode(name, values);
 	}
 
+	Token* parseExtends()
+	{
+		consume(TokenType::ExtendsKeyword); // eat extends
+
+		return consume(TokenType::Identifier);
+	}
+
 	ClassDefinitionSyntaxNode* parseScriptBody()
 	{
 		Token* name = nullptr;
+		Token* extends = nullptr;
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
 		std::vector<EnumDefinitionSyntaxNode*> enumDefinitions;
@@ -366,6 +377,9 @@ private:
 			{
 			case TokenType::ClassNameKeyword:
 				name = parseClassName();
+				break;
+			case TokenType::ExtendsKeyword:
+				extends = parseExtends();
 				break;
 			case TokenType::FuncKeyword:
 				memberFunctionDefinitions.push_back(parseFunction(false));
@@ -411,6 +425,7 @@ private:
 
 		return new ClassDefinitionSyntaxNode(
 			name,
+			extends,
 			memberFunctionDefinitions,
 			memberVariableDefinitions,
 			enumDefinitions,

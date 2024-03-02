@@ -133,7 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ArrayTests.cpp" />
-    <ClCompile Include="ClassNameTests.cpp" />
+    <ClCompile Include="ClassTests.cpp" />
     <ClCompile Include="DictionaryTests.cpp" />
     <ClCompile Include="EnumDefinitionTests.cpp" />
     <ClCompile Include="FunctionDefinitionTests.cpp" />

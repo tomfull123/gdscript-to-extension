@@ -13,7 +13,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ClassNameTests.cpp">
+    <ClCompile Include="ClassTests.cpp">
       <Filter>Source Files\Transpile</Filter>
     </ClCompile>
     <ClCompile Include="FunctionDefinitionTests.cpp">

@@ -9,6 +9,7 @@ class ClassDefinitionSyntaxNode : public SyntaxNode
 public:
 	ClassDefinitionSyntaxNode(
 		Token* name,
+		Token* extends,
 		const std::vector<FunctionDefinitionSyntaxNode*>& memberFunctionDefinitions,
 		const std::vector<VariableDefinitionSyntaxNode*>& memberVariableDefinitions,
 		const std::vector<EnumDefinitionSyntaxNode*>& enumDefinitions,
@@ -16,6 +17,7 @@ public:
 		const std::vector<VariableDefinitionSyntaxNode*>& staticVariableDefinitions
 	) :
 		name_(name),
+		extends_(extends),
 		memberFunctionDefinitions_(memberFunctionDefinitions),
 		memberVariableDefinitions_(memberVariableDefinitions),
 		enumDefinitions_(enumDefinitions),
@@ -117,7 +119,10 @@ public:
 			}
 		}
 
-		Type* inherits = new Type("RefCounted");
+		Type* inherits;
+
+		if (extends_) inherits = new Type(extends_->value);
+		else inherits = new Type("RefCounted");
 
 		data->toCppType(inherits);
 
@@ -152,6 +157,7 @@ public:
 
 private:
 	Token* name_;
+	Token* extends_;
 	std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions_;
 	std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions_;
 	std::vector<EnumDefinitionSyntaxNode*> enumDefinitions_;
