@@ -38,6 +38,9 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"MouseButton", "<godot_cpp/classes/input_event_mouse_button.hpp>"},
 	{"FastNoiseLite", "<godot_cpp/classes/fast_noise_lite.hpp>"},
 	{"Signal", "<godot_cpp/classes/ref.hpp>"},
+	{"ArrayMesh", "<godot_cpp/classes/array_mesh.hpp>"},
+	{"SurfaceTool", "<godot_cpp/classes/surface_tool.hpp>"},
+	{"Curve", "<godot_cpp/classes/curve.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
