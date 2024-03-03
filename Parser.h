@@ -24,6 +24,7 @@
 #include "ValueIndexValue.h"
 #include "PreloadSyntaxNode.h"
 #include "BooleanOperatorSyntaxNode.h"
+#include "WhileSyntaxNode.h"
 
 struct Result
 {
@@ -810,6 +811,25 @@ private:
 		return new IfSyntaxNode(condition, thenExpressions, {});
 	}
 
+	WhileSyntaxNode* parseWhileLoop()
+	{
+		consume(TokenType::WhileKeyword);
+
+		auto condition = parseValueExpression();
+
+		if (!consume(TokenType::ColonSeparator)) return nullptr;
+
+		std::vector<SyntaxNode*> expressions;
+
+		while (!isNextTokenType(TokenType::EndOfBlock))
+		{
+			auto ex = parseExpression();
+			if (ex) expressions.push_back(ex);
+		}
+
+		return new WhileSyntaxNode(condition, expressions);
+	}
+
 	SyntaxNode* parseExpression()
 	{
 		const Token* t = stream_.peek();
@@ -832,7 +852,7 @@ private:
 			next(); // eat pass
 			return nullptr;
 		case TokenType::WhileKeyword:
-			//return parseWhileLoop();
+			return parseWhileLoop();
 		case TokenType::ForKeyword:
 			//return parseForLoop();
 		default:

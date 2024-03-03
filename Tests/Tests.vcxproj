@@ -143,6 +143,7 @@
     <ClCompile Include="MathOperatorTests.cpp" />
     <ClCompile Include="SignalTests.cpp" />
     <ClCompile Include="VariableDefinitionTests.cpp" />
+    <ClCompile Include="WhileLoopTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TranspileTest.h" />
