@@ -21,16 +21,19 @@ public:
 
 	void hoist(CppData* data) override
 	{
+		condition_->hoist(data);
 		for (auto n : nodes_) n->hoist(data);
 	}
 
 	void resolveDefinitions(CppData* data) override
 	{
+		condition_->resolveDefinitions(data);
 		for (auto n : nodes_) n->resolveDefinitions(data);
 	}
 
 	void resolveTypes(CppData* data) override
 	{
+		condition_->resolveTypes(data);
 		for (auto n : nodes_) n->resolveTypes(data);
 	}
 

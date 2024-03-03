@@ -146,6 +146,7 @@
     <ClInclude Include="EnumValueSyntaxNode.h" />
     <ClInclude Include="EqualityOperatorSyntaxNode.h" />
     <ClInclude Include="FileIO.h" />
+    <ClInclude Include="ForSyntaxNode.h" />
     <ClInclude Include="FunctionBodySyntaxNode.h" />
     <ClInclude Include="FunctionDefinitionSyntaxNode.h" />
     <ClInclude Include="FunctionPrototypeSyntaxNode.h" />

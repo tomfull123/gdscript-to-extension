@@ -46,6 +46,9 @@
     <ClCompile Include="WhileLoopTests.cpp">
       <Filter>Source Files\Transpile</Filter>
     </ClCompile>
+    <ClCompile Include="ForLoopTests.cpp">
+      <Filter>Source Files\Transpile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TranspileTest.h">

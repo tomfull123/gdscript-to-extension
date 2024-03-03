@@ -25,6 +25,7 @@
 #include "PreloadSyntaxNode.h"
 #include "BooleanOperatorSyntaxNode.h"
 #include "WhileSyntaxNode.h"
+#include "ForSyntaxNode.h"
 
 struct Result
 {
@@ -446,6 +447,7 @@ private:
 		{
 		case TokenType::IntLiteral: return new LiteralValueSyntaxNode(value, new Type("int"));
 		case TokenType::FloatLiteral: return new LiteralValueSyntaxNode(value, new Type("float"));
+		case TokenType::StringLiteral: return new LiteralValueSyntaxNode(value, new Type("string"));
 		}
 
 		return (LiteralValueSyntaxNode*)addUnexpectedTokenError(value);
@@ -540,6 +542,7 @@ private:
 		{
 		case TokenType::IntLiteral:
 		case TokenType::FloatLiteral:
+		case TokenType::StringLiteral:
 		{
 			auto literalValue = parseLiteralValue();
 
@@ -830,6 +833,27 @@ private:
 		return new WhileSyntaxNode(condition, expressions);
 	}
 
+	ForSyntaxNode* parseForLoop()
+	{
+		consume(TokenType::ForKeyword);
+
+		auto variableToken = consume(TokenType::Identifier);
+
+		if (!variableToken) return nullptr;
+
+		if (!consume(TokenType::InKeyword)) return nullptr;
+
+		auto arrayToken = parseValueExpression();
+
+		if (!arrayToken) return nullptr;
+
+		if (!consume(TokenType::ColonSeparator)) return nullptr;
+
+		auto body = parseFunctionBody();
+
+		return new ForSyntaxNode(variableToken, arrayToken, body);
+	}
+
 	SyntaxNode* parseExpression()
 	{
 		const Token* t = stream_.peek();
@@ -854,7 +878,7 @@ private:
 		case TokenType::WhileKeyword:
 			return parseWhileLoop();
 		case TokenType::ForKeyword:
-			//return parseForLoop();
+			return parseForLoop();
 		default:
 			return addUnexpectedNextTokenError();
 		}
