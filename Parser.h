@@ -193,8 +193,12 @@ private:
 			{
 				argDefs.push_back(argDef);
 
+				if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
+
 				if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
 				else if (!isNextTokenType(TokenType::CloseBracketSeparator)) return (FunctionPrototypeSyntaxNode*)addUnexpectedNextTokenError();
+
+				if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
 			}
 			else
 			{
@@ -487,8 +491,12 @@ private:
 			auto ex = parseValueExpression();
 			if (ex) expressions.push_back(ex);
 
+			if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
+
 			if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
 			else if (!isNextTokenType(TokenType::CloseSquareBracket)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+			
+			if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
 		}
 
 		next(); // eat ]
@@ -739,6 +747,8 @@ private:
 
 						if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
 						else if (!isNextTokenType(TokenType::CloseBracketSeparator)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+
+						if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
 					}
 					else
 					{
