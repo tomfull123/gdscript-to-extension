@@ -26,6 +26,7 @@
 #include "BooleanOperatorSyntaxNode.h"
 #include "WhileSyntaxNode.h"
 #include "ForSyntaxNode.h"
+#include "NullSyntaxNode.h"
 
 struct Result
 {
@@ -533,6 +534,13 @@ private:
 		return new PreloadSyntaxNode(preloadPath);
 	}
 
+	NullSyntaxNode* parseNullValue()
+	{
+		if (!consume(TokenType::NullKeyword)) return nullptr;
+
+		return new NullSyntaxNode();
+	}
+
 	ValueSyntaxNode* parseSingleValueObject()
 	{
 		Token* value = peek();
@@ -566,6 +574,8 @@ private:
 		}
 		case TokenType::PreloadKeyword:
 			return parsePreload();
+		case TokenType::NullKeyword:
+			return parseNullValue();
 		}
 
 		return (ValueSyntaxNode*)addUnexpectedNextTokenError();
