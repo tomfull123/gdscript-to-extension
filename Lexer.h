@@ -416,6 +416,9 @@ private:
 
 		Token* token = new Token();
 
+		token->lineNumber = inputStream_.getLineNumber();
+		token->columnNumber = inputStream_.getColumnNumber();
+
 		token->type = TokenType::EndOfBlock;
 
 		return token;
