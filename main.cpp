@@ -21,6 +21,12 @@ int main(int argc, char* argv[])
 
 	FileIO file(filePath);
 
+	if (!file.isOpen())
+	{
+		std::cout << "File not found" << std::endl;
+		return 1;
+	}
+
 	std::string allLines;
 
 	file.readAllLines(allLines);

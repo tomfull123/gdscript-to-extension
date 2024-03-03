@@ -9,6 +9,11 @@ public:
 	explicit FileIO(const std::string& filePath);
 	~FileIO();
 
+	bool isOpen() const
+	{
+		return file_.is_open();
+	}
+
 	int getSize();
 
 	std::string readAllLines();
