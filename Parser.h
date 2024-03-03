@@ -27,6 +27,7 @@
 #include "WhileSyntaxNode.h"
 #include "ForSyntaxNode.h"
 #include "NullSyntaxNode.h"
+#include "BitwiseOperatorSyntaxNode.h"
 
 struct Result
 {
@@ -785,6 +786,33 @@ private:
 
 					variable = new AssignmentSyntaxNode(variable, assignmentValue);
 
+					continue;
+				}
+
+				// Math operators
+				if (isNextTokenType(TokenType::Operator))
+				{
+					Token* operatorToken = next();
+
+					ValueSyntaxNode* rhs = nullptr;
+
+					rhs = parseValueExpression();
+
+					if (!rhs) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+
+					variable = new MathOperatorSyntaxNode(operatorToken, variable, rhs);
+
+					continue;
+				}
+
+				// bitwise operators
+				if (isNextTokenType(TokenType::LogicalOrOperator) || isNextTokenType(TokenType::LogicalOrAssignOperator))
+				{
+					auto operatorToken = next(); // eat | or |=
+
+					ValueSyntaxNode* rhs = parseValueExpression();
+
+					variable = new BitwiseOperatorSyntaxNode(operatorToken, variable, rhs);
 					continue;
 				}
 			}

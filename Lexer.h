@@ -58,6 +58,8 @@ enum class TokenType
 	Operator,
 	AndOperator,
 	OrOperator,
+	LogicalOrOperator,
+	LogicalOrAssignOperator,
 	SingleLineComment,
 	MultiLineComment,
 	Annotation,
@@ -302,9 +304,10 @@ private:
 		{
 			if (inputStream_.peek() == '&') token->value += inputStream_.next();
 		}
-		else if (value == "|") // ||
+		else if (value == "|") // ||, |=
 		{
 			if (inputStream_.peek() == '|') token->value += inputStream_.next();
+			else if (inputStream_.peek() == '=') token->value += inputStream_.next();
 		}
 		else if (value == "+") // +=
 		{
@@ -377,6 +380,8 @@ private:
 		if (value == "--") return TokenType::Operator;
 		if (value == "&&") return TokenType::AndOperator;
 		if (value == "||") return TokenType::OrOperator;
+		if (value == "|") return TokenType::LogicalOrOperator;
+		if (value == "|=") return TokenType::LogicalOrAssignOperator;
 		if (value == "#") return TokenType::SingleLineComment;
 		if (value == "\"\"\"") return TokenType::MultiLineComment;
 
