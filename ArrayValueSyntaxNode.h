@@ -40,12 +40,30 @@ public:
 	{
 		std::string expressionsString;
 
-		for (auto e : expressions_)
+		int lastIndex = expressions_.size() - 1;
+
+		for (int i = 0; i < expressions_.size(); i++)
 		{
-			expressionsString += indents + e->toCpp(data, indents) + "\n";
+			auto e = expressions_[i];
+			auto expressionString = e->toCpp(data, indents + "\t");
+			bool putOnNewLine = expressionString.length() > 20;
+
+			if (putOnNewLine || i == 0) expressionsString += indents + "\t";
+			expressionsString += expressionString + ",";
+			if (putOnNewLine || i == lastIndex) expressionsString += "\n";
 		}
 
-		return "{" + expressionsString + "}";
+		std::string code = "{";
+
+		bool putOnNewLine = expressionsString.length() > 20;
+
+		if (putOnNewLine) code += "\n";
+
+		code += expressionsString;
+
+		if (putOnNewLine) code += indents;
+
+		return code + "}";
 	}
 
 private:

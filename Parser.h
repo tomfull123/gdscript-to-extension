@@ -377,7 +377,7 @@ private:
 		{
 			const auto* t = peek();
 
-			if (t->indentDepth <= indentDepth)
+			if (t->indentDepth < indentDepth)
 			{
 				endOfClass = true;
 				continue;
