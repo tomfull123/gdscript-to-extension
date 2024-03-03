@@ -92,6 +92,8 @@ public:
 
 		if (pendingIndent_ > 0) return createIndent();
 
+		readWhile(isWhitespace);
+
 		if (end()) return nullptr;
 
 		char ch = inputStream_.peek();
