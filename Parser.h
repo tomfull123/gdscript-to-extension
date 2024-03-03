@@ -194,12 +194,8 @@ private:
 			{
 				argDefs.push_back(argDef);
 
-				if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
-
 				if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
 				else if (!isNextTokenType(TokenType::CloseBracketSeparator)) return (FunctionPrototypeSyntaxNode*)addUnexpectedNextTokenError();
-
-				if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
 			}
 			else
 			{
@@ -222,28 +218,28 @@ private:
 		return new FunctionPrototypeSyntaxNode(name, argDefs, returnType, isStatic);
 	}
 
-	BodySyntaxNode* parseBody()
+	BodySyntaxNode* parseBody(int indentDepth, int lineNumber)
 	{
 		std::vector<SyntaxNode*> nodes;
 
-		while (!stream_.end() && !isNextTokenType(TokenType::EndOfBlock))
+		while (!stream_.end() && (peek()->indentDepth > indentDepth || peek()->lineNumber == lineNumber))
 		{
 			auto ex = parseExpression();
 			if (ex) nodes.push_back(ex);
 		}
-
-		if (isNextTokenType(TokenType::EndOfBlock)) next();
 
 		return new BodySyntaxNode(nodes);
 	}
 
 	FunctionDefinitionSyntaxNode* parseFunction(bool isStatic)
 	{
+		auto token = peek();
+
 		FunctionPrototypeSyntaxNode* prototype = parseFunctionProtoype(isStatic);
 
 		if (!prototype) return nullptr;
 
-		BodySyntaxNode* body = parseBody();
+		BodySyntaxNode* body = parseBody(token->indentDepth, token->lineNumber);
 
 		if (!body) return nullptr;
 
@@ -349,8 +345,6 @@ private:
 			auto value = parseEnumValueDefinition();
 			if (value) values.push_back(value);
 
-			if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
-
 			if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
 			else if (!isNextTokenType(TokenType::CloseCurlyBracketSeparator)) return (EnumDefinitionSyntaxNode*)addUnexpectedNextTokenError();
 		}
@@ -367,7 +361,7 @@ private:
 		return consume(TokenType::Identifier);
 	}
 
-	ClassDefinitionSyntaxNode* parseScriptBody()
+	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth)
 	{
 		Token* name = nullptr;
 		Token* extends = nullptr;
@@ -383,6 +377,12 @@ private:
 		{
 			const auto* t = peek();
 
+			if (t->indentDepth <= indentDepth)
+			{
+				endOfClass = true;
+				continue;
+			}
+
 			switch (t->type)
 			{
 			case TokenType::ClassNameKeyword:
@@ -397,9 +397,6 @@ private:
 			case TokenType::VarKeyword:
 			case TokenType::ConstKeyword:
 				memberVariableDefinitions.push_back(parseVariableDefinition(true));
-				break;
-			case TokenType::EndOfBlock:
-				endOfClass = true;
 				break;
 			case TokenType::SignalKeyword:
 				memberVariableDefinitions.push_back(parseSignalDefinitions());
@@ -492,12 +489,8 @@ private:
 			auto ex = parseValueExpression();
 			if (ex) expressions.push_back(ex);
 
-			if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
-
 			if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
 			else if (!isNextTokenType(TokenType::CloseSquareBracket)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
-			
-			if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
 		}
 
 		next(); // eat ]
@@ -518,8 +511,6 @@ private:
 
 			auto value = parseValueExpression();
 			if (value) values[key] = value;
-
-			if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
 
 			if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
 			else if (!isNextTokenType(TokenType::CloseCurlyBracketSeparator)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
@@ -663,11 +654,13 @@ private:
 
 	ReturnSyntaxNode* parseReturnStatement()
 	{
-		if (!consume(TokenType::ReturnKeyword)) return nullptr;
+		auto returnToken = consume(TokenType::ReturnKeyword);
+
+		if (!returnToken) return nullptr;
 
 		ValueSyntaxNode* value = nullptr;
 
-		if (!isNextTokenType(TokenType::EndOfBlock))
+		if (!end() && peek()->indentDepth >= returnToken->indentDepth)
 		{
 			value = parseValueExpression();
 		}
@@ -744,12 +737,8 @@ private:
 					{
 						args.push_back(e);
 
-						if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
-
 						if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
 						else if (!isNextTokenType(TokenType::CloseBracketSeparator)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
-
-						if (isNextTokenType(TokenType::EndOfBlock)) next(); // eat end of block
 					}
 					else
 					{
@@ -824,7 +813,9 @@ private:
 
 	IfSyntaxNode* parseIfStatement()
 	{
-		next(); // eat if
+		auto ifToken = consume(TokenType::IfKeyword); // eat if
+
+		if (!ifToken) return nullptr;
 
 		ValueSyntaxNode* condition = parseValueExpression();
 
@@ -832,17 +823,17 @@ private:
 
 		if (!consume(TokenType::ColonSeparator)) return nullptr;
 
-		BodySyntaxNode* thenBody = parseBody();
+		BodySyntaxNode* thenBody = parseBody(ifToken->indentDepth, ifToken->lineNumber);
 
 		BodySyntaxNode* elseBody = nullptr;
 
 		if (isNextTokenType(TokenType::ElseKeyword))
 		{
-			next(); // eat else
+			auto elseToken = next(); // eat else
 
 			if (!consume(TokenType::ColonSeparator)) return nullptr;
 
-			elseBody = parseBody();
+			elseBody = parseBody(elseToken->indentDepth, elseToken->lineNumber);
 		}
 
 		return new IfSyntaxNode(condition, thenBody, elseBody);
@@ -850,13 +841,15 @@ private:
 
 	WhileSyntaxNode* parseWhileLoop()
 	{
-		consume(TokenType::WhileKeyword);
+		auto whileToken = consume(TokenType::WhileKeyword);
+
+		if (!whileToken) return nullptr;
 
 		auto condition = parseValueExpression();
 
 		if (!consume(TokenType::ColonSeparator)) return nullptr;
 
-		BodySyntaxNode* body = parseBody();
+		BodySyntaxNode* body = parseBody(whileToken->indentDepth, whileToken->lineNumber);
 
 		if (!body) return nullptr;
 
@@ -865,7 +858,9 @@ private:
 
 	ForSyntaxNode* parseForLoop()
 	{
-		consume(TokenType::ForKeyword);
+		auto forToken = consume(TokenType::ForKeyword);
+
+		if (!forToken) return nullptr;
 
 		auto variableToken = consume(TokenType::Identifier);
 
@@ -879,7 +874,7 @@ private:
 
 		if (!consume(TokenType::ColonSeparator)) return nullptr;
 
-		auto body = parseBody();
+		auto body = parseBody(forToken->indentDepth, forToken->lineNumber);
 
 		return new ForSyntaxNode(variableToken, arrayToken, body);
 	}

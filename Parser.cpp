@@ -7,5 +7,5 @@ Parser::Parser(const std::vector<Token*>& tokens) :
 
 void Parser::buildAST(AbstractSyntaxTree* ast)
 {
-	ast->classes.push_back(parseScriptBody());
+	ast->classes.push_back(parseScriptBody(0));
 }

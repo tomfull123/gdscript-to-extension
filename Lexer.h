@@ -8,7 +8,6 @@ enum class TokenType
 {
 	Identifier,
 	Error,
-	EndOfBlock,
 
 	FuncKeyword,
 	VarKeyword,
@@ -72,6 +71,7 @@ struct Token
 	int lineNumber = -1;
 	int columnNumber = -1;
 	std::string filename = "";
+	int indentDepth = -1;
 };
 
 class Lexer
@@ -91,8 +91,6 @@ public:
 		readWhile(isWhitespace);
 
 		if (isNewLine(inputStream_.peek())) readIndents();
-
-		if (pendingIndent_ > 0) return createIndent();
 
 		readWhile(isWhitespace);
 
@@ -133,7 +131,6 @@ public:
 private:
 	InputStream inputStream_;
 	int currentIndent_ = 0;
-	int pendingIndent_ = 0;
 
 	const std::vector<char> separators = {
 		'(',
@@ -174,6 +171,7 @@ private:
 		Token* token = readToken(isIdentifier, TokenType::Identifier);
 
 		token->type = getKeywordTokenType(token->value);
+		token->indentDepth = currentIndent_;
 
 		return token;
 	}
@@ -264,6 +262,8 @@ private:
 		else
 			token->type = TokenType::IntLiteral;
 
+		token->indentDepth = currentIndent_;
+
 		return token;
 	}
 
@@ -283,6 +283,8 @@ private:
 
 		token->lineNumber = inputStream_.getLineNumber();
 		token->columnNumber = inputStream_.getColumnNumber();
+
+		token->indentDepth = currentIndent_;
 
 		token->value = inputStream_.next();
 		std::string value = token->value;
@@ -398,6 +400,8 @@ private:
 		token->value = readUntil(isWhitespace, false);
 		token->type = TokenType::Error;
 
+		token->indentDepth = currentIndent_;
+
 		return token;
 	}
 
@@ -415,20 +419,6 @@ private:
 		return token;
 	}
 
-	Token* createIndent()
-	{
-		pendingIndent_--;
-
-		Token* token = new Token();
-
-		token->lineNumber = inputStream_.getLineNumber();
-		token->columnNumber = inputStream_.getColumnNumber();
-
-		token->type = TokenType::EndOfBlock;
-
-		return token;
-	}
-
 	void readIndents()
 	{
 		int indent = 0;
@@ -439,11 +429,6 @@ private:
 
 			if (value == '\t') indent++;
 			else indent = 0;
-		}
-
-		if (indent < currentIndent_)
-		{
-			pendingIndent_ = currentIndent_ - indent;
 		}
 
 		currentIndent_ = indent;
