@@ -3,10 +3,10 @@
 #include <vector>
 #include "SyntaxNode.h"
 
-class FunctionBodySyntaxNode : public SyntaxNode
+class BodySyntaxNode : public SyntaxNode
 {
 public:
-	explicit FunctionBodySyntaxNode(
+	explicit BodySyntaxNode(
 		const std::vector<SyntaxNode*>& nodes
 	) :
 		nodes_(nodes)
@@ -34,8 +34,7 @@ public:
 		for (auto node : nodes_)
 		{
 			nodesString += indents + "\t" + node->toCpp(data, indents + "\t");
-			if (node->needsSemiColon()) nodesString += ";";
-			nodesString += "\n";
+			if (node->needsSemiColon()) nodesString += ";\n";
 		}
 
 		return ""

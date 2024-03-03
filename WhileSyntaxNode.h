@@ -1,16 +1,17 @@
 #pragma once
 
 #include "SyntaxNode.h"
+#include "BodySyntaxNode.h"
 
 class WhileSyntaxNode : public SyntaxNode
 {
 public:
 	WhileSyntaxNode(
 		ValueSyntaxNode* condition,
-		const std::vector<SyntaxNode*>& nodes
+		BodySyntaxNode* body
 	) :
 		condition_(condition),
-		nodes_(nodes)
+		body_(body)
 	{
 	}
 
@@ -22,34 +23,28 @@ public:
 	void hoist(CppData* data) override
 	{
 		condition_->hoist(data);
-		for (auto n : nodes_) n->hoist(data);
+		body_->hoist(data);
 	}
 
 	void resolveDefinitions(CppData* data) override
 	{
 		condition_->resolveDefinitions(data);
-		for (auto n : nodes_) n->resolveDefinitions(data);
+		body_->resolveDefinitions(data);
 	}
 
 	void resolveTypes(CppData* data) override
 	{
 		condition_->resolveTypes(data);
-		for (auto n : nodes_) n->resolveTypes(data);
+		body_->resolveTypes(data);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		std::string bodyString;
-
-		for (auto n : nodes_) bodyString += indents + "\t" + n->toCpp(data, indents) + ";\n";
-
 		return "while (" + condition_->toCpp(data, "") + ")\n"
-			+ indents + "{\n"
-			+ bodyString
-			+ indents + "}\n";
+			+ body_->toCpp(data, indents);
 	}
 
 private:
 	ValueSyntaxNode* condition_;
-	std::vector<SyntaxNode*> nodes_;
+	BodySyntaxNode* body_;
 };

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SyntaxNode.h"
-#include "FunctionBodySyntaxNode.h"
+#include "BodySyntaxNode.h"
 
 class ForSyntaxNode : public SyntaxNode
 {
@@ -9,7 +9,7 @@ public:
 	ForSyntaxNode(
 		Token* variableToken,
 		ValueSyntaxNode* array,
-		FunctionBodySyntaxNode* body
+		BodySyntaxNode* body
 	) :
 		variableToken_(variableToken),
 		array_(array),
@@ -49,5 +49,5 @@ public:
 private:
 	Token* variableToken_;
 	ValueSyntaxNode* array_;
-	FunctionBodySyntaxNode* body_;
+	BodySyntaxNode* body_;
 };

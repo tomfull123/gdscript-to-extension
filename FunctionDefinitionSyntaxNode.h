@@ -1,14 +1,14 @@
 #pragma once
 
 #include "FunctionPrototypeSyntaxNode.h"
-#include "FunctionBodySyntaxNode.h"
+#include "BodySyntaxNode.h"
 
 class FunctionDefinitionSyntaxNode : public SyntaxNode
 {
 public:
 	FunctionDefinitionSyntaxNode(
 		FunctionPrototypeSyntaxNode* prototype,
-		FunctionBodySyntaxNode* body
+		BodySyntaxNode* body
 	) :
 		prototype_(prototype),
 		body_(body)
@@ -58,5 +58,5 @@ public:
 
 private:
 	FunctionPrototypeSyntaxNode* prototype_;
-	FunctionBodySyntaxNode* body_;
+	BodySyntaxNode* body_;
 };

@@ -216,7 +216,7 @@ private:
 		return new FunctionPrototypeSyntaxNode(name, argDefs, returnType, isStatic);
 	}
 
-	FunctionBodySyntaxNode* parseFunctionBody()
+	BodySyntaxNode* parseBody()
 	{
 		std::vector<SyntaxNode*> nodes;
 
@@ -228,7 +228,7 @@ private:
 
 		if (isNextTokenType(TokenType::EndOfBlock)) next();
 
-		return new FunctionBodySyntaxNode(nodes);
+		return new BodySyntaxNode(nodes);
 	}
 
 	FunctionDefinitionSyntaxNode* parseFunction(bool isStatic)
@@ -237,7 +237,7 @@ private:
 
 		if (!prototype) return nullptr;
 
-		FunctionBodySyntaxNode* body = parseFunctionBody();
+		BodySyntaxNode* body = parseBody();
 
 		if (!body) return nullptr;
 
@@ -784,17 +784,9 @@ private:
 
 		if (!consume(TokenType::ColonSeparator)) return nullptr;
 
-		std::vector<SyntaxNode*> thenExpressions;
+		BodySyntaxNode* thenBody = parseBody();
 
-		while (!isNextTokenType(TokenType::EndOfBlock))
-		{
-			auto ex = parseExpression();
-			if (ex) thenExpressions.push_back(ex);
-		}
-
-		next(); // eat EndOfBlock
-
-		std::vector<SyntaxNode*> elseExpressions;
+		BodySyntaxNode* elseBody = nullptr;
 
 		if (isNextTokenType(TokenType::ElseKeyword))
 		{
@@ -802,16 +794,10 @@ private:
 
 			if (!consume(TokenType::ColonSeparator)) return nullptr;
 
-			while (!isNextTokenType(TokenType::EndOfBlock))
-			{
-				auto ex = parseExpression();
-				if (ex) elseExpressions.push_back(ex);
-			}
-
-			next(); // eat EndOfBlock
+			elseBody = parseBody();
 		}
 
-		return new IfSyntaxNode(condition, thenExpressions, {});
+		return new IfSyntaxNode(condition, thenBody, elseBody);
 	}
 
 	WhileSyntaxNode* parseWhileLoop()
@@ -822,15 +808,11 @@ private:
 
 		if (!consume(TokenType::ColonSeparator)) return nullptr;
 
-		std::vector<SyntaxNode*> expressions;
+		BodySyntaxNode* body = parseBody();
 
-		while (!isNextTokenType(TokenType::EndOfBlock))
-		{
-			auto ex = parseExpression();
-			if (ex) expressions.push_back(ex);
-		}
+		if (!body) return nullptr;
 
-		return new WhileSyntaxNode(condition, expressions);
+		return new WhileSyntaxNode(condition, body);
 	}
 
 	ForSyntaxNode* parseForLoop()
@@ -849,7 +831,7 @@ private:
 
 		if (!consume(TokenType::ColonSeparator)) return nullptr;
 
-		auto body = parseFunctionBody();
+		auto body = parseBody();
 
 		return new ForSyntaxNode(variableToken, arrayToken, body);
 	}

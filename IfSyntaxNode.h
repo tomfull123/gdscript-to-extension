@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SyntaxNode.h"
+#include "BodySyntaxNode.h"
 #include <vector>
 
 class IfSyntaxNode : public SyntaxNode
@@ -8,12 +9,12 @@ class IfSyntaxNode : public SyntaxNode
 public:
 	IfSyntaxNode(
 		SyntaxNode* condition,
-		const std::vector<SyntaxNode*>& thenNodes,
-		const std::vector<SyntaxNode*>& elseNodes
+		BodySyntaxNode* thenBody,
+		BodySyntaxNode* elseBody
 	) :
 		condition_(condition),
-		thenNodes_(thenNodes),
-		elseNodes_(elseNodes)
+		thenBody_(thenBody),
+		elseBody_(elseBody)
 	{}
 
 	bool needsSemiColon() override
@@ -24,59 +25,43 @@ public:
 	void hoist(CppData* data) override
 	{
 		condition_->hoist(data);
-		for (auto n : thenNodes_) n->hoist(data);
-		for (auto n : elseNodes_) n->hoist(data);
+		thenBody_->hoist(data);
+		if (elseBody_) elseBody_->hoist(data);
 	}
 
 	void resolveDefinitions(CppData* data) override
 	{
 		condition_->resolveDefinitions(data);
-		for (auto n : thenNodes_) n->resolveDefinitions(data);
-		for (auto n : elseNodes_) n->resolveDefinitions(data);
+		thenBody_->resolveDefinitions(data);
+		if (elseBody_) elseBody_->resolveDefinitions(data);
 	}
 
 	void resolveTypes(CppData* data) override
 	{
 		condition_->resolveTypes(data);
-		for (auto n : thenNodes_) n->resolveTypes(data);
-		for (auto n : elseNodes_) n->resolveTypes(data);
+		thenBody_->resolveTypes(data);
+		if (elseBody_) elseBody_->resolveTypes(data);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		std::string thenString;
-
-		for (auto n : thenNodes_)
-		{
-			thenString += indents + "\t" + n->toCpp(data, indents + "\t");
-			if (n->needsSemiColon()) thenString += ";";
-			thenString += "\n";
-		}
+		std::string thenString = thenBody_->toCpp(data, indents);
 
 		std::string elseString;
 
-		if (!elseNodes_.empty())
+		if (elseBody_)
 		{
-			elseString = "\n" + indents + "else\n"
-				+ indents + "{\n";
-			for (auto n : elseNodes_)
-			{
-				elseString += indents + "\t" + n->toCpp(data, indents + "\t");
-				if (n->needsSemiColon()) elseString += ";";
-				elseString += "\n";
-			}
-			elseString += indents + "}";
+			elseString = indents + "else\n"
+				+ elseBody_->toCpp(data, indents);
 		}
 
 		return "if (" + condition_->toCpp(data, "") + ")\n"
-			+ indents + "{\n"
 			+ thenString
-			+ indents + "}"
 			+ elseString;
 	}
 
 private:
 	SyntaxNode* condition_;
-	std::vector<SyntaxNode*> thenNodes_;
-	std::vector<SyntaxNode*> elseNodes_;
+	BodySyntaxNode* thenBody_;
+	BodySyntaxNode* elseBody_;
 };
