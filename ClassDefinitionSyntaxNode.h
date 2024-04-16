@@ -15,7 +15,8 @@ public:
 		const std::vector<EnumDefinitionSyntaxNode*>& enumDefinitions,
 		const std::vector<FunctionDefinitionSyntaxNode*>& staticFunctionDefinitions,
 		const std::vector<VariableDefinitionSyntaxNode*>& staticVariableDefinitions,
-		const std::vector<ClassDefinitionSyntaxNode*>& innerClasses
+		const std::vector<ClassDefinitionSyntaxNode*>& innerClasses,
+		bool isInnerClass
 	) :
 		name_(name),
 		extends_(extends),
@@ -24,7 +25,8 @@ public:
 		enumDefinitions_(enumDefinitions),
 		staticFunctionDefinitions_(staticFunctionDefinitions),
 		staticVariableDefinitions_(staticVariableDefinitions),
-		innerClasses_(innerClasses)
+		innerClasses_(innerClasses),
+		isInnerClass_(isInnerClass)
 	{}
 
 	void hoist(CppData* data) override
@@ -59,6 +61,39 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
+		std::vector<std::string> enumNames;
+
+		for (auto enumDef : enumDefinitions_)
+		{
+			enumNames.push_back(enumDef->getName());
+		}
+
+		auto classBodyString = classBody(data);
+
+		if (isInnerClass_) return classBodyString;
+
+		return "#pragma once\n\n"
+			+ cppIncludes(data) +
+			"namespace godot\n"
+			"{\n"
+			+ classBodyString +
+			"}\n"
+			+ enumCasts(enumNames);
+	}
+
+private:
+	Token* name_;
+	Token* extends_;
+	std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions_;
+	std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions_;
+	std::vector<EnumDefinitionSyntaxNode*> enumDefinitions_;
+	std::vector<FunctionDefinitionSyntaxNode*> staticFunctionDefinitions_;
+	std::vector<VariableDefinitionSyntaxNode*> staticVariableDefinitions_;
+	std::vector<ClassDefinitionSyntaxNode*> innerClasses_;
+	bool isInnerClass_;
+
+	std::string classBody(CppData* data)
+	{
 		std::string className;
 
 		if (name_) className = name_->value;
@@ -72,7 +107,7 @@ public:
 		std::string staticVariableDefinitionString;
 
 		for (auto v : staticVariableDefinitions_)
-			staticVariableDefinitionString += "\t\t" + v->toCpp(data, "\t\t") + ";\n";
+			staticVariableDefinitionString += "\t" + v->toCpp(data, "\t\t") + ";\n";
 
 		std::string publicStaticFunctionDefinitionString;
 		std::string privateStaticFunctionDefinitionString;
@@ -91,19 +126,17 @@ public:
 		}
 
 		std::string enumDefString;
-		std::vector<std::string> enumNames;
 
 		for (auto enumDef : enumDefinitions_)
 		{
 			enumDefString += "\t" + enumDef->toCpp(data, "\t");
-			enumNames.push_back(enumDef->getName());
 		}
 
 		std::string innerClassesString;
 
 		for (auto innerClass : innerClasses_)
 		{
-			innerClassesString += "\t" + innerClass->toCpp(data, "\t");
+			innerClassesString += innerClass->toCpp(data, "\t") + "\n";
 		}
 
 		std::string privateMemberVariableDefinitionString;
@@ -138,10 +171,7 @@ public:
 
 		data->toCppType(inherits);
 
-		return "#pragma once\n\n"
-			+ cppIncludes(data) +
-			"namespace godot\n"
-			"{\n"
+		return ""
 			+ enumDefString
 			+ innerClassesString
 			+ staticVariableDefinitionString +
@@ -163,20 +193,8 @@ public:
 			+ bindMethodsString
 			+ bindStaticMethodsString +
 			"\t\t}\n"
-			"\t};\n"
-			"}\n"
-			+ enumCasts(enumNames);
+			"\t};\n";
 	}
-
-private:
-	Token* name_;
-	Token* extends_;
-	std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions_;
-	std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions_;
-	std::vector<EnumDefinitionSyntaxNode*> enumDefinitions_;
-	std::vector<FunctionDefinitionSyntaxNode*> staticFunctionDefinitions_;
-	std::vector<VariableDefinitionSyntaxNode*> staticVariableDefinitions_;
-	std::vector<ClassDefinitionSyntaxNode*> innerClasses_;
 
 	std::string cppIncludes(const CppData* data) const
 	{

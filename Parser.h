@@ -361,7 +361,7 @@ private:
 		return consume(TokenType::Identifier);
 	}
 
-	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, Token* nameToken = nullptr)
+	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, Token* nameToken = nullptr, bool isInnerClass = false)
 	{
 		Token* name = nameToken;
 		Token* extends = nullptr;
@@ -431,7 +431,7 @@ private:
 				next(); // eat class
 				auto subclassName = consume(TokenType::Identifier);
 				consume(TokenType::ColonSeparator);
-				auto internalClass = parseScriptBody(t->indentDepth + 1, subclassName);
+				auto internalClass = parseScriptBody(t->indentDepth + 1, subclassName, true);
 				if (internalClass) innerClasses.push_back(internalClass);
 				break;
 			}
@@ -448,7 +448,8 @@ private:
 			enumDefinitions,
 			staticFunctionDefinitions,
 			staticVariableDefinitions,
-			innerClasses
+			innerClasses,
+			isInnerClass
 		);
 	}
 
