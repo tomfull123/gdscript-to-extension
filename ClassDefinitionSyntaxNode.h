@@ -14,7 +14,8 @@ public:
 		const std::vector<VariableDefinitionSyntaxNode*>& memberVariableDefinitions,
 		const std::vector<EnumDefinitionSyntaxNode*>& enumDefinitions,
 		const std::vector<FunctionDefinitionSyntaxNode*>& staticFunctionDefinitions,
-		const std::vector<VariableDefinitionSyntaxNode*>& staticVariableDefinitions
+		const std::vector<VariableDefinitionSyntaxNode*>& staticVariableDefinitions,
+		const std::vector<ClassDefinitionSyntaxNode*>& innerClasses
 	) :
 		name_(name),
 		extends_(extends),
@@ -22,7 +23,8 @@ public:
 		memberVariableDefinitions_(memberVariableDefinitions),
 		enumDefinitions_(enumDefinitions),
 		staticFunctionDefinitions_(staticFunctionDefinitions),
-		staticVariableDefinitions_(staticVariableDefinitions)
+		staticVariableDefinitions_(staticVariableDefinitions),
+		innerClasses_(innerClasses)
 	{}
 
 	void hoist(CppData* data) override
@@ -32,6 +34,7 @@ public:
 		for (auto f : staticFunctionDefinitions_) f->hoist(data);
 		for (auto v : memberVariableDefinitions_) v->hoist(data);
 		for (auto f : memberFunctionDefinitions_) f->hoist(data);
+		for (auto c : innerClasses_) c->hoist(data);
 	}
 
 	void resolveDefinitions(CppData* data) override
@@ -41,6 +44,7 @@ public:
 		for (auto f : staticFunctionDefinitions_) f->resolveDefinitions(data);
 		for (auto v : memberVariableDefinitions_) v->resolveDefinitions(data);
 		for (auto f : memberFunctionDefinitions_) f->resolveDefinitions(data);
+		for (auto c : innerClasses_) c->resolveDefinitions(data);
 	}
 
 	void resolveTypes(CppData* data) override
@@ -50,6 +54,7 @@ public:
 		for (auto f : staticFunctionDefinitions_) f->resolveTypes(data);
 		for (auto v : memberVariableDefinitions_) v->resolveTypes(data);
 		for (auto f : memberFunctionDefinitions_) f->resolveTypes(data);
+		for (auto c : innerClasses_) c->resolveTypes(data);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
@@ -94,6 +99,13 @@ public:
 			enumNames.push_back(enumDef->getName());
 		}
 
+		std::string innerClassesString;
+
+		for (auto innerClass : innerClasses_)
+		{
+			innerClassesString += "\t" + innerClass->toCpp(data, "\t");
+		}
+
 		std::string privateMemberVariableDefinitionString;
 		std::string publicMemberVariableDefinitionString;
 
@@ -131,6 +143,7 @@ public:
 			"namespace godot\n"
 			"{\n"
 			+ enumDefString
+			+ innerClassesString
 			+ staticVariableDefinitionString +
 			"\tclass " + className + " : public " + inherits->name + "\n"
 			"\t{\n"
@@ -163,6 +176,7 @@ private:
 	std::vector<EnumDefinitionSyntaxNode*> enumDefinitions_;
 	std::vector<FunctionDefinitionSyntaxNode*> staticFunctionDefinitions_;
 	std::vector<VariableDefinitionSyntaxNode*> staticVariableDefinitions_;
+	std::vector<ClassDefinitionSyntaxNode*> innerClasses_;
 
 	std::string cppIncludes(const CppData* data) const
 	{

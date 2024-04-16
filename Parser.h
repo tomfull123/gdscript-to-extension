@@ -361,15 +361,16 @@ private:
 		return consume(TokenType::Identifier);
 	}
 
-	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth)
+	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, Token* nameToken = nullptr)
 	{
-		Token* name = nullptr;
+		Token* name = nameToken;
 		Token* extends = nullptr;
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
 		std::vector<EnumDefinitionSyntaxNode*> enumDefinitions;
 		std::vector<FunctionDefinitionSyntaxNode*> staticFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> staticVariableDefinitions;
+		std::vector<ClassDefinitionSyntaxNode*> innerClasses;
 
 		bool endOfClass = false;
 
@@ -425,6 +426,15 @@ private:
 				addUnexpectedNextTokenError();
 
 				break;
+			case TokenType::ClassKeyword:
+			{
+				next(); // eat class
+				auto subclassName = consume(TokenType::Identifier);
+				consume(TokenType::ColonSeparator);
+				auto internalClass = parseScriptBody(t->indentDepth + 1, subclassName);
+				if (internalClass) innerClasses.push_back(internalClass);
+				break;
+			}
 			default:
 				return (ClassDefinitionSyntaxNode*)addUnexpectedNextTokenError();
 			}
@@ -437,7 +447,8 @@ private:
 			memberVariableDefinitions,
 			enumDefinitions,
 			staticFunctionDefinitions,
-			staticVariableDefinitions
+			staticVariableDefinitions,
+			innerClasses
 		);
 	}
 
