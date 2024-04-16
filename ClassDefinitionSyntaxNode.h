@@ -240,6 +240,11 @@ private:
 			"&" + className + "::" + functionName + ");\n";
 	}
 
+	std::string bindProperty(const std::string& className) const
+	{
+		return "ClassDB::add_property(\"" + className + "\", PropertyInfo(Variant::INT, \"type\"), \"\", \"_getType\");\n";
+	}
+
 	std::string enumCasts(const std::vector<std::string>& enumNames) const
 	{
 		std::string enumCasts;
