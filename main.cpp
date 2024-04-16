@@ -14,6 +14,30 @@ static void printErrors(const std::vector<ParserError>& errors)
 	}
 }
 
+static std::string toCppFileName(const std::string& fileName)
+{
+	size_t currentPos = 0;
+
+	std::string cppFileName = fileName;
+
+	cppFileName[0] = (char)std::toupper(cppFileName[0]);
+
+	while (true)
+	{
+		size_t underscoreIndex = cppFileName.find('_', currentPos);
+
+		if (underscoreIndex == -1) break;
+
+		cppFileName.erase(underscoreIndex, 1);
+
+		cppFileName[underscoreIndex] = (char)std::toupper(cppFileName[underscoreIndex]);
+
+		currentPos = underscoreIndex;
+	}
+
+	return cppFileName;
+}
+
 int main(int argc, char* argv[])
 {
 	std::string filePath = "C:/Dev/Godot/Sandbox/gameplay/actions/action.gd";
@@ -47,14 +71,17 @@ int main(int argc, char* argv[])
 		auto fileNameStart = filePathWithoutExtension.find_last_of("/") + 1;
 		std::string fileName = filePathWithoutExtension.substr(fileNameStart);
 
+		std::string cppFileName = toCppFileName(fileName);
+		std::string cppFilePathWithoutExtension = filePathWithoutExtension.substr(0, fileNameStart) + cppFileName;
+
 		for (auto c : result->ast->classes)
 		{
-			auto data = CppData(fileName);
+			auto data = CppData(cppFileName);
 			c->hoist(&data);
 			c->resolveDefinitions(&data);
 			c->resolveTypes(&data);
 			std::string classCode = c->toCpp(&data, "");
-			std::ofstream headerFile(filePathWithoutExtension + ".h");
+			std::ofstream headerFile(cppFilePathWithoutExtension + ".h");
 			headerFile << classCode;
 			headerFile.close();
 		}
