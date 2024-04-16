@@ -92,15 +92,19 @@ private:
 	std::vector<ClassDefinitionSyntaxNode*> innerClasses_;
 	bool isInnerClass_;
 
-	std::string classBody(CppData* data)
+	std::string classBody(CppData* data) const
 	{
 		std::string className;
 
-		if (name_) className = name_->value;
+		if (name_)
+		{
+			className = name_->value;
+			if (className[0] == '_') className.erase(0, 1);
+		}
 		else
 		{
-			auto fileName = data->fileName;
-			char firstLetter = std::toupper(fileName[0]);
+			auto& fileName = data->fileName;
+			auto firstLetter = (char)std::toupper(fileName[0]);
 			className = firstLetter + fileName.substr(1);
 		}
 
