@@ -32,6 +32,7 @@ public:
 
 	bool isPrivate() const
 	{
+		if (name_->value == "_init") return false;
 		return name_->value[0] == '_';
 	}
 
@@ -65,7 +66,11 @@ public:
 
 		if (isStatic_) code += "static ";
 
-		return code + data->toCppType(returnType_) + " " + name_->value + "(" + argsString + ")";
+		std::string name = name_->value;
+
+		if (name == "_init") name = "init";
+
+		return code + data->toCppType(returnType_) + " " + name + "(" + argsString + ")";
 	}
 
 private:
