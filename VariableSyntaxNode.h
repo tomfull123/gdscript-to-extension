@@ -68,9 +68,8 @@ public:
 			auto parentEnumDef = data->enumDefinitions[parentName];
 			if (parentEnumDef)
 				code += "::";
-			//else if (CPPTYPES_TO_FUNCTION.find(parentName) == CPPTYPES_TO_FUNCTION.end())
-				//code += "->set_";
-			code += "->";
+			else if (CPPTYPES_TO_FUNCTION.find(parentName) == CPPTYPES_TO_FUNCTION.end())
+				code += "->";
 		}
 
 		auto varDef = data->variableDefinitions[name_->value];
