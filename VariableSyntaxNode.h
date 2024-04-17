@@ -17,6 +17,11 @@ public:
 		return false;
 	}
 
+	bool isFunction() const override
+	{
+		return false;
+	}
+
 	Type* getType() override
 	{
 		if (type_) return type_;
@@ -63,14 +68,19 @@ public:
 			auto parentEnumDef = data->enumDefinitions[parentName];
 			if (parentEnumDef)
 				code += "::";
-			else if (CPPTYPES_TO_FUNCTION.find(parentName) == CPPTYPES_TO_FUNCTION.end())
-				code += "->set_";
+			//else if (CPPTYPES_TO_FUNCTION.find(parentName) == CPPTYPES_TO_FUNCTION.end())
+				//code += "->set_";
+			code += "->";
 		}
 
 		auto varDef = data->variableDefinitions[name_->value];
 
+		if (name_->value == "self")
+		{
+			code += "this";
+		}
 		// static call
-		if (!parentInstance_ && !varDef) code += data->toCppType(new Type(name_->value));
+		else if (!parentInstance_ && !varDef) code += data->toCppType(new Type(name_->value));
 		else
 		{
 			code += data->toWrappedCppFunction(parentInstance_, name_);

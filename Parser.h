@@ -218,7 +218,7 @@ private:
 		return new FunctionPrototypeSyntaxNode(name, argDefs, returnType, isStatic);
 	}
 
-	BodySyntaxNode* parseBody(int indentDepth, int lineNumber)
+	BodySyntaxNode* parseBody(int indentDepth, int lineNumber, bool returnThis = false)
 	{
 		std::vector<SyntaxNode*> nodes;
 
@@ -226,6 +226,13 @@ private:
 		{
 			auto ex = parseExpression();
 			if (ex) nodes.push_back(ex);
+		}
+
+		if (returnThis)
+		{
+			auto thisToken = new Token();
+			thisToken->value = "this";
+			nodes.push_back(new ReturnSyntaxNode(new VariableSyntaxNode(thisToken, nullptr)));
 		}
 
 		return new BodySyntaxNode(nodes);
@@ -239,7 +246,7 @@ private:
 
 		if (!prototype) return nullptr;
 
-		BodySyntaxNode* body = parseBody(token->indentDepth, token->lineNumber);
+		BodySyntaxNode* body = parseBody(token->indentDepth, token->lineNumber, prototype->getToken()->value == "_init");
 
 		if (!body) return nullptr;
 

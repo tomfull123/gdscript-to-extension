@@ -44,7 +44,7 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		if (variable_->hasParent())
+		if (variable_->isFunction())
 			return variable_->toCpp(data, indents) + "(" + assignmentValue_->toCpp(data, "") + ")";
 		return variable_->toCpp(data, indents) + " = " + assignmentValue_->toCpp(data, "");
 	}

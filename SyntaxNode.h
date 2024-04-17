@@ -94,6 +94,11 @@ public:
 		return false;
 	}
 
+	virtual bool isFunction() const
+	{
+		return false;
+	}
+
 	virtual Type* getType() = 0;
 
 	virtual std::string getName() = 0;
@@ -112,6 +117,7 @@ struct CppData
 	std::unordered_set<std::string> types;
 	std::unordered_map<std::string, VariableDefinitionSyntaxNode*> variableDefinitions;
 	std::unordered_map<std::string, EnumDefinitionSyntaxNode*> enumDefinitions;
+	std::string currentClassName;
 
 	std::string toCppType(Type* type)
 	{
@@ -148,7 +154,7 @@ struct CppData
 
 		types.emplace(type->name);
 
-		if (isGodotType(type->name)) return "Ref<" + type->name + ">";
+		if (isGodotType(type->name) || type->name == currentClassName) return "Ref<" + type->name + ">";
 		return type->name;
 	}
 
@@ -167,7 +173,7 @@ struct CppData
 		return functionName;
 	}
 
-	std::string toWrappedCppFunction(ValueSyntaxNode* parentInstance, Token* nameToken) const
+	std::string toWrappedCppFunction(ValueSyntaxNode* parentInstance, const Token* nameToken) const
 	{
 		std::string name = nameToken->value;
 

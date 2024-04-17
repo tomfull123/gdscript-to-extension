@@ -29,8 +29,28 @@ public:
 		isInnerClass_(isInnerClass)
 	{}
 
+	std::string getName(CppData* data) const
+	{
+		std::string className;
+
+		if (name_)
+		{
+			className = name_->value;
+			if (className[0] == '_') className.erase(0, 1);
+		}
+		else
+		{
+			auto& fileName = data->fileName;
+			auto firstLetter = (char)std::toupper(fileName[0]);
+			className = firstLetter + fileName.substr(1);
+		}
+
+		return className;
+	}
+
 	void hoist(CppData* data) override
 	{
+		data->currentClassName = getName(data);
 		for (auto enumDef : enumDefinitions_) enumDef->hoist(data);
 		for (auto v : staticVariableDefinitions_) v->hoist(data);
 		for (auto f : staticFunctionDefinitions_) f->hoist(data);
@@ -94,19 +114,7 @@ private:
 
 	std::string classBody(CppData* data) const
 	{
-		std::string className;
-
-		if (name_)
-		{
-			className = name_->value;
-			if (className[0] == '_') className.erase(0, 1);
-		}
-		else
-		{
-			auto& fileName = data->fileName;
-			auto firstLetter = (char)std::toupper(fileName[0]);
-			className = firstLetter + fileName.substr(1);
-		}
+		std::string className = getName(data);
 
 		std::string staticVariableDefinitionString;
 

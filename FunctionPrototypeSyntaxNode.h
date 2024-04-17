@@ -17,11 +17,16 @@ public:
 		returnType_(returnType),
 		isStatic_(isStatic)
 	{
-		if (!returnType_) returnType_ = new Type("void");
+	}
+
+	Token* getToken() const
+	{
+		return name_;
 	}
 
 	std::string getName() const
 	{
+		if (name_->value == "_init") return "init";
 		return name_->value;
 	}
 
@@ -32,8 +37,7 @@ public:
 
 	bool isPrivate() const
 	{
-		if (name_->value == "_init") return false;
-		return name_->value[0] == '_';
+		return getName()[0] == '_';
 	}
 
 	void hoist(CppData* data) override
@@ -48,6 +52,12 @@ public:
 
 	void resolveTypes(CppData* data) override
 	{
+		if (name_->value == "_init")
+		{
+			returnType_ = new Type(data->currentClassName);
+		}
+		else if (!returnType_) returnType_ = new Type("void");
+
 		for (auto a : argDefs_) a->resolveTypes(data);
 	}
 
@@ -66,9 +76,7 @@ public:
 
 		if (isStatic_) code += "static ";
 
-		std::string name = name_->value;
-
-		if (name == "_init") name = "init";
+		std::string name = getName();
 
 		return code + data->toCppType(returnType_) + " " + name + "(" + argsString + ")";
 	}
