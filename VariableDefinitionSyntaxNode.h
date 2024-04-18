@@ -48,7 +48,12 @@ public:
 
 	void resolveTypes(CppData* data) override
 	{
-		if (initialValue_) initialValue_->resolveTypes(data);
+		if (initialValue_)
+		{
+			initialValue_->resolveTypes(data);
+
+			if (!dataType_) dataType_ = initialValue_->getType();
+		}
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override

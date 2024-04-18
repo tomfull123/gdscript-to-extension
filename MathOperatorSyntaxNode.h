@@ -39,10 +39,10 @@ public:
 
 	void resolveTypes(CppData* data) override
 	{
-		if (!type_) resolveOperatorType();
-
 		lhs_->resolveTypes(data);
 		rhs_->resolveTypes(data);
+
+		if (!type_) resolveOperatorType();
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
@@ -58,11 +58,21 @@ private:
 
 	void resolveOperatorType()
 	{
-		auto o = operatorToken_->value;
+		const auto& o = operatorToken_->value;
 
 		if (o == "==" || o == "!=" || o == ">" || o == ">=" || o == "<" || o == "<=")
 		{
 			type_ = new Type("bool");
+			return;
+		}
+
+		auto leftType = lhs_->getType();
+		auto rightType = rhs_->getType();
+
+		if (leftType && rightType && leftType->name == "int" && rightType->name == "int")
+		{
+			type_ = leftType;
+			return;
 		}
 	}
 };
