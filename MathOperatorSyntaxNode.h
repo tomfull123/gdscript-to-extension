@@ -12,8 +12,7 @@ public:
 	) :
 		operatorToken_(operatorToken),
 		lhs_(lhs),
-		rhs_(rhs),
-		type_(new Type("bool"))
+		rhs_(rhs)
 	{}
 
 	Type* getType() override
@@ -40,6 +39,8 @@ public:
 
 	void resolveTypes(CppData* data) override
 	{
+		if (!type_) resolveOperatorType();
+
 		lhs_->resolveTypes(data);
 		rhs_->resolveTypes(data);
 	}
@@ -53,5 +54,15 @@ private:
 	Token* operatorToken_;
 	ValueSyntaxNode* lhs_;
 	ValueSyntaxNode* rhs_;
-	Type* type_;
+	Type* type_ = nullptr;
+
+	void resolveOperatorType()
+	{
+		auto o = operatorToken_->value;
+
+		if (o == "==" || o == "!=" || o == ">" || o == ">=" || o == "<" || o == "<=")
+		{
+			type_ = new Type("bool");
+		}
+	}
 };
