@@ -15,6 +15,7 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"MouseButton", "MouseButton"},
 	{"Color", "Color"},
 	{"Dictionary", "std::map"},
+	{"Array", "std::vector"},
 };
 
 const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS = {
@@ -28,6 +29,7 @@ const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {
 	{"std::string", "<string>"},
 	{"std::map", "<map>"},
 	{"std::unordered_map", "<unordered_map>"},
+	{"std::vector", "<vector>"},
 };
 
 const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = {
@@ -119,7 +121,7 @@ struct CppData
 	std::unordered_map<std::string, EnumDefinitionSyntaxNode*> enumDefinitions;
 	std::string currentClassName;
 
-	std::string toCppType(Type* type)
+	std::string toCppType(const Type* type)
 	{
 		if (!type) return "auto";
 
@@ -141,7 +143,7 @@ struct CppData
 				for (int i = 0; i < type->subtypes.size(); i++)
 				{
 					const Type* subtype = type->subtypes[i];
-					subtypesString += subtype->name;
+					subtypesString += toCppType(subtype);
 
 					if (i < lastIndex) subtypesString += ", ";
 				}
@@ -154,7 +156,7 @@ struct CppData
 
 		types.emplace(type->name);
 
-		if (isGodotType(type->name) || type->name == currentClassName) return "Ref<" + type->name + ">";
+		if (isGodotType(type->name) || GDTYPES_TO_CPPTYPES.find(type->name) == GDTYPES_TO_CPPTYPES.end()) return "Ref<" + type->name + ">";
 		return type->name;
 	}
 
