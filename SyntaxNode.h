@@ -18,6 +18,7 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"Dictionary", "std::map"},
 	{"Array", "std::vector"},
 	{"this", "this"},
+	{"Mesh", "Mesh"},
 };
 
 const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS = {
@@ -48,7 +49,7 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
-	{"Color", "::named"},
+	{"Color", "named"},
 };
 
 struct Type

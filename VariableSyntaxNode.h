@@ -65,8 +65,9 @@ public:
 			code += parentInstance_->toCpp(data, indents);
 
 			auto parentName = parentInstance_->getName();
-			auto parentEnumDef = data->enumDefinitions[parentName];
-			if (parentEnumDef)
+			if (data->enumDefinitions[parentName])
+				code += "::";
+			else if (GDTYPES_TO_CPPTYPES.find(parentName) != GDTYPES_TO_CPPTYPES.end())
 				code += "::";
 			else if (CPPTYPES_TO_FUNCTION.find(parentName) == CPPTYPES_TO_FUNCTION.end())
 				code += "->";
