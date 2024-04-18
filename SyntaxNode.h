@@ -13,9 +13,11 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"InputMap", "InputMap::get_singleton()"},
 	{"Key", "Key"},
 	{"MouseButton", "MouseButton"},
+	{"Vector3", "Vector3"},
 	{"Color", "Color"},
 	{"Dictionary", "std::map"},
 	{"Array", "std::vector"},
+	{"this", "this"},
 };
 
 const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS = {
