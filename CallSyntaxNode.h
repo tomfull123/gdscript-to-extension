@@ -56,9 +56,13 @@ public:
 
 		if (instance_)
 		{
-			code += instance_->toCpp(data, indents);
+			if (isConstructorCall) code += "memnew(" + instance_->getName();
+			else
+			{
+				code += instance_->toCpp(data, indents);
 
-			if (!isConstructorCall) code += "->";
+				if (!isConstructorCall) code += "->";
+			}
 		}
 
 		std::string argsString;
@@ -76,6 +80,8 @@ public:
 		}
 
 		code += "(" + argsString + ")";
+
+		if (isConstructorCall) code += ")";
 
 		return code;
 	}
