@@ -42,8 +42,19 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return "for (auto " + variableToken_->value + " : " + array_->toCpp(data, "") + ")\n"
-			+ body_->toCpp(data, indents);
+		std::string code = "for (";
+		auto arrayType = array_->getType();
+
+		std::string varName = variableToken_->value;
+
+		if (arrayType && arrayType->name == "int")
+			code += "int " + varName + " = 0; " + varName + " < " + array_->toCpp(data, "") + "; " + varName + "++";
+		else
+			code += "auto " + varName + " : " + array_->toCpp(data, "");
+
+		code += ")\n";
+
+		return code + body_->toCpp(data, indents);
 	}
 
 private:
