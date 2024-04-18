@@ -46,16 +46,15 @@ public:
 		{
 			auto e = expressions_[i];
 			auto expressionString = e->toCpp(data, indents + "\t");
-			bool putOnNewLine = expressionString.length() > 20;
 
-			if (putOnNewLine || i == 0) expressionsString += indents + "\t";
+			if (i == 0) expressionsString += indents + "\t";
 			expressionsString += expressionString + ",";
-			if (putOnNewLine || i == lastIndex) expressionsString += "\n";
+			if (i == lastIndex) expressionsString += "\n";
 		}
 
 		std::string code = "{";
 
-		bool putOnNewLine = expressionsString.length() > 20;
+		bool putOnNewLine = expressions_.size() > 2;
 
 		if (putOnNewLine) code += "\n";
 
