@@ -65,11 +65,22 @@ public:
 	{
 		std::string argsString;
 
+		bool eachArgOnNewLine = argDefs_.size() >= 5;
+
+		if (eachArgOnNewLine) argsString += "\n\t" + indents;
+
 		for (int a = 0; a < argDefs_.size(); a++)
 		{
 			auto arg = argDefs_[a];
 			argsString += arg->toCpp(data, "");
-			if (a < argDefs_.size() - 1) argsString += ", ";
+			bool islastArg = a >= (argDefs_.size() - 1);
+			if (!islastArg) argsString += ",";
+			if (eachArgOnNewLine)
+			{
+				argsString += "\n" + indents;
+				if (!islastArg) argsString += "\t";
+			}
+			else if (!islastArg) argsString += " ";
 		}
 
 		std::string code = indents;

@@ -24,6 +24,18 @@ TEST_F(TranspileTest, PublicFunctionDefinitionWithArgs)
 	EXPECT_EQ(expected, actual);
 }
 
+TEST_F(TranspileTest, PublicFunctionDefinitionWith5Args)
+{
+	std::string input = R"(
+		func doStuff(x: String, y: int, z: int, a: String, b: bool) -> void:
+			pass
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff(\n\t\t\tString x,\n\t\t\tint y,\n\t\t\tint z,\n\t\t\tString a,\n\t\t\tbool b\n\t\t)\n\t\t{\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\", \"x\", \"y\", \"z\", \"a\", \"b\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
 TEST_F(TranspileTest, PublicFunctionDefinitionInferredReturnType)
 {
 	std::string input = R"(
