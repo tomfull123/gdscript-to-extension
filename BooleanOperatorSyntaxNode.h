@@ -46,7 +46,7 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return lhs_->toCpp(data, indents) + " " + operatorToken_->value + " " + rhs_->toCpp(data, "");
+		return lhs_->toCpp(data, indents) + " " + toCPPOperator() + " " + rhs_->toCpp(data, "");
 	}
 
 private:
@@ -54,4 +54,17 @@ private:
 	ValueSyntaxNode* lhs_;
 	ValueSyntaxNode* rhs_;
 	Type* type_;
+
+	std::string toCPPOperator() const
+	{
+		const TokenType type = operatorToken_->type;
+
+		switch (type) {
+		case TokenType::OrOperator:
+			return "||";
+		case TokenType::AndOperator:
+			return "&&";
+		}
+		return "";
+	}
 };
