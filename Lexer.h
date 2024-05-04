@@ -203,6 +203,7 @@ private:
 		if (value == "preload") return TokenType::PreloadKeyword;
 		if (value == "in") return TokenType::InKeyword;
 		if (value == "is") return TokenType::IsKeyword;
+		if (value == "or") return TokenType::OrOperator;
 
 		return TokenType::Identifier;
 	}
