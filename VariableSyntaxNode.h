@@ -70,7 +70,13 @@ public:
 			else if (GDTYPES_TO_CPPTYPES.find(parentName) != GDTYPES_TO_CPPTYPES.end())
 				code += "::";
 			else if (CPPTYPES_TO_FUNCTION.find(parentName) == CPPTYPES_TO_FUNCTION.end())
-				code += "->";
+			{
+				auto parentType = parentInstance_->getType();
+				if (parentType && GDTYPES_TO_CPPTYPES.find(parentType->name) != GDTYPES_TO_CPPTYPES.end())
+					code += ".";
+				else
+					code += "->";
+			}
 		}
 
 		auto varDef = data->variableDefinitions[name_->value];
