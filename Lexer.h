@@ -416,6 +416,8 @@ private:
 		token->value = readWhile(function);
 		token->type = type;
 
+		token->indentDepth = currentIndent_;
+
 		return token;
 	}
 
