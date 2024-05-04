@@ -204,6 +204,7 @@ private:
 		if (value == "in") return TokenType::InKeyword;
 		if (value == "is") return TokenType::IsKeyword;
 		if (value == "or") return TokenType::OrOperator;
+		if (value == "not") return TokenType::NotOperator;
 
 		return TokenType::Identifier;
 	}
