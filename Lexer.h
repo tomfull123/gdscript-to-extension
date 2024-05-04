@@ -31,6 +31,7 @@ enum class TokenType
 	SignalKeyword,
 	PreloadKeyword,
 	InKeyword,
+	IsKeyword,
 
 	FloatLiteral,
 	IntLiteral,
@@ -201,6 +202,7 @@ private:
 		if (value == "signal") return TokenType::SignalKeyword;
 		if (value == "preload") return TokenType::PreloadKeyword;
 		if (value == "in") return TokenType::InKeyword;
+		if (value == "is") return TokenType::IsKeyword;
 
 		return TokenType::Identifier;
 	}

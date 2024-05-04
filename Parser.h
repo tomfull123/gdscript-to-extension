@@ -28,6 +28,7 @@
 #include "ForSyntaxNode.h"
 #include "NullSyntaxNode.h"
 #include "BitwiseOperatorSyntaxNode.h"
+#include "IsOperatorSyntaxNode.h"
 
 struct Result
 {
@@ -628,6 +629,17 @@ private:
 				if (!rhs) return nullptr;
 
 				lhs = new EqualityOperatorSyntaxNode(boolOperator, lhs, rhs);
+
+				continue;
+			}
+
+			if (isNextTokenType(TokenType::IsKeyword))
+			{
+				auto isToken = next();
+
+				Type* type = parseType();
+
+				lhs = new IsOperatorSyntaxNode(isToken, lhs, type);
 
 				continue;
 			}

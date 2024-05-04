@@ -152,6 +152,7 @@
     <ClInclude Include="FunctionDefinitionSyntaxNode.h" />
     <ClInclude Include="FunctionPrototypeSyntaxNode.h" />
     <ClInclude Include="IfSyntaxNode.h" />
+    <ClInclude Include="IsOperatorSyntaxNode.h" />
     <ClInclude Include="LiteralValueSyntaxNode.h" />
     <ClInclude Include="MathOperatorSyntaxNode.h" />
     <ClInclude Include="NotOperatorSyntaxNode.h" />
