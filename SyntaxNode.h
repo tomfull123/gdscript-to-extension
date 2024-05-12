@@ -19,6 +19,7 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"Array", "std::vector"},
 	{"this", "this"},
 	{"Mesh", "Mesh"},
+	{"RenderingServer", "RenderingServer::get_singleton()"},
 };
 
 const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS = {
@@ -26,6 +27,8 @@ const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS =
 	{"absi", "abs"},
 	{"minf", "std::min"},
 	{"mini", "std::min"},
+	{"roundi", "std::round"},
+	{"roundf", "std::roundf"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {
@@ -46,6 +49,9 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"ArrayMesh", "<godot_cpp/classes/array_mesh.hpp>"},
 	{"SurfaceTool", "<godot_cpp/classes/surface_tool.hpp>"},
 	{"Curve", "<godot_cpp/classes/curve.hpp>"},
+	{"RenderingServer::get_singleton()", "<godot_cpp/classes/rendering_server.hpp>"},
+	{"Node3D", "<godot_cpp/classes/node3d.hpp>"},
+	{"get_viewport", "<godot_cpp/classes/viewport.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
