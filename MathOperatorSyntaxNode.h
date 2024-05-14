@@ -69,7 +69,7 @@ private:
 		auto leftType = lhs_->getType();
 		auto rightType = rhs_->getType();
 
-		if (leftType && rightType && leftType->name == "int" && rightType->name == "int")
+		if (leftType && rightType)
 		{
 			type_ = leftType;
 			return;

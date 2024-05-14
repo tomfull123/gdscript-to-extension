@@ -46,6 +46,7 @@ public:
 		bool isConstructorCall = name_->value == "new";
 
 		if (isConstructorCall && instance_) type_ = new Type(instance_->getName());
+		if (!instance_ && GDTYPES_TO_CPPTYPES.find(name_->value) != GDTYPES_TO_CPPTYPES.end()) type_ = new Type(name_->value);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
