@@ -38,11 +38,8 @@ static std::string toCppFileName(const std::string& fileName)
 	return cppFileName;
 }
 
-int main(int argc, char* argv[])
+static int transpileFile(const std::string& filePath)
 {
-	std::string filePath = "C:/Dev/Godot/Sandbox/gameplay/actions/action.gd";
-	//std::string filePath = "C:/Dev/Godot/Sandbox/gameplay/attributes/attribute.gd";
-
 	FileIO file(filePath);
 
 	if (!file.isOpen())
@@ -88,4 +85,12 @@ int main(int argc, char* argv[])
 	}
 
 	return 0;
+}
+
+int main(int argc, char* argv[])
+{
+	std::string filePath = "C:/Dev/Godot/Sandbox/gameplay/actions/action.gd";
+	//std::string filePath = "C:/Dev/Godot/Sandbox/gameplay/attributes/attribute.gd";
+
+	return transpileFile(filePath);
 }
