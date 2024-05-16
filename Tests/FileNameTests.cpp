@@ -7,7 +7,7 @@ struct FileNameTest : testing::Test
 {
 };
 
-TEST_F(FileNameTest, GDScriptFileToCPPHeader)
+TEST_F(FileNameTest, SnakeCaseToPascalCase)
 {
 	EXPECT_EQ("TestFile", FileNameTransformer::toCppFileName("test_file"));
 }
