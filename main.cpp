@@ -18,7 +18,7 @@ static void printErrors(const std::vector<ParserError>& errors)
 	}
 }
 
-static bool transpileFile(const std::string& filePath)
+static bool transpileFile(const std::string& filePath, const std::string& outputPath)
 {
 	FileIO file(filePath);
 
@@ -61,11 +61,11 @@ static bool transpileFile(const std::string& filePath)
 			c->resolveDefinitions(&data);
 			c->resolveTypes(&data);
 			std::string classCode = c->toCpp(&data, "");
-			std::string outputPath = cppFilePathWithoutExtension + ".h";
-			std::ofstream headerFile(outputPath);
+			std::string outputCppPath = FileNameTransformer::getOutputFilePath(cppFilePathWithoutExtension, cppFileName, outputPath);
+			std::ofstream headerFile(outputCppPath);
 			headerFile << classCode;
 			headerFile.close();
-			std::cout << "Transpiled " << outputPath << std::endl;
+			std::cout << "Transpiled " << outputCppPath << std::endl;
 		}
 	}
 
@@ -134,7 +134,7 @@ int main(int argc, char* argv[])
 
 	for (const auto& filePath : getFilePaths(projectPath))
 	{
-		if (!transpileFile(filePath.generic_string())) return 1;
+		if (!transpileFile(filePath.generic_string(), outputPath)) return 1;
 	}
 
 	return 0;
