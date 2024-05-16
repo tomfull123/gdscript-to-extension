@@ -6,6 +6,8 @@
 #include <filesystem>
 #include "FileNameTransformer.h"
 
+const int PROJECT_PATH_INDEX = 1;
+
 static void printErrors(const std::vector<ParserError>& errors)
 {
 	for (const auto& e : errors)
@@ -97,33 +99,40 @@ static std::vector<std::filesystem::path> getFilePaths(const std::filesystem::pa
 	return { path.string() };
 }
 
+static void readArgValue(int argc, char* argv[], int currentIndex, const std::string& flagPrefix, std::string& output)
+{
+	if (strcmp(argv[currentIndex], flagPrefix.c_str()) == 0)
+	{
+		currentIndex++;
+		if (currentIndex < argc) output = argv[currentIndex];
+		else
+		{
+			std::cout << "Missing value for " + flagPrefix + " parameter" << std::endl;
+		}
+	}
+}
+
 int main(int argc, char* argv[])
 {
-	std::string entryPointFileName;
-	std::string projectDirectory;
+	std::string projectPath;
+	std::string outputPath;
+
+	if (PROJECT_PATH_INDEX < argc) projectPath = argv[PROJECT_PATH_INDEX];
 
 	for (int i = 2; i < argc; i++)
 	{
-		if (strcmp(argv[i], "-p") == 0)
-		{
-			i++;
-			if (i < argc) projectDirectory = argv[i];
-			else
-			{
-				std::cout << "Missing value for -p parameter" << std::endl;
-			}
-		}
+		readArgValue(argc, argv, i, "-o", outputPath); // Output Path
 	}
 
-	if (projectDirectory.empty())
+	if (projectPath.empty())
 	{
 		std::cout << "No directory provided" << std::endl;
 		return 1;
 	}
 
-	auto filePaths = getFilePaths(projectDirectory);
+	std::cout << "Looking for files in: " << projectPath << "\n" << std::endl;
 
-	for (const auto& filePath : filePaths)
+	for (const auto& filePath : getFilePaths(projectPath))
 	{
 		if (!transpileFile(filePath.generic_string())) return 1;
 	}
