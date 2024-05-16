@@ -13,7 +13,7 @@ public:
 
 	Type* getType() override
 	{
-		return nullptr;
+		return type_;
 	}
 
 	std::string getName() override
@@ -34,6 +34,13 @@ public:
 	void resolveTypes(CppData* data) override
 	{
 		for (auto e : expressions_) e->resolveTypes(data);
+		if (!expressions_.empty())
+		{
+			auto elementType = getElementType();
+			std::vector<Type*> subtypes;
+			if (elementType) subtypes.push_back(elementType);
+			type_ = new Type("Array", subtypes);
+		}
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
@@ -67,4 +74,16 @@ public:
 
 private:
 	std::vector<ValueSyntaxNode*> expressions_;
+	Type* type_ = nullptr;
+
+	Type* getElementType()
+	{
+		for (auto e : expressions_)
+		{
+			auto elementType = e->getType();
+			if (elementType) return elementType;
+		}
+
+		return nullptr;
+	}
 };

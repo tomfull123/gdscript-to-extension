@@ -69,7 +69,7 @@ TEST_F(TranspileTest, MemberVariableVarDictionaryIntToInt)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <map>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::map x = {\n\t\t\t{1,2},\n\t\t};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <map>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::map<int, int> x = {\n\t\t\t{1,2},\n\t\t};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
 
@@ -115,5 +115,57 @@ TEST_F(TranspileTest, MemberVariableVarVector3PlusVector3XYZ)
 
 	auto actual = transpile(input);
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tVector3 x = Vector3(1, 2, 3);\n\t\tVector3 y = Vector3((x.x + 1), (x.y + 2), (x.z + 3));\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, MemberVariableVarArrayEmpty)
+{
+	std::string input = R"(
+		var x: Array = [
+		]
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <vector>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::vector x = {};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, MemberVariableVarArrayWithElements)
+{
+	std::string input = R"(
+		var x: Array = [
+			1, 3, 4
+		]
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <vector>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::vector<int> x = {\n\t\t\t1,3,4,\n\t\t};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, MemberVariableVarArrayWithSubarraysElements)
+{
+	std::string input = R"(
+		var x: Array = [
+			[ 1, 3, 4 ]
+		]
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <vector>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::vector<std::vector<int>> x = {\t\t\t{\n\t\t\t\t1,3,4,\n\t\t\t},\n};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, MemberVariableVarArrayWithSubarraysElementsEmptyFirst)
+{
+	std::string input = R"(
+		var x: Array = [
+			[],
+			[ 1, 3, 4 ]
+		]
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <vector>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::vector<std::vector<int>> x = {\t\t\t{},{\n\t\t\t\t1,3,4,\n\t\t\t},\n};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }

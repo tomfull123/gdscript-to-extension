@@ -53,6 +53,14 @@ public:
 			initialValue_->resolveTypes(data);
 
 			if (!dataType_) dataType_ = initialValue_->getType();
+			else
+			{
+				auto initialValueType = initialValue_->getType();
+				if (initialValueType && dataType_->subtypes.size() < initialValueType->subtypes.size())
+				{
+					dataType_ = initialValueType;
+				}
+			}
 		}
 	}
 
