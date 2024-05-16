@@ -13,7 +13,12 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"InputMap", "InputMap::get_singleton()"},
 	{"Key", "Key"},
 	{"MouseButton", "MouseButton"},
+	{"Vector2", "Vector2"},
+	{"Vector2i", "Vector2i"},
 	{"Vector3", "Vector3"},
+	{"Vector3i", "Vector3i"},
+	{"Vector4", "Vector4"},
+	{"Vector4i", "Vector4i"},
 	{"Color", "Color"},
 	{"Dictionary", "std::map"},
 	{"Array", "std::vector"},
@@ -37,6 +42,10 @@ const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {
 	{"std::map", "<map>"},
 	{"std::unordered_map", "<unordered_map>"},
 	{"std::vector", "<vector>"},
+	{"std::min", "<algorithm>"},
+	{"std::round", "<cmath>"},
+	{"std::roundf", "<cmath>"},
+	{"std::abs", "<cmath>"},
 };
 
 const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = {
@@ -54,6 +63,13 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"Node3D", "<godot_cpp/classes/node3d.hpp>"},
 	{"get_viewport", "<godot_cpp/classes/viewport.hpp>"},
 	{"ResourceLoader::get_singleton()", "<godot_cpp/classes/resource_loader.hpp>"},
+	{"Vector2", "<godot_cpp/variant/vector2.hpp>"},
+	{"Vector2i", "<godot_cpp/variant/vector2i.hpp>"},
+	{"Vector3", "<godot_cpp/variant/vector3.hpp>"},
+	{"Vector3i", "<godot_cpp/variant/vector3i.hpp>"},
+	{"Vector4", "<godot_cpp/variant/vector4.hpp>"},
+	{"Vector4i", "<godot_cpp/variant/vector4i.hpp>"},
+	{"Color", "<godot_cpp/variant/color.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
