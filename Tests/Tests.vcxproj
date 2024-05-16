@@ -141,6 +141,7 @@
     <ClCompile Include="ClassTests.cpp" />
     <ClCompile Include="DictionaryTests.cpp" />
     <ClCompile Include="EnumDefinitionTests.cpp" />
+    <ClCompile Include="FileNameTests.cpp" />
     <ClCompile Include="ForLoopTests.cpp" />
     <ClCompile Include="FunctionCallTests.cpp" />
     <ClCompile Include="FunctionDefinitionTests.cpp" />

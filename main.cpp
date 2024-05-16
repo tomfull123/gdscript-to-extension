@@ -70,25 +70,25 @@ static bool transpileFile(const std::string& filePath)
 	return true;
 }
 
-static std::vector<std::string> getGDFilesInDirectory(const std::filesystem::path& directory)
+static std::vector<std::filesystem::path> getGDFilesInDirectory(const std::filesystem::path& directory)
 {
-	std::vector<std::string> filePaths;
+	std::vector<std::filesystem::path> filePaths;
 
 	for (auto& entry : std::filesystem::directory_iterator(directory))
 	{
-		auto filePath = entry.path().string();
-		if (std::filesystem::is_directory(entry))
+		const auto& filePath = entry;
+		if (entry.is_directory())
 		{
 			auto currentDirectoryFiles = getGDFilesInDirectory(filePath);
 			filePaths.insert(filePaths.end(), currentDirectoryFiles.begin(), currentDirectoryFiles.end());
 		}
-		else if (filePath.ends_with(".gd")) filePaths.push_back(filePath);
+		else if (filePath.path().extension() == ".gd") filePaths.push_back(filePath);
 	}
 
 	return filePaths;
 }
 
-static std::vector<std::string> getFilePaths(const std::filesystem::path& path)
+static std::vector<std::filesystem::path> getFilePaths(const std::filesystem::path& path)
 {
 	if (std::filesystem::is_directory(path))
 	{
@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
 
 	for (const auto& filePath : filePaths)
 	{
-		if (!transpileFile(filePath)) return 1;
+		if (!transpileFile(filePath.generic_string())) return 1;
 	}
 
 	return 0;
