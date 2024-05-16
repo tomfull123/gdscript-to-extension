@@ -83,6 +83,7 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"Resource", "<godot_cpp/classes/resource.hpp>"},
 	{"Thread", "<godot_cpp/classes/thread.hpp>"},
 	{"Viewport", "<godot_cpp/classes/viewport.hpp>"},
+	{"String", "<godot_cpp/variant/string.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
