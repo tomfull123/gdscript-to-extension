@@ -3,6 +3,7 @@
 #include "Lexer.h"
 #include "Parser.h"
 #include <iostream>
+#include <filesystem>
 
 static void printErrors(const std::vector<ParserError>& errors)
 {
@@ -38,19 +39,21 @@ static std::string toCppFileName(const std::string& fileName)
 	return cppFileName;
 }
 
-static int transpileFile(const std::string& filePath)
+static bool transpileFile(const std::string& filePath)
 {
 	FileIO file(filePath);
 
 	if (!file.isOpen())
 	{
 		std::cout << "File not found" << std::endl;
-		return 1;
+		return false;
 	}
 
 	std::string allLines;
 
 	file.readAllLines(allLines);
+
+	file.close();
 
 	const Result* result = Parser::parse(allLines);
 
@@ -59,6 +62,7 @@ static int transpileFile(const std::string& filePath)
 	if (!errors.empty())
 	{
 		printErrors(errors);
+		return false;
 	}
 	else
 	{
@@ -78,19 +82,74 @@ static int transpileFile(const std::string& filePath)
 			c->resolveDefinitions(&data);
 			c->resolveTypes(&data);
 			std::string classCode = c->toCpp(&data, "");
-			std::ofstream headerFile(cppFilePathWithoutExtension + ".h");
+			std::string outputPath = cppFilePathWithoutExtension + ".h";
+			std::ofstream headerFile(outputPath);
 			headerFile << classCode;
 			headerFile.close();
+			std::cout << "Transpiled " << outputPath << std::endl;
 		}
 	}
 
-	return 0;
+	return true;
+}
+
+static std::vector<std::string> getGDFilesInDirectory(const std::filesystem::path& directory)
+{
+	std::vector<std::string> filePaths;
+
+	for (auto& entry : std::filesystem::directory_iterator(directory))
+	{
+		auto filePath = entry.path().string();
+		if (std::filesystem::is_directory(entry))
+		{
+			auto currentDirectoryFiles = getGDFilesInDirectory(filePath);
+			filePaths.insert(filePaths.end(), currentDirectoryFiles.begin(), currentDirectoryFiles.end());
+		}
+		else if (filePath.ends_with(".gd")) filePaths.push_back(filePath);
+	}
+
+	return filePaths;
+}
+
+static std::vector<std::string> getFilePaths(const std::filesystem::path& path)
+{
+	if (std::filesystem::is_directory(path))
+	{
+		return getGDFilesInDirectory(path);
+	}
+	return { path.string() };
 }
 
 int main(int argc, char* argv[])
 {
-	std::string filePath = "C:/Dev/Godot/Sandbox/gameplay/actions/action.gd";
-	//std::string filePath = "C:/Dev/Godot/Sandbox/gameplay/attributes/attribute.gd";
+	std::string entryPointFileName;
+	std::string projectDirectory;
 
-	return transpileFile(filePath);
+	for (int i = 2; i < argc; i++)
+	{
+		if (strcmp(argv[i], "-p") == 0)
+		{
+			i++;
+			if (i < argc) projectDirectory = argv[i];
+			else
+			{
+				std::cout << "Missing value for -p parameter" << std::endl;
+			}
+		}
+	}
+
+	if (projectDirectory.empty())
+	{
+		std::cout << "No directory provided" << std::endl;
+		return 1;
+	}
+
+	auto filePaths = getFilePaths(projectDirectory);
+
+	for (const auto& filePath : filePaths)
+	{
+		if (!transpileFile(filePath)) return 1;
+	}
+
+	return 0;
 }
