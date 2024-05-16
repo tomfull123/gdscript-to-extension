@@ -37,6 +37,15 @@ const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS =
 	{"roundf", "std::roundf"},
 };
 
+const std::unordered_set<std::string> CPP_PRIMITIVE_TYPES = {
+	"int",
+	"float",
+	"double",
+	"bool",
+	"void",
+	"this",
+};
+
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {
 	{"std::string", "<string>"},
 	{"std::map", "<map>"},
@@ -200,8 +209,6 @@ struct CppData
 			types.emplace(it->second);
 			return it->second;
 		}
-
-		types.emplace(functionName);
 
 		return functionName;
 	}

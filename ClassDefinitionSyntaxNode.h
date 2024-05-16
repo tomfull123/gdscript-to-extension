@@ -219,8 +219,11 @@ private:
 			std::unordered_set<std::string> includes;
 			for (const auto& type : types)
 			{
+				if (CPP_PRIMITIVE_TYPES.contains(type)) continue;
+
 				auto include = data->getIncludePath(type);
 				if (include != "") includes.emplace(include);
+				else includes.emplace("\"" + type + ".h\"");
 			}
 
 			for (const auto& include : includes)
