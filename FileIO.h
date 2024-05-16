@@ -19,6 +19,8 @@ public:
 	std::string readAllLines();
 	void readAllLines(std::string& buffer);
 
+	void close();
+
 private:
 	std::ifstream file_;
 

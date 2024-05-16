@@ -7,7 +7,7 @@ FileIO::FileIO(const std::string& filePath) :
 
 FileIO::~FileIO()
 {
-	file_.close();
+	close();
 }
 
 int FileIO::getSize()
@@ -33,6 +33,11 @@ void FileIO::readAllLines(std::string& allLines)
 	allLines = std::string(
 		(std::istreambuf_iterator<char>(file_)),
 		std::istreambuf_iterator<char>());
+}
+
+void FileIO::close()
+{
+	if (isOpen()) file_.close();
 }
 
 void FileIO::setCursorToBeginning()
