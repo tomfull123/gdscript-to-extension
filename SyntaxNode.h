@@ -70,6 +70,10 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"Vector4", "<godot_cpp/variant/vector4.hpp>"},
 	{"Vector4i", "<godot_cpp/variant/vector4i.hpp>"},
 	{"Color", "<godot_cpp/variant/color.hpp>"},
+	{"Mesh", "<godot_cpp/classes/mesh.hpp>"},
+	{"Resource", "<godot_cpp/classes/resource.hpp>"},
+	{"Thread", "<godot_cpp/classes/thread.hpp>"},
+	{"Viewport", "<godot_cpp/classes/viewport.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
