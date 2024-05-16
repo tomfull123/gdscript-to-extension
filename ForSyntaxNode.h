@@ -7,11 +7,11 @@ class ForSyntaxNode : public SyntaxNode
 {
 public:
 	ForSyntaxNode(
-		Token* variableToken,
+		VariableDefinitionSyntaxNode* variableDefinition,
 		ValueSyntaxNode* array,
 		BodySyntaxNode* body
 	) :
-		variableToken_(variableToken),
+		variableDefinition_(variableDefinition),
 		array_(array),
 		body_(body)
 	{
@@ -24,18 +24,21 @@ public:
 
 	void hoist(CppData* data) override
 	{
+		variableDefinition_->hoist(data);
 		array_->hoist(data);
 		body_->hoist(data);
 	}
 
 	void resolveDefinitions(CppData* data) override
 	{
+		variableDefinition_->resolveDefinitions(data);
 		array_->resolveDefinitions(data);
 		body_->resolveDefinitions(data);
 	}
 
 	void resolveTypes(CppData* data) override
 	{
+		variableDefinition_->resolveTypes(data);
 		array_->resolveTypes(data);
 		body_->resolveTypes(data);
 	}
@@ -45,7 +48,8 @@ public:
 		std::string code = "for (";
 		auto arrayType = array_->getType();
 
-		std::string varName = variableToken_->value;
+		std::string varName = variableDefinition_->getName();
+		Type* varType = variableDefinition_->getType();
 
 		if (arrayType && arrayType->name == "int")
 			code += "int " + varName + " = 0; " + varName + " < " + array_->toCpp(data, "") + "; " + varName + "++";
@@ -58,7 +62,7 @@ public:
 	}
 
 private:
-	Token* variableToken_;
+	VariableDefinitionSyntaxNode* variableDefinition_;
 	ValueSyntaxNode* array_;
 	BodySyntaxNode* body_;
 };

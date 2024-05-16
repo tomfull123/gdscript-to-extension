@@ -907,7 +907,9 @@ private:
 
 		auto body = parseBody(forToken->indentDepth, forToken->lineNumber);
 
-		return new ForSyntaxNode(variableToken, arrayToken, body);
+		auto variableDefinition = new VariableDefinitionSyntaxNode(variableToken, nullptr, nullptr, false, false);
+
+		return new ForSyntaxNode(variableDefinition, arrayToken, body);
 	}
 
 	SyntaxNode* parseExpression()
