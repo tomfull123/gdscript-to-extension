@@ -62,7 +62,14 @@ public:
 			{
 				code += instance_->toCpp(data, indents);
 
-				if (!isConstructorCall) code += "->";
+				if (!isConstructorCall)
+				{
+					auto parentType = instance_->getType();
+					if (parentType && GDTYPES_TO_CPPTYPES.find(parentType->name) != GDTYPES_TO_CPPTYPES.end())
+						code += ".";
+					else
+						code += "->";
+				}
 			}
 		}
 
