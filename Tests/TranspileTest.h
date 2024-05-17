@@ -8,7 +8,7 @@ struct TranspileTest : testing::Test
 {
 	std::string transpile(const std::string& input) const
 	{
-		Result* result = Parser::parse(input);
+		const Result* result = Parser::parse(input);
 
 		const auto& errors = result->errors;
 

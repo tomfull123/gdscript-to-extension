@@ -106,6 +106,18 @@ TEST_F(TranspileTest, MemberVariableVarVector3DividedByInt)
 	EXPECT_EQ(expected, actual);
 }
 
+TEST_F(TranspileTest, MemberVariableVarVector3DividedByVar)
+{
+	std::string input = R"(
+		var y := 10
+		var x := Vector3(1, 2, 3) / y
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/variant/vector3.hpp>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tint y = 10;\n\t\tVector3 x = (Vector3(1, 2, 3) / y);\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
 TEST_F(TranspileTest, MemberVariableVarVector3PlusVector3XYZ)
 {
 	std::string input = R"(

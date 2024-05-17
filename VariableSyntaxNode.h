@@ -24,10 +24,7 @@ public:
 
 	Type* getType() override
 	{
-		if (type_) return type_;
-		if (variableDefinition_) return type_ = variableDefinition_->getType();
-		if (enumDefinition_) return type_ = new Type(enumDefinition_->getName());
-		return nullptr;
+		return type_;
 	}
 
 	std::string getName() override
@@ -42,18 +39,31 @@ public:
 
 	void resolveDefinitions(CppData* data) override
 	{
-		variableDefinition_ = data->variableDefinitions[name_->value];
-
-		if (parentInstance_)
+		if (!parentInstance_) variableDefinition_ = data->variableDefinitions[name_->value];
+		else
 		{
 			parentInstance_->resolveDefinitions(data);
 			if (!variableDefinition_) enumDefinition_ = data->enumDefinitions[parentInstance_->getName()];
 		}
+
+		if (variableDefinition_) variableDefinition_->resolveDefinitions(data);
+		if (enumDefinition_) enumDefinition_->resolveDefinitions(data);
 	}
 
 	void resolveTypes(CppData* data) override
 	{
 		if (parentInstance_) parentInstance_->resolveTypes(data);
+
+		if (variableDefinition_)
+		{
+			variableDefinition_->resolveTypes(data);
+			type_ = variableDefinition_->getType();
+		}
+		else if (enumDefinition_)
+		{
+			enumDefinition_->resolveTypes(data);
+			type_ = new Type(enumDefinition_->getName());
+		}
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
