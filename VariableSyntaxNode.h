@@ -77,12 +77,12 @@ public:
 			auto parentName = parentInstance_->getName();
 			if (data->enumDefinitions[parentName])
 				code += "::";
-			else if (GDTYPES_TO_CPPTYPES.find(parentName) != GDTYPES_TO_CPPTYPES.end())
+			else if (GDTYPES_TO_CPPTYPES.contains(parentName))
 				code += "::";
-			else if (CPPTYPES_TO_FUNCTION.find(parentName) == CPPTYPES_TO_FUNCTION.end())
+			else if (!CPPTYPES_TO_FUNCTION.contains(parentName))
 			{
 				auto parentType = parentInstance_->getType();
-				if (parentType && GDTYPES_TO_CPPTYPES.find(parentType->name) != GDTYPES_TO_CPPTYPES.end())
+				if (parentType && GDTYPES_TO_CPPTYPES.contains(parentType->name))
 					code += ".";
 				else
 					code += "->";
@@ -96,7 +96,8 @@ public:
 			code += "this";
 		}
 		// static call
-		else if (!parentInstance_ && !varDef) code += data->toCppType(new Type(name_->value));
+		else if (!parentInstance_ && !varDef && GDTYPES_TO_CPPTYPES.contains(name_->value))
+			code += data->toCppType(new Type(name_->value));
 		else
 		{
 			code += data->toWrappedCppFunction(parentInstance_, name_);

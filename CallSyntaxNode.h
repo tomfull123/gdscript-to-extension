@@ -57,7 +57,8 @@ public:
 
 		if (instance_)
 		{
-			if (isConstructorCall) code += "memnew(" + instance_->getName();
+			auto instanceName = instance_->getName();
+			if (isConstructorCall) code += "memnew(" + instanceName;
 			else
 			{
 				code += instance_->toCpp(data, indents);
@@ -65,10 +66,19 @@ public:
 				if (!isConstructorCall)
 				{
 					auto parentType = instance_->getType();
-					if (parentType && GDTYPES_TO_CPPTYPES.find(parentType->name) != GDTYPES_TO_CPPTYPES.end())
-						code += ".";
-					else
+					auto varDef = data->variableDefinitions[instanceName];
+
+					if ((parentType && data->isGodotType(parentType->name)) || (data->isGodotType(instanceName) || GDTYPES_TO_CPPTYPES.contains(instanceName)))
 						code += "->";
+					else if (parentType && !data->isGodotType(parentType->name))
+						code += ".";
+					else if (!parentType && !varDef && !instance_->hasParent()) // static method call
+					{
+						data->types.emplace(instanceName);
+						code += "::";
+					}
+					else
+						code += ".";
 				}
 			}
 		}

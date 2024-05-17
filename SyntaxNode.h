@@ -197,8 +197,8 @@ struct CppData
 
 		types.emplace(type->name);
 
-		if (isGodotType(type->name) || GDTYPES_TO_CPPTYPES.find(type->name) == GDTYPES_TO_CPPTYPES.end()) return "Ref<" + type->name + ">";
-		return type->name;
+		if (isGodotType(type->name) || GDTYPES_TO_CPPTYPES.contains(type->name)) return "Ref<" + type->name + ">";
+		return "Ref<" + type->name + ">";
 	}
 
 	std::string toCppFunction(const std::string& functionName)
@@ -247,7 +247,6 @@ struct CppData
 
 	bool isGodotType(const std::string& type) const
 	{
-		auto it = GODOTTYPES_TO_INCLUDE_PATH.find(type);
-		return (it != GODOTTYPES_TO_INCLUDE_PATH.end());
+		return GODOTTYPES_TO_INCLUDE_PATH.contains(type);
 	}
 };
