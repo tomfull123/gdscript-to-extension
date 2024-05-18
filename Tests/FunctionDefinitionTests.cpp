@@ -173,7 +173,7 @@ TEST_F(TranspileTest, FunctionDefinitionInit)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include \"Test.h\"\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tRef<Test> init(int x)\n\t\t{\n\t\t\tthis->x = x;\n\t\t\treturn this;\n\t\t}\n\n\t\tint x;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"init\", \"x\"), &Test::init);\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tRef<Test> init(int x)\n\t\t{\n\t\t\tthis->x = x;\n\t\t\treturn this;\n\t\t}\n\n\t\tint x;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"init\", \"x\"), &Test::init);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
 

@@ -220,6 +220,7 @@ private:
 			for (const auto& type : types)
 			{
 				if (CPP_PRIMITIVE_TYPES.contains(type)) continue;
+				if (type == data->currentClassName) continue;
 
 				auto include = data->getIncludePath(type);
 				if (include != "") includes.emplace(include);
