@@ -90,6 +90,21 @@ const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
 	{"Color", "named"},
 };
 
+const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_METHODS_TO_CPP_METHODS = {
+	{
+		"Array",
+		{
+			{"append", "push_back"}
+		}
+	},
+	{
+		"Dictionary",
+		{
+			{"has", "contains"}
+		}
+	}
+};
+
 struct Type
 {
 	Type(
@@ -201,7 +216,7 @@ struct CppData
 		return "Ref<" + type->name + ">";
 	}
 
-	std::string toCppFunction(const std::string& functionName)
+	std::string toCppFunction(const std::string& functionName, const std::string& parentType)
 	{
 		auto it = GDFUNCTIONS_TO_CPPFUNCTIONS.find(functionName);
 
@@ -209,6 +224,21 @@ struct CppData
 		{
 			types.emplace(it->second);
 			return it->second;
+		}
+
+		if (parentType != "")
+		{
+			auto methods = GDTYPE_METHODS_TO_CPP_METHODS.find(parentType);
+
+			if (methods != GDTYPE_METHODS_TO_CPP_METHODS.end())
+			{
+				auto method = methods->second.find(functionName);
+
+				if (method != methods->second.end())
+				{
+					return method->second;
+				}
+			}
 		}
 
 		return functionName;

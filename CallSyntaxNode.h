@@ -94,7 +94,13 @@ public:
 
 		if (!isConstructorCall)
 		{
-			code += data->toCppFunction(name_->value);
+			std::string instanceTypeString = "";
+			if (instance_)
+			{
+				const auto* instanceType = instance_->getType();
+				if (instanceType) instanceTypeString = instanceType->name;
+			}
+			code += data->toCppFunction(name_->value, instanceTypeString);
 		}
 
 		code += "(" + argsString + ")";
