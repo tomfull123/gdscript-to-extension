@@ -521,7 +521,7 @@ private:
 	ValueSyntaxNode* parseDictionaryValue()
 	{
 		next(); // eat {
-		std::map<ValueSyntaxNode*, ValueSyntaxNode*> values;
+		std::unordered_map<ValueSyntaxNode*, ValueSyntaxNode*> values;
 
 		while (!isNextTokenType(TokenType::CloseCurlyBracketSeparator))
 		{

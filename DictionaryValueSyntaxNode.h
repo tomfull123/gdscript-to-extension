@@ -2,13 +2,13 @@
 
 #include "SyntaxNode.h"
 #include "LiteralValueSyntaxNode.h"
-#include <map>
+#include <unordered_map>
 
 class DictionaryValueSyntaxNode : public ValueSyntaxNode
 {
 public:
 	explicit DictionaryValueSyntaxNode(
-		const std::map<ValueSyntaxNode*, ValueSyntaxNode*>& values
+		const std::unordered_map<ValueSyntaxNode*, ValueSyntaxNode*>& values
 	) :
 		values_(values)
 	{
@@ -75,6 +75,6 @@ public:
 	}
 
 private:
-	std::map<ValueSyntaxNode*, ValueSyntaxNode*> values_;
+	std::unordered_map<ValueSyntaxNode*, ValueSyntaxNode*> values_;
 	Type* type_;
 };
