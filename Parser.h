@@ -521,7 +521,8 @@ private:
 	ValueSyntaxNode* parseDictionaryValue()
 	{
 		next(); // eat {
-		std::unordered_map<ValueSyntaxNode*, ValueSyntaxNode*> values;
+		std::vector<ValueSyntaxNode*> keys;
+		std::vector<ValueSyntaxNode*> values;
 
 		while (!isNextTokenType(TokenType::CloseCurlyBracketSeparator))
 		{
@@ -530,7 +531,11 @@ private:
 			if (!consume(TokenType::ColonSeparator)) return nullptr;
 
 			auto value = parseValueExpression();
-			if (value) values[key] = value;
+			if (value)
+			{
+				keys.push_back(key);
+				values.push_back(value);
+			}
 
 			if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
 			else if (!isNextTokenType(TokenType::CloseCurlyBracketSeparator)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
@@ -538,7 +543,7 @@ private:
 
 		next(); // eat }
 
-		return new DictionaryValueSyntaxNode(values);
+		return new DictionaryValueSyntaxNode(keys, values);
 	}
 
 	ValueSyntaxNode* parsePreload()

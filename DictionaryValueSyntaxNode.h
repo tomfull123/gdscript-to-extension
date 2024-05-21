@@ -7,9 +7,11 @@
 class DictionaryValueSyntaxNode : public ValueSyntaxNode
 {
 public:
-	explicit DictionaryValueSyntaxNode(
-		const std::unordered_map<ValueSyntaxNode*, ValueSyntaxNode*>& values
+	DictionaryValueSyntaxNode(
+		const std::vector<ValueSyntaxNode*>& keys,
+		const std::vector<ValueSyntaxNode*>& values
 	) :
+		keys_(keys),
 		values_(values)
 	{
 	}
@@ -26,36 +28,28 @@ public:
 
 	void hoist(CppData* data) override
 	{
-		for (const auto& v : values_)
-		{
-			v.first->hoist(data);
-			v.second->hoist(data);
-		}
+		for (const auto& k : keys_) k->hoist(data);
+		for (const auto& v : values_) v->hoist(data);
 	}
 
 	void resolveDefinitions(CppData* data) override
 	{
-		for (const auto& v : values_)
-		{
-			v.first->resolveDefinitions(data);
-			v.second->resolveDefinitions(data);
-		}
+		for (const auto& k : keys_) k->resolveDefinitions(data);
+		for (const auto& v : values_) v->resolveDefinitions(data);
 	}
 
 	void resolveTypes(CppData* data) override
 	{
-		for (const auto& v : values_)
-		{
-			v.first->resolveTypes(data);
-			v.second->resolveTypes(data);
-		}
+		for (const auto& k : keys_) k->resolveTypes(data);
+		for (const auto& v : values_) v->resolveTypes(data);
 
-		if (!values_.empty())
+		if (!keys_.empty() && !values_.empty())
 		{
 			std::vector<Type*> subtypes;
-			auto value = values_.begin();
-			subtypes.push_back(value->first->getType());
-			subtypes.push_back(value->second->getType());
+			auto key = keys_[0];
+			auto value = values_[0];
+			subtypes.push_back(key->getType());
+			subtypes.push_back(value->getType());
 			type_ = new Type("Dictionary", subtypes);
 		}
 	}
@@ -64,10 +58,10 @@ public:
 	{
 		std::string valuesString;
 
-		for (const auto& v : values_)
+		for (int i = 0; i < keys_.size(); i++)
 		{
-			auto key = v.first;
-			auto value = v.second;
+			auto key = keys_[i];
+			auto value = values_[i];
 			valuesString += indents + "\t{" + key->toCpp(data, indents) + "," + value->toCpp(data, "") + "},\n";
 		}
 
@@ -75,6 +69,7 @@ public:
 	}
 
 private:
-	std::unordered_map<ValueSyntaxNode*, ValueSyntaxNode*> values_;
+	std::vector<ValueSyntaxNode*> keys_;
+	std::vector<ValueSyntaxNode*> values_;
 	Type* type_;
 };
