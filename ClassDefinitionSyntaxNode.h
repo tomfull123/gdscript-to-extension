@@ -117,9 +117,13 @@ private:
 		std::string className = getName(data);
 
 		std::string staticVariableDefinitionString;
+		std::string staticVariableDeclarationString;
 
 		for (auto v : staticVariableDefinitions_)
-			staticVariableDefinitionString += "\t" + v->toCpp(data, "\t\t") + ";\n";
+		{
+			staticVariableDefinitionString += "\t\t" + v->variableCpp(data) + ";\n";
+			staticVariableDeclarationString += "\t" + v->variableDeclarationCpp(data, "\t") + ";\n";
+		}
 
 		std::string publicStaticFunctionDefinitionString;
 		std::string privateStaticFunctionDefinitionString;
@@ -185,14 +189,14 @@ private:
 
 		return ""
 			+ enumDefString
-			+ innerClassesString
-			+ staticVariableDefinitionString +
+			+ innerClassesString +
 			"\tclass " + className + " : public " + inherits->name + "\n"
 			"\t{\n"
 			"\t\tGDCLASS(" + className + ", " + inherits->name + ")\n"
 			"\tpublic:\n"
 			+ publicMemberFunctionDefinitionString
 			+ publicStaticFunctionDefinitionString
+			+ staticVariableDefinitionString
 			+ publicMemberVariableDefinitionString +
 			"\tprivate:\n"
 			+ privateMemberVariableDefinitionString +
@@ -205,7 +209,8 @@ private:
 			+ bindMethodsString
 			+ bindStaticMethodsString +
 			"\t\t}\n"
-			"\t};\n";
+			"\t};\n"
+			+ staticVariableDeclarationString;
 	}
 
 	std::string cppIncludes(const CppData* data) const

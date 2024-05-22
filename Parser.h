@@ -172,7 +172,7 @@ private:
 			assignmentValue = parseValueExpression();
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, false, false);
+		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, false, false, false);
 	}
 
 	FunctionPrototypeSyntaxNode* parseFunctionProtoype(bool isStatic)
@@ -261,7 +261,7 @@ private:
 		return consume(TokenType::Identifier);
 	}
 
-	VariableDefinitionSyntaxNode* parseVariableDefinition(bool isClassMember)
+	VariableDefinitionSyntaxNode* parseVariableDefinition(bool isClassMember, bool isStatic)
 	{
 		auto varOrConst = next();
 
@@ -288,7 +288,7 @@ private:
 			assignmentValue = parseValueExpression();
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->type == TokenType::ConstKeyword, isClassMember);
+		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->type == TokenType::ConstKeyword, isClassMember, isStatic);
 	}
 
 	VariableDefinitionSyntaxNode* parseSignalDefinitions()
@@ -314,7 +314,7 @@ private:
 			next(); // eat )
 		}
 
-		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false, true);
+		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false, true, false);
 	}
 
 	void parseAnnotation()
@@ -405,7 +405,7 @@ private:
 				break;
 			case TokenType::VarKeyword:
 			case TokenType::ConstKeyword:
-				memberVariableDefinitions.push_back(parseVariableDefinition(true));
+				memberVariableDefinitions.push_back(parseVariableDefinition(true, false));
 				break;
 			case TokenType::SignalKeyword:
 				memberVariableDefinitions.push_back(parseSignalDefinitions());
@@ -427,7 +427,7 @@ private:
 
 				if (isNextTokenType(TokenType::VarKeyword) || isNextTokenType(TokenType::ConstKeyword))
 				{
-					staticVariableDefinitions.push_back(parseVariableDefinition(false));
+					staticVariableDefinitions.push_back(parseVariableDefinition(false, true));
 					break;
 				}
 
@@ -912,7 +912,7 @@ private:
 
 		auto body = parseBody(forToken->indentDepth, forToken->lineNumber);
 
-		auto variableDefinition = new VariableDefinitionSyntaxNode(variableToken, nullptr, nullptr, false, false);
+		auto variableDefinition = new VariableDefinitionSyntaxNode(variableToken, nullptr, nullptr, false, false, false);
 
 		return new ForSyntaxNode(variableDefinition, arrayToken, body);
 	}
@@ -934,7 +934,7 @@ private:
 			return parseIfStatement();
 		case TokenType::VarKeyword:
 		case TokenType::ConstKeyword:
-			return parseVariableDefinition(false);
+			return parseVariableDefinition(false, false);
 		case TokenType::PassKeyword:
 			next(); // eat pass
 			return nullptr;

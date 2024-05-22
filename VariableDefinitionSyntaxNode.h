@@ -10,13 +10,15 @@ public:
 		Type* dataType,
 		ValueSyntaxNode* initialValue,
 		bool isConstant,
-		bool isClassMember
+		bool isClassMember,
+		bool isStatic
 	) :
 		name_(name),
 		dataType_(dataType),
 		initialValue_(initialValue),
 		isConstant_(isConstant),
-		isClassMember_(isClassMember)
+		isClassMember_(isClassMember),
+		isStatic_(isStatic)
 	{
 	}
 
@@ -64,10 +66,11 @@ public:
 		}
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string variableCpp(CppData* data, bool outsideClass = false)
 	{
 		std::string code;
 
+		if (isStatic_ && !outsideClass) code += "static ";
 		if (isConstant_) code += "const ";
 
 		if (!dataType_)
@@ -80,11 +83,21 @@ public:
 			else code += "Variant";
 		}
 		else code += data->toCppType(dataType_);
-		code += " " + name_->value;
-
-		if (initialValue_) code += " = " + initialValue_->toCpp(data, indents);
+		code += " ";
+		if (outsideClass) code += data->currentClassName + "::";
+		code += name_->value;
 
 		return code;
+	}
+
+	std::string variableDeclarationCpp(CppData* data, const std::string& indents)
+	{
+		return variableCpp(data, true) + assignInitialValueCpp(data, indents);
+	}
+
+	std::string toCpp(CppData* data, const std::string& indents) override
+	{
+		return variableCpp(data) + assignInitialValueCpp(data, indents);
 	}
 
 private:
@@ -93,4 +106,11 @@ private:
 	ValueSyntaxNode* initialValue_;
 	bool isConstant_;
 	bool isClassMember_;
+	bool isStatic_;
+
+	std::string assignInitialValueCpp(CppData* data, const std::string& indents)
+	{
+		if (initialValue_) return " = " + initialValue_->toCpp(data, indents);
+		return "";
+	}
 };
