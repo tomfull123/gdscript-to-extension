@@ -34,6 +34,8 @@ public:
 
 	void resolveDefinitions(CppData* data) override
 	{
+		prototype_ = data->functionPrototypeDefinitions[getName()];
+
 		if (instance_) instance_->resolveDefinitions(data);
 		for (auto a : args_) a->resolveDefinitions(data);
 	}
@@ -46,7 +48,8 @@ public:
 		bool isConstructorCall = name_->value == "new";
 
 		if (isConstructorCall && instance_) type_ = new Type(instance_->getName());
-		if (!instance_ && GDTYPES_TO_CPPTYPES.find(name_->value) != GDTYPES_TO_CPPTYPES.end()) type_ = new Type(name_->value);
+		else if (!instance_ && GDTYPES_TO_CPPTYPES.find(name_->value) != GDTYPES_TO_CPPTYPES.end()) type_ = new Type(name_->value);
+		else if (prototype_) type_ = prototype_->getReturnType();
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
@@ -114,4 +117,5 @@ private:
 	Token* name_;
 	std::vector<ValueSyntaxNode*> args_;
 	Type* type_ = nullptr;
+	FunctionPrototypeSyntaxNode* prototype_ = nullptr;
 };

@@ -163,6 +163,7 @@ public:
 };
 
 class VariableDefinitionSyntaxNode;
+class FunctionPrototypeSyntaxNode;
 class EnumDefinitionSyntaxNode;
 
 struct CppData
@@ -174,6 +175,7 @@ struct CppData
 	std::string fileName;
 	std::unordered_set<std::string> types;
 	std::unordered_map<std::string, VariableDefinitionSyntaxNode*> variableDefinitions;
+	std::unordered_map<std::string, FunctionPrototypeSyntaxNode*> functionPrototypeDefinitions;
 	std::unordered_map<std::string, EnumDefinitionSyntaxNode*> enumDefinitions;
 	std::string currentClassName;
 

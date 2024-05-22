@@ -30,6 +30,11 @@ public:
 		return name_->value;
 	}
 
+	Type* getReturnType() const
+	{
+		return returnType_;
+	}
+
 	std::vector<VariableDefinitionSyntaxNode*> getArgDefs() const
 	{
 		return argDefs_;
@@ -42,6 +47,7 @@ public:
 
 	void hoist(CppData* data) override
 	{
+		data->functionPrototypeDefinitions[name_->value] = this;
 		for (auto a : argDefs_) a->hoist(data);
 	}
 
