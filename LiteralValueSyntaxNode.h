@@ -41,6 +41,8 @@ public:
 		{
 		case TokenType::FloatLiteral:
 			return value_->value + "f";
+		case TokenType::StringLiteral:
+			return "\"" + value_->value + "\"";
 		}
 
 		return value_->value;

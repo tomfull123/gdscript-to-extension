@@ -40,6 +40,7 @@ const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS =
 	{"mini", "std::min"},
 	{"roundi", "std::round"},
 	{"roundf", "std::roundf"},
+	{"print", "UtilityFunctions::print"},
 };
 
 const std::unordered_set<std::string> CPP_PRIMITIVE_TYPES = {
@@ -89,6 +90,7 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"Thread", "<godot_cpp/classes/thread.hpp>"},
 	{"Viewport", "<godot_cpp/classes/viewport.hpp>"},
 	{"String", "<godot_cpp/variant/string.hpp>"},
+	{"UtilityFunctions::print", "<godot_cpp/variant/utility_functions.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
