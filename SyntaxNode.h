@@ -41,6 +41,7 @@ const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS =
 	{"roundi", "std::round"},
 	{"roundf", "std::roundf"},
 	{"print", "UtilityFunctions::print"},
+	{"append", "push_back"},
 };
 
 const std::unordered_set<std::string> CPP_PRIMITIVE_TYPES = {
@@ -181,6 +182,7 @@ struct CppData
 
 	std::string fileName;
 	std::unordered_set<std::string> types;
+	std::unordered_set<std::string> externalFunctions;
 	std::unordered_map<std::string, VariableDefinitionSyntaxNode*> variableDefinitions;
 	std::unordered_map<std::string, FunctionPrototypeSyntaxNode*> functionPrototypeDefinitions;
 	std::unordered_map<std::string, EnumDefinitionSyntaxNode*> enumDefinitions;
@@ -231,7 +233,7 @@ struct CppData
 
 		if (it != GDFUNCTIONS_TO_CPPFUNCTIONS.end())
 		{
-			types.emplace(it->second);
+			externalFunctions.emplace(it->second);
 			return it->second;
 		}
 

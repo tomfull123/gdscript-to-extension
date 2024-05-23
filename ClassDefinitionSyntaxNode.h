@@ -216,10 +216,11 @@ private:
 	std::string cppIncludes(const CppData* data) const
 	{
 		const auto& types = data->types;
+		const auto& externalFunctions = data->externalFunctions;
 
 		std::string code = "";
 
-		if (!types.empty())
+		if (!types.empty() || !externalFunctions.empty())
 		{
 			std::unordered_set<std::string> includes;
 			for (const auto& type : types)
@@ -230,6 +231,12 @@ private:
 				auto include = data->getIncludePath(type);
 				if (include != "") includes.emplace(include);
 				else includes.emplace("\"" + type + ".h\"");
+			}
+
+			for (const auto& externalFunction : externalFunctions)
+			{
+				auto include = data->getIncludePath(externalFunction);
+				if (include != "") includes.emplace(include);
 			}
 
 			for (const auto& include : includes)
