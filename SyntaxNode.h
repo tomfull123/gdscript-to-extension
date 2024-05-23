@@ -4,6 +4,11 @@
 #include <unordered_set>
 #include <unordered_map>
 
+const std::unordered_set<std::string> GODOT_LIFECYCLE_METHODS = {
+	"_ready",
+	"_process",
+};
+
 const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"int", "int"},
 	{"float", "float"},

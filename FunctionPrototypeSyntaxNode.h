@@ -42,7 +42,9 @@ public:
 
 	bool isPrivate() const
 	{
-		return getName()[0] == '_';
+		auto name = getName();
+		if (GODOT_LIFECYCLE_METHODS.contains(name)) return false;
+		return name[0] == '_';
 	}
 
 	void hoist(CppData* data) override
