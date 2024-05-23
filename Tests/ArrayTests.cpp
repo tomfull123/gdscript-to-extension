@@ -7,7 +7,7 @@ TEST_F(TranspileTest, EmptyArray)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include <vector>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::vector<int> x = {};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <vector>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::vector<int> x = {};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
 
@@ -18,7 +18,7 @@ TEST_F(TranspileTest, ArrayType)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include <vector>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::vector<int> x;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <vector>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::vector<int> x;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
 
@@ -29,7 +29,7 @@ TEST_F(TranspileTest, ArrayWithValuesInt)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include <vector>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::vector<int> x = {\n\t\t\t1,2,3,\n\t\t};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <vector>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::vector<int> x = {\n\t\t\t1,2,3,\n\t\t};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
 
@@ -44,7 +44,7 @@ TEST_F(TranspileTest, ArrayWithValuesIntNewLines)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include <vector>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::vector<int> x = {\n\t\t\t1,2,3,\n\t\t};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <vector>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::vector<int> x = {\n\t\t\t1,2,3,\n\t\t};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
 
@@ -59,6 +59,6 @@ TEST_F(TranspileTest, ArrayWithValuesIntNewLinesSpaces)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include <vector>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::vector<int> x = {\n\t\t\t1,2,3,\n\t\t};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <vector>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::vector<int> x = {\n\t\t\t1,2,3,\n\t\t};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }

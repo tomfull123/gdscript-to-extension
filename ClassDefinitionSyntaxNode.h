@@ -3,6 +3,7 @@
 #include "FunctionDefinitionSyntaxNode.h"
 #include "VariableDefinitionSyntaxNode.h"
 #include "EnumDefinitionSyntaxNode.h"
+#include <algorithm>
 
 class ClassDefinitionSyntaxNode : public SyntaxNode
 {
@@ -222,22 +223,25 @@ private:
 
 		if (!types.empty() || !externalFunctions.empty())
 		{
-			std::unordered_set<std::string> includes;
+			std::vector<std::string> includes;
 			for (const auto& type : types)
 			{
 				if (CPP_PRIMITIVE_TYPES.contains(type)) continue;
 				if (type == data->currentClassName) continue;
 
 				auto include = data->getIncludePath(type);
-				if (include != "") includes.emplace(include);
-				else includes.emplace("\"" + type + ".h\"");
+				if (include != "") includes.push_back(include);
+				else includes.push_back("\"" + type + ".h\"");
 			}
 
 			for (const auto& externalFunction : externalFunctions)
 			{
 				auto include = data->getIncludePath(externalFunction);
-				if (include != "") includes.emplace(include);
+				if (include != "") includes.push_back(include);
 			}
+
+			std::sort(includes.begin(), includes.end());
+			includes.erase(std::unique(includes.begin(), includes.end()), includes.end());
 
 			for (const auto& include : includes)
 			{
