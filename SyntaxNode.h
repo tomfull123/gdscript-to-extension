@@ -92,6 +92,9 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"Viewport", "<godot_cpp/classes/viewport.hpp>"},
 	{"String", "<godot_cpp/variant/string.hpp>"},
 	{"UtilityFunctions::print", "<godot_cpp/variant/utility_functions.hpp>"},
+	{"Material", "<godot_cpp/classes/material.hpp>"},
+	{"ShaderMaterial", "<godot_cpp/classes/shader_material.hpp>"},
+	{"MeshInstance3D", "<godot_cpp/classes/mesh_instance3d.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
