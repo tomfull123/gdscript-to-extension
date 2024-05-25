@@ -47,10 +47,13 @@ public:
 
 		if (!keys_.empty() && !values_.empty())
 		{
-			auto key = keys_[0];
-			auto value = values_[0];
-			subtypes.push_back(key->getType());
-			subtypes.push_back(value->getType());
+			auto keyType = getKeyType();
+			auto valueType = getValueType();
+			if (keyType)
+			{
+				subtypes.push_back(keyType);
+				if (valueType) subtypes.push_back(valueType);
+			}
 		}
 
 		type_ = new Type("Dictionary", subtypes);
@@ -74,4 +77,36 @@ private:
 	std::vector<ValueSyntaxNode*> keys_;
 	std::vector<ValueSyntaxNode*> values_;
 	Type* type_;
+
+	Type* getKeyType()
+	{
+		return getElementType(keys_);
+	}
+
+	Type* getValueType()
+	{
+		return getElementType(values_);
+	}
+
+	Type* getElementType(const std::vector<ValueSyntaxNode*>& elements)
+	{
+		Type* elementType = nullptr;
+
+		for (auto e : elements)
+		{
+			auto type = e->getType();
+
+			if (type)
+			{
+				if (type->name == "Dictionary")
+				{
+					if (!type->subtypes.empty()) return type;
+					elementType = type;
+				}
+				else return type;
+			}
+		}
+
+		return elementType;
+	}
 };
