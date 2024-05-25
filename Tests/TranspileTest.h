@@ -22,5 +22,7 @@ struct TranspileTest : testing::Test
 			c->resolveTypes(&data);
 			return c->toCpp(&data, "");
 		}
+
+		return "";
 	}
 };

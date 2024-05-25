@@ -2,6 +2,8 @@
 
 #include "SyntaxNode.h"
 #include "BodySyntaxNode.h"
+#include "RangeSyntaxNode.h"
+#include <typeinfo>
 
 class ForSyntaxNode : public SyntaxNode
 {
@@ -53,6 +55,18 @@ public:
 
 		if (arrayType && arrayType->name == "int")
 			code += "int " + varName + " = 0; " + varName + " < " + array_->toCpp(data, "") + "; " + varName + "++";
+		else if (typeid(*array_) == typeid(RangeSyntaxNode))
+		{
+			auto range = (RangeSyntaxNode*)array_;
+
+			code += "int " + varName + " = " + range->getStartValue()->toCpp(data, "") + "; "
+				+ varName + " < " + range->getEndValue()->toCpp(data, "") + "; ";
+
+			auto incrementValue = range->getIncrementValue();
+
+			if (incrementValue) code += incrementValue->toCpp(data, "");
+			else code += varName + "++";
+		}
 		else
 			code += "auto " + varName + " : " + array_->toCpp(data, "");
 

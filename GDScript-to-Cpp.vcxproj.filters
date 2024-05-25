@@ -146,5 +146,8 @@
     <ClInclude Include="FileNameTransformer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RangeSyntaxNode.h">
+      <Filter>Header Files\SyntaxNodes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -29,6 +29,7 @@
 #include "NullSyntaxNode.h"
 #include "BitwiseOperatorSyntaxNode.h"
 #include "IsOperatorSyntaxNode.h"
+#include "RangeSyntaxNode.h"
 
 struct Result
 {
@@ -566,6 +567,24 @@ private:
 		return new NullSyntaxNode();
 	}
 
+	RangeSyntaxNode* parseRange()
+	{
+		if (!consume(TokenType::RangeKeyword)) return nullptr;
+		if (!consume(TokenType::OpenBracketSeparator)) return nullptr;
+
+		ValueSyntaxNode* startValue = parseValueExpression();
+
+		if (!consume(TokenType::CommaSeparator)) return nullptr;
+
+		ValueSyntaxNode* endValue = parseValueExpression();
+
+		if (isNextTokenType(TokenType::CommaSeparator)) next();
+
+		if (!consume(TokenType::CloseBracketSeparator)) return nullptr;
+
+		return new RangeSyntaxNode(startValue, endValue, nullptr);
+	}
+
 	ValueSyntaxNode* parseSingleValueObject()
 	{
 		Token* value = peek();
@@ -601,6 +620,8 @@ private:
 			return parsePreload();
 		case TokenType::NullKeyword:
 			return parseNullValue();
+		case TokenType::RangeKeyword:
+			return parseRange();
 		}
 
 		return (ValueSyntaxNode*)addUnexpectedNextTokenError();
