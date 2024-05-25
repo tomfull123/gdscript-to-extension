@@ -34,13 +34,13 @@ public:
 	void resolveTypes(CppData* data) override
 	{
 		for (auto e : expressions_) e->resolveTypes(data);
+		std::vector<Type*> subtypes;
 		if (!expressions_.empty())
 		{
 			auto elementType = getElementType();
-			std::vector<Type*> subtypes;
 			if (elementType) subtypes.push_back(elementType);
-			type_ = new Type("Array", subtypes);
 		}
+		type_ = new Type("Array", subtypes);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
@@ -78,12 +78,22 @@ private:
 
 	Type* getElementType()
 	{
+		Type* elementType = nullptr;
+
 		for (auto e : expressions_)
 		{
-			auto elementType = e->getType();
-			if (elementType) return elementType;
+			auto type = e->getType();
+			if (type)
+			{
+				if (type->name == "Array")
+				{
+					if (!type->subtypes.empty()) return type;
+					elementType = type;
+				}
+				else return type;
+			}
 		}
 
-		return nullptr;
+		return elementType;
 	}
 };
