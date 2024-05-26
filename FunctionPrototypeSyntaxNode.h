@@ -58,12 +58,9 @@ public:
 		for (auto a : argDefs_) a->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
-		if (name_->value == "_init")
-		{
-			returnType_ = new Type(data->currentClassName);
-		}
+		if (name_->value == "_init") returnType_ = new Type(data->currentClassName);
 		else if (!returnType_) returnType_ = new Type("void");
 
 		for (auto a : argDefs_) a->resolveTypes(data);

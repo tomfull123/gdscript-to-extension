@@ -33,7 +33,7 @@ public:
 		value_->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 		value_->resolveTypes(data);
 	}

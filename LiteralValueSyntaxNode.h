@@ -31,7 +31,7 @@ public:
 	{
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 	}
 

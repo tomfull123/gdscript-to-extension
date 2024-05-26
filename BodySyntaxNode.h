@@ -22,7 +22,7 @@ public:
 		for (auto n : nodes_) n->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 		for (auto n : nodes_) n->resolveTypes(data);
 	}

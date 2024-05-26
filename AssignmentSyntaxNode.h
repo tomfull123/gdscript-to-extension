@@ -36,7 +36,7 @@ public:
 		assignmentValue_->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 		variable_->resolveTypes(data);
 		assignmentValue_->resolveTypes(data);

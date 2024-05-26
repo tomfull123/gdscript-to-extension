@@ -19,7 +19,7 @@ public:
 		if (value_) value_->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 		if (value_) value_->resolveTypes(data);
 	}

@@ -38,10 +38,21 @@ public:
 		body_->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
-		variableDefinition_->resolveTypes(data);
 		array_->resolveTypes(data);
+		auto arrayType = array_->getType();
+		Type* variableType = nullptr;
+		if (arrayType)
+		{
+			if (arrayType->name == "int") variableType = arrayType;
+			else if (!arrayType->subtypes.empty())
+			{
+				variableType = arrayType->subtypes[0];
+			}
+		}
+		if (!variableType && typeid(*array_) == typeid(RangeSyntaxNode)) variableType = new Type("int");
+		variableDefinition_->resolveTypes(data, variableType);
 		body_->resolveTypes(data);
 	}
 

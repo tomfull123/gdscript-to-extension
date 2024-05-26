@@ -40,7 +40,7 @@ public:
 		for (auto a : args_) a->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 		if (instance_) instance_->resolveTypes(data);
 		for (auto a : args_) a->resolveTypes(data);

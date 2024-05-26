@@ -157,7 +157,7 @@ public:
 
 	virtual void resolveDefinitions(CppData* data) = 0;
 
-	virtual void resolveTypes(CppData* data) = 0;
+	virtual void resolveTypes(CppData* data, Type* otherType = nullptr) = 0;
 
 	virtual std::string toCpp(CppData* data, const std::string& indents) = 0;
 };

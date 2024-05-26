@@ -45,7 +45,7 @@ public:
 		if (incrementValue_) incrementValue_->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType) override
 	{
 		startValue_->resolveTypes(data);
 		endValue_->resolveTypes(data);

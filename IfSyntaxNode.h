@@ -36,7 +36,7 @@ public:
 		if (elseBody_) elseBody_->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 		condition_->resolveTypes(data);
 		thenBody_->resolveTypes(data);

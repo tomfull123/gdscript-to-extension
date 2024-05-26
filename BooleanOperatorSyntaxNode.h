@@ -38,7 +38,7 @@ public:
 		rhs_->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 		lhs_->resolveTypes(data);
 		rhs_->resolveTypes(data);

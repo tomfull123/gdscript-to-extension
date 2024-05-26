@@ -48,7 +48,7 @@ public:
 		if (initialValue_) initialValue_->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 		if (initialValue_)
 		{
@@ -64,6 +64,8 @@ public:
 				}
 			}
 		}
+
+		if (!dataType_) dataType_ = otherType;
 	}
 
 	std::string variableCpp(CppData* data, bool outsideClass = false)

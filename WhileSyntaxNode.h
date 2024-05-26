@@ -32,7 +32,7 @@ public:
 		body_->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 		condition_->resolveTypes(data);
 		body_->resolveTypes(data);

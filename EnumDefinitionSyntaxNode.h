@@ -30,7 +30,7 @@ public:
 		for (auto v : values_) v->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 		for (auto v : values_) v->resolveTypes(data);
 	}

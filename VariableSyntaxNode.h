@@ -50,7 +50,7 @@ public:
 		if (enumDefinition_) enumDefinition_->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 		if (parentInstance_) parentInstance_->resolveTypes(data);
 

@@ -70,7 +70,7 @@ public:
 		for (auto c : innerClasses_) c->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 		for (auto enumDef : enumDefinitions_) enumDef->resolveTypes(data);
 		for (auto v : staticVariableDefinitions_) v->resolveTypes(data);

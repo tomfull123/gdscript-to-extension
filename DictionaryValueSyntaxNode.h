@@ -38,7 +38,7 @@ public:
 		for (const auto& v : values_) v->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 		for (const auto& k : keys_) k->resolveTypes(data);
 		for (const auto& v : values_) v->resolveTypes(data);

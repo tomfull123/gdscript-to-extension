@@ -31,7 +31,7 @@ public:
 		for (auto e : expressions_) e->resolveDefinitions(data);
 	}
 
-	void resolveTypes(CppData* data) override
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
 		for (auto e : expressions_) e->resolveTypes(data);
 		std::vector<Type*> subtypes;
