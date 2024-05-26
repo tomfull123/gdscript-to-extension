@@ -36,7 +36,7 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS = {
 	{"absf", "abs"},
 	{"absi", "abs"},
-	{"minf", "std::min"},
+	{"minf", "std::fminf"},
 	{"mini", "std::min"},
 	{"roundi", "std::round"},
 	{"roundf", "std::roundf"},
@@ -62,6 +62,13 @@ const std::unordered_map<std::string, std::string> CPPTYPES_TO_INCLUDE_PATH = {
 	{"std::round", "<cmath>"},
 	{"std::roundf", "<cmath>"},
 	{"std::abs", "<cmath>"},
+};
+
+const std::unordered_map<std::string, std::string> CPPFUNCTION_RETURN_TYPES = {
+	{"std::min", "int"},
+	{"std::fminf", "float"},
+	{"std::round", "int"},
+	{"std::roundf", "float"},
 };
 
 const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = {

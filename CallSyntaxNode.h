@@ -48,8 +48,13 @@ public:
 		bool isConstructorCall = name_->value == "new";
 
 		if (isConstructorCall && instance_) type_ = new Type(instance_->getName());
-		else if (!instance_ && GDTYPES_TO_CPPTYPES.find(name_->value) != GDTYPES_TO_CPPTYPES.end()) type_ = new Type(name_->value);
+		else if (!instance_ && GDTYPES_TO_CPPTYPES.contains(name_->value)) type_ = new Type(name_->value);
 		else if (prototype_) type_ = prototype_->getReturnType();
+		else if (GDFUNCTIONS_TO_CPPFUNCTIONS.contains(name_->value))
+		{
+			auto cppFunction = GDFUNCTIONS_TO_CPPFUNCTIONS.find(name_->value)->second;
+			if (CPPFUNCTION_RETURN_TYPES.contains(cppFunction)) type_ = new Type(CPPFUNCTION_RETURN_TYPES.find(cppFunction)->second);
+		}
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
