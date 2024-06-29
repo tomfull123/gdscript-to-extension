@@ -171,6 +171,7 @@
     <ClInclude Include="Parser.h" />
     <ClInclude Include="ParserError.h" />
     <ClInclude Include="SyntaxNode.h" />
+    <ClInclude Include="TernarySyntaxNode.h" />
     <ClInclude Include="TokenStream.h" />
     <ClInclude Include="ValueIndexValue.h" />
     <ClInclude Include="VariableDefinitionSyntaxNode.h" />

@@ -151,6 +151,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathOperatorTests.cpp" />
     <ClCompile Include="SignalTests.cpp" />
+    <ClCompile Include="TernaryTests.cpp" />
     <ClCompile Include="VariableDefinitionTests.cpp" />
     <ClCompile Include="WhileLoopTests.cpp" />
   </ItemGroup>

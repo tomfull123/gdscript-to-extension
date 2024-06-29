@@ -30,6 +30,7 @@
 #include "BitwiseOperatorSyntaxNode.h"
 #include "IsOperatorSyntaxNode.h"
 #include "RangeSyntaxNode.h"
+#include "TernarySyntaxNode.h"
 
 struct Result
 {
@@ -637,6 +638,8 @@ private:
 			bracketCount++;
 		}
 
+		const Token* name = peek();
+
 		ValueSyntaxNode* lhs = parseSingleValueObject();
 
 		if (!lhs) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
@@ -693,6 +696,12 @@ private:
 				ValueSyntaxNode* rhs = parseValueExpression();
 
 				lhs = new BooleanOperatorSyntaxNode(booleanOperator, lhs, rhs);
+				continue;
+			}
+
+			if (isNextTokenType(TokenType::IfKeyword) && peek()->lineNumber == name->lineNumber)
+			{
+				lhs = parseTernaryValue(lhs);
 				continue;
 			}
 
@@ -757,6 +766,21 @@ private:
 		return (ValueSyntaxNode*)addUnexpectedNextTokenError();
 	}
 
+	ValueSyntaxNode* parseTernaryValue(ValueSyntaxNode* thenValue)
+	{
+		if (!consume(TokenType::IfKeyword)) return nullptr;
+
+		ValueSyntaxNode* condition = parseValueExpression();
+
+		if (!condition) return nullptr;
+
+		if (!consume(TokenType::ElseKeyword)) return nullptr;
+
+		ValueSyntaxNode* elseValue = parseValueExpression();
+
+		return new TernarySyntaxNode(condition, thenValue, elseValue);
+	}
+
 	ValueSyntaxNode* parseVariableOrFunctionCall(bool asValue, ValueSyntaxNode* instance = nullptr)
 	{
 		auto name = consume(TokenType::Identifier);
@@ -812,6 +836,12 @@ private:
 			if (isNextTokenType(TokenType::OpenSquareBracket))
 			{
 				variable = parseValueIndexValue(variable);
+				continue;
+			}
+
+			if (isNextTokenType(TokenType::IfKeyword) && peek()->lineNumber == name->lineNumber)
+			{
+				variable = parseTernaryValue(variable);
 				continue;
 			}
 
