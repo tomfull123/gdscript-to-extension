@@ -1,0 +1,35 @@
+#pragma once
+
+#include "SyntaxNode.h"
+
+class NodePathSyntaxNode : public ValueSyntaxNode
+{
+public:
+	NodePathSyntaxNode(Token* nodePath) :
+		nodePath_(nodePath)
+	{}
+
+	Type* getType() override
+	{
+		return nullptr;
+	}
+
+	std::string getName() override
+	{
+		return "";
+	}
+
+	void hoist(CppData* data) override {}
+
+	void resolveDefinitions(CppData* data) override {}
+
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override {}
+
+	std::string toCpp(CppData* data, const std::string& indents) override
+	{
+		return "find_child(\"" + nodePath_->value + "\")";
+	}
+
+private:
+	Token* nodePath_;
+};

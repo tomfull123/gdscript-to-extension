@@ -31,6 +31,7 @@
 #include "IsOperatorSyntaxNode.h"
 #include "RangeSyntaxNode.h"
 #include "TernarySyntaxNode.h"
+#include "NodePathSyntaxNode.h"
 
 struct Result
 {
@@ -586,6 +587,12 @@ private:
 		return new RangeSyntaxNode(startValue, endValue, nullptr);
 	}
 
+	NodePathSyntaxNode* parseNodePath()
+	{
+		auto nodePathToken = consume(TokenType::NodePath);
+		return new NodePathSyntaxNode(nodePathToken);
+	}
+
 	ValueSyntaxNode* parseSingleValueObject()
 	{
 		Token* value = peek();
@@ -623,6 +630,8 @@ private:
 			return parseNullValue();
 		case TokenType::RangeKeyword:
 			return parseRange();
+		case TokenType::NodePath:
+			return parseNodePath();
 		}
 
 		return (ValueSyntaxNode*)addUnexpectedNextTokenError();

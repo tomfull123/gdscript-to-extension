@@ -160,6 +160,7 @@
     <ClInclude Include="IsOperatorSyntaxNode.h" />
     <ClInclude Include="LiteralValueSyntaxNode.h" />
     <ClInclude Include="MathOperatorSyntaxNode.h" />
+    <ClInclude Include="NodePathSyntaxNode.h" />
     <ClInclude Include="NotOperatorSyntaxNode.h" />
     <ClInclude Include="NullSyntaxNode.h" />
     <ClInclude Include="PrefixOperator.h" />

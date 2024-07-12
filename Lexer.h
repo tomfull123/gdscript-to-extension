@@ -64,6 +64,8 @@ enum class TokenType
 	SingleLineComment,
 	MultiLineComment,
 	Annotation,
+
+	NodePath,
 };
 
 struct Token
@@ -108,6 +110,8 @@ public:
 		if (isNumberLiteralStart(ch)) return readNumberLiteral();
 
 		//if (isCharLiteralStart(ch)) return readCharLiteral();
+
+		if (isNodePathStart(ch)) return readNodePath();
 
 		if (isSeparator(ch)) return readSeparator();
 
@@ -342,6 +346,18 @@ private:
 		}*/
 
 		return token;
+	}
+
+	static bool isNodePathStart(const char& ch)
+	{
+		return ch == '$';
+	}
+
+	Token* readNodePath()
+	{
+		inputStream_.next(); // eat $
+
+		return readToken(isIdentifier, TokenType::NodePath);
 	}
 
 	static bool isAnnotation(const char& ch)

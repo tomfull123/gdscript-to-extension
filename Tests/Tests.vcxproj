@@ -150,6 +150,7 @@
     <ClCompile Include="IfTests.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathOperatorTests.cpp" />
+    <ClCompile Include="NodePathTests.cpp" />
     <ClCompile Include="SignalTests.cpp" />
     <ClCompile Include="TernaryTests.cpp" />
     <ClCompile Include="VariableDefinitionTests.cpp" />
