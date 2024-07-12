@@ -75,7 +75,7 @@ public:
 
 			auto incrementValue = range->getIncrementValue();
 
-			if (incrementValue) code += incrementValue->toCpp(data, "");
+			if (incrementValue) code += varName + " += " + incrementValue->toCpp(data, "");
 			else code += varName + "++";
 		}
 		else

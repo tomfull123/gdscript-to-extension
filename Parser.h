@@ -582,9 +582,16 @@ private:
 
 		if (isNextTokenType(TokenType::CommaSeparator)) next();
 
+		ValueSyntaxNode* incrementValue = nullptr;
+
+		if (!isNextTokenType(TokenType::CloseBracketSeparator))
+		{
+			incrementValue = parseValueExpression();
+		}
+
 		if (!consume(TokenType::CloseBracketSeparator)) return nullptr;
 
-		return new RangeSyntaxNode(startValue, endValue, nullptr);
+		return new RangeSyntaxNode(startValue, endValue, incrementValue);
 	}
 
 	NodePathSyntaxNode* parseNodePath()
