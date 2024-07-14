@@ -969,6 +969,15 @@ private:
 
 		if (!variableToken) return nullptr;
 
+		Type* variableType = nullptr;
+
+		if (isNextTokenType(TokenType::ColonSeparator))
+		{
+			next(); // eat :
+
+			variableType = parseType();
+		}
+
 		if (!consume(TokenType::InKeyword)) return nullptr;
 
 		auto arrayToken = parseValueExpression();
@@ -979,7 +988,7 @@ private:
 
 		auto body = parseBody(forToken->indentDepth, forToken->lineNumber);
 
-		auto variableDefinition = new VariableDefinitionSyntaxNode(variableToken, nullptr, nullptr, false, false, false);
+		auto variableDefinition = new VariableDefinitionSyntaxNode(variableToken, variableType, nullptr, false, false, false);
 
 		return new ForSyntaxNode(variableDefinition, arrayToken, body);
 	}
