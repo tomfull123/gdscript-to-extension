@@ -26,7 +26,7 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"Vector4i", "Vector4i"},
 	{"Color", "Color"},
 	{"Dictionary", "std::map"},
-	{"Array", "std::vector"},
+	{"Array", "TypedArray"},
 	{"this", "this"},
 	{"Mesh", "Mesh"},
 	{"RenderingServer", "RenderingServer::get_singleton()"},
@@ -41,7 +41,6 @@ const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS =
 	{"roundi", "std::round"},
 	{"roundf", "std::roundf"},
 	{"print", "UtilityFunctions::print"},
-	{"append", "push_back"},
 };
 
 const std::unordered_set<std::string> CPP_PRIMITIVE_TYPES = {
@@ -102,6 +101,7 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"Material", "<godot_cpp/classes/material.hpp>"},
 	{"ShaderMaterial", "<godot_cpp/classes/shader_material.hpp>"},
 	{"MeshInstance3D", "<godot_cpp/classes/mesh_instance3d.hpp>"},
+	{"TypedArray", "<godot_cpp/variant/typed_array.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
@@ -109,12 +109,6 @@ const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
 };
 
 const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_METHODS_TO_CPP_METHODS = {
-	{
-		"Array",
-		{
-			{"append", "push_back"}
-		}
-	},
 	{
 		"Dictionary",
 		{
