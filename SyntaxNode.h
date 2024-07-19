@@ -225,10 +225,14 @@ struct CppData
 			return it->second + subtypesString;
 		}
 
-		types.emplace(type->name);
+		std::string typeName = type->name;
 
-		if (isGodotType(type->name) || GDTYPES_TO_CPPTYPES.contains(type->name)) return "Ref<" + type->name + ">";
-		return "Ref<" + type->name + ">";
+		if (typeName[0] == '_') typeName.erase(0, 1);
+
+		types.emplace(typeName);
+
+		if (isGodotType(typeName) || GDTYPES_TO_CPPTYPES.contains(typeName)) return "Ref<" + typeName + ">";
+		return "Ref<" + typeName + ">";
 	}
 
 	std::string toCppFunction(const std::string& functionName, const std::string& parentType)

@@ -66,6 +66,7 @@ public:
 		if (instance_)
 		{
 			auto instanceName = instance_->getName();
+			if (instanceName[0] == '_') instanceName.erase(0, 1);
 			if (isConstructorCall) code += "memnew(" + instanceName;
 			else
 			{
