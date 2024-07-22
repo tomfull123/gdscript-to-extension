@@ -41,6 +41,7 @@ const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS =
 	{"roundi", "std::round"},
 	{"roundf", "std::roundf"},
 	{"print", "UtilityFunctions::print"},
+	{"load", "ResourceLoader::get_singleton()->load"},
 };
 
 const std::unordered_set<std::string> CPP_PRIMITIVE_TYPES = {
