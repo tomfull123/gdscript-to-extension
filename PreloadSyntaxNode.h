@@ -7,7 +7,7 @@ class PreloadSyntaxNode : public ValueSyntaxNode
 public:
 	explicit PreloadSyntaxNode(Token* path) :
 		path_(path),
-		type_(new Type("Resource"))
+		type_(new Type("PackedScene"))
 	{
 	}
 

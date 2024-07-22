@@ -52,7 +52,7 @@ public:
 		else if (prototype_) type_ = prototype_->getReturnType();
 		else if (GDFUNCTIONS_TO_CPPFUNCTIONS.contains(name_->value))
 		{
-			auto cppFunction = GDFUNCTIONS_TO_CPPFUNCTIONS.find(name_->value)->second;
+			auto& cppFunction = GDFUNCTIONS_TO_CPPFUNCTIONS.find(name_->value)->second;
 			if (CPPFUNCTION_RETURN_TYPES.contains(cppFunction)) type_ = new Type(CPPFUNCTION_RETURN_TYPES.find(cppFunction)->second);
 		}
 	}
