@@ -64,6 +64,24 @@ public:
 			enumDefinition_->resolveTypes(data);
 			type_ = new Type(enumDefinition_->getName());
 		}
+
+		if (!type_)
+		{
+			if (parentInstance_)
+			{
+				auto parentName = parentInstance_->getName();
+				if (CPPTYPES_TO_FUNCTION.contains(parentName))
+				{
+					auto it = CPPTYPES_TO_FUNCTION.find(parentName);
+					auto functionName = parentName + "::" + it->second;
+
+					if (CPPFUNCTION_RETURN_TYPES.contains(functionName))
+					{
+						type_ = new Type(CPPFUNCTION_RETURN_TYPES.find(functionName)->second);
+					}
+				}
+			}
+		}
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override

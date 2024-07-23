@@ -70,6 +70,7 @@ const std::unordered_map<std::string, std::string> CPPFUNCTION_RETURN_TYPES = {
 	{"std::round", "int"},
 	{"std::roundf", "float"},
 	{"ResourceLoader::get_singleton()->load", "PackedScene"},
+	{"Color::named", "Color"},
 };
 
 const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = {
