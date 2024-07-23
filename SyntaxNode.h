@@ -106,6 +106,7 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"MeshInstance3D", "<godot_cpp/classes/mesh_instance3d.hpp>"},
 	{"TypedArray", "<godot_cpp/variant/typed_array.hpp>"},
 	{"PackedScene", "<godot_cpp/classes/packed_scene.hpp>"},
+	{"RayCast3D", "<godot_cpp/classes/ray_cast3d.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {

@@ -203,7 +203,7 @@ TEST_F(TranspileTest, GodotRayCast3DPositionSetter)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include \"RayCast3D.h\"\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff(Ref<RayCast3D> ray)\n\t\t{\n\t\t\tray->set_target_position(Vector3(1, 2, 3));\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\", \"ray\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ray_cast3d.hpp>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff(Ref<RayCast3D> ray)\n\t\t{\n\t\t\tray->set_target_position(Vector3(1, 2, 3));\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\", \"ray\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
 
