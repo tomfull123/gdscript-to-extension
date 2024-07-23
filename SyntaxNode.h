@@ -124,6 +124,7 @@ const std::unordered_map<std::string, std::unordered_map<std::string, std::strin
 		"RayCast3D",
 		{
 			{"target_position", "set_target_position"},
+			{"global_position", "set_global_position"},
 		}
 	}
 };
