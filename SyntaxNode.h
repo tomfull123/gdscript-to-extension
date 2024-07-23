@@ -112,6 +112,21 @@ const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
 	{"Color", "named"},
 };
 
+const std::unordered_map<std::string, std::unordered_map<std::string, std::string>> PROPERTY_SETTER = {
+	{
+		"Node3D",
+		{
+			{"position", "set_position"},
+		}
+	},
+	{
+		"RayCast3D",
+		{
+			{"target_position", "set_target_position"},
+		}
+	}
+};
+
 const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_METHODS_TO_CPP_METHODS = {
 	{
 		"Dictionary",

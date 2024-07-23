@@ -6,9 +6,10 @@
 class VariableSyntaxNode : public ValueSyntaxNode
 {
 public:
-	VariableSyntaxNode(Token* name, ValueSyntaxNode* parentInstance) :
+	VariableSyntaxNode(Token* name, ValueSyntaxNode* parentInstance, bool asValue) :
 		name_(name),
-		parentInstance_(parentInstance)
+		parentInstance_(parentInstance),
+		asValue_(asValue)
 	{}
 
 	bool hasParent() const override
@@ -19,6 +20,20 @@ public:
 
 	bool isFunction() const override
 	{
+		if (parentInstance_ && !asValue_)
+		{
+			auto parentType = parentInstance_->getType();
+
+			if (parentType && PROPERTY_SETTER.contains(parentType->name))
+			{
+				const auto& typeSetterMap = PROPERTY_SETTER.find(parentType->name)->second;
+
+				if (typeSetterMap.contains(name_->value))
+				{
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -105,6 +120,25 @@ public:
 				else
 					code += "->";
 			}
+
+			if (asValue_) // getter
+			{
+			}
+			else // setter
+			{
+				auto parentType = parentInstance_->getType();
+
+				if (parentType && PROPERTY_SETTER.contains(parentType->name))
+				{
+					const auto& typeSetterMap = PROPERTY_SETTER.find(parentType->name)->second;
+
+					if (typeSetterMap.contains(name_->value))
+					{
+						auto& newName = typeSetterMap.find(name_->value)->second;
+						return code + newName;
+					}
+				}
+			}
 		}
 
 		auto varDef = data->variableDefinitions[name_->value];
@@ -127,6 +161,7 @@ public:
 private:
 	Token* name_;
 	ValueSyntaxNode* parentInstance_;
+	bool asValue_;
 	Type* type_ = nullptr;
 	VariableDefinitionSyntaxNode* variableDefinition_ = nullptr;
 	EnumDefinitionSyntaxNode* enumDefinition_ = nullptr;

@@ -236,7 +236,7 @@ private:
 		{
 			auto thisToken = new Token();
 			thisToken->value = "this";
-			nodes.push_back(new ReturnSyntaxNode(new VariableSyntaxNode(thisToken, nullptr)));
+			nodes.push_back(new ReturnSyntaxNode(new VariableSyntaxNode(thisToken, nullptr, false)));
 		}
 
 		return new BodySyntaxNode(nodes);
@@ -803,7 +803,7 @@ private:
 
 		if (!name) return nullptr;
 
-		ValueSyntaxNode* variable = new VariableSyntaxNode(name, instance);
+		ValueSyntaxNode* variable = new VariableSyntaxNode(name, instance, asValue);
 
 		while (true)
 		{
