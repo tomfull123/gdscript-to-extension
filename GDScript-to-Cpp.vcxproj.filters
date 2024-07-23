@@ -155,5 +155,8 @@
     <ClInclude Include="NodePathSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
+    <ClInclude Include="CastSyntaxNode.h">
+      <Filter>Header Files\SyntaxNodes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

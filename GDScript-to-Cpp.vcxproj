@@ -144,6 +144,7 @@
     <ClInclude Include="BooleanOperatorSyntaxNode.h" />
     <ClInclude Include="BreakSyntaxNode.h" />
     <ClInclude Include="CallSyntaxNode.h" />
+    <ClInclude Include="CastSyntaxNode.h" />
     <ClInclude Include="ClassDefinitionSyntaxNode.h" />
     <ClInclude Include="ContinueSyntaxNode.h" />
     <ClInclude Include="DictionaryValueSyntaxNode.h" />

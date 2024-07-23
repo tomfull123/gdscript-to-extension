@@ -33,6 +33,7 @@ enum class TokenType
 	InKeyword,
 	IsKeyword,
 	RangeKeyword,
+	AsKeyword,
 
 	FloatLiteral,
 	IntLiteral,
@@ -211,6 +212,7 @@ private:
 		if (value == "or") return TokenType::OrOperator;
 		if (value == "not") return TokenType::NotOperator;
 		if (value == "range") return TokenType::RangeKeyword;
+		if (value == "as") return TokenType::AsKeyword;
 
 		return TokenType::Identifier;
 	}

@@ -32,6 +32,7 @@
 #include "RangeSyntaxNode.h"
 #include "TernarySyntaxNode.h"
 #include "NodePathSyntaxNode.h"
+#include "CastSyntaxNode.h"
 
 struct Result
 {
@@ -600,6 +601,17 @@ private:
 		return new NodePathSyntaxNode(nodePathToken);
 	}
 
+	CastSyntaxNode* parseCast(ValueSyntaxNode* value)
+	{
+		if (!consume(TokenType::AsKeyword)) return nullptr;
+
+		auto type = parseType();
+
+		if (!type) return nullptr;
+
+		return new CastSyntaxNode(value, type);
+	}
+
 	ValueSyntaxNode* parseSingleValueObject()
 	{
 		Token* value = peek();
@@ -718,6 +730,12 @@ private:
 			if (isNextTokenType(TokenType::IfKeyword) && peek()->lineNumber == name->lineNumber)
 			{
 				lhs = parseTernaryValue(lhs);
+				continue;
+			}
+
+			if (isNextTokenType(TokenType::AsKeyword))
+			{
+				lhs = parseCast(lhs);
 				continue;
 			}
 
