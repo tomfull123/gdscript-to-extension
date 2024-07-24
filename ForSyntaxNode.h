@@ -79,7 +79,7 @@ public:
 			else code += varName + "++";
 		}
 		else
-			code += "auto " + varName + " : " + array_->toCpp(data, "");
+			code += "auto& " + varName + " : " + array_->toCpp(data, "");
 
 		code += ")\n";
 
