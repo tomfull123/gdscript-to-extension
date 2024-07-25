@@ -3,6 +3,7 @@
 #include "SyntaxNode.h"
 #include "BodySyntaxNode.h"
 #include "RangeSyntaxNode.h"
+#include "VariableDefinitionSyntaxNode.h"
 #include <typeinfo>
 
 class ForSyntaxNode : public SyntaxNode

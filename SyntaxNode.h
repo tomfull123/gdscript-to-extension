@@ -31,6 +31,7 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"Mesh", "Mesh"},
 	{"RenderingServer", "RenderingServer::get_singleton()"},
 	{"ResourceLoader", "ResourceLoader::get_singleton()"},
+	{"Viewport", "Viewport"}
 };
 
 const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS = {
@@ -42,6 +43,7 @@ const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS =
 	{"roundf", "std::roundf"},
 	{"print", "UtilityFunctions::print"},
 	{"load", "ResourceLoader::get_singleton()->load"},
+	{"get_viewport", "get_viewport"},
 };
 
 const std::unordered_set<std::string> CPP_PRIMITIVE_TYPES = {
@@ -71,6 +73,7 @@ const std::unordered_map<std::string, std::string> CPPFUNCTION_RETURN_TYPES = {
 	{"std::roundf", "float"},
 	{"ResourceLoader::get_singleton()->load", "PackedScene"},
 	{"Color::named", "Color"},
+	{"get_viewport", "Viewport"},
 };
 
 const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = {
@@ -125,6 +128,12 @@ const std::unordered_map<std::string, std::unordered_map<std::string, std::strin
 		{
 			{"target_position", "set_target_position"},
 			{"global_position", "set_global_position"},
+		}
+	},
+	{
+		"Viewport",
+		{
+			{"debug_draw", "set_debug_draw"}
 		}
 	}
 };
