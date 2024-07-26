@@ -26,7 +26,7 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"Vector4i", "Vector4i"},
 	{"Color", "Color"},
 	{"Dictionary", "std::map"},
-	{"Array", "TypedArray"},
+	{"Array", "std::vector"},
 	{"this", "this"},
 	{"Mesh", "Mesh"},
 	{"RenderingServer", "RenderingServer::get_singleton()"},
@@ -44,6 +44,7 @@ const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS =
 	{"print", "UtilityFunctions::print"},
 	{"load", "ResourceLoader::get_singleton()->load"},
 	{"get_viewport", "get_viewport"},
+	{"append", "push_back"},
 };
 
 const std::unordered_set<std::string> CPP_PRIMITIVE_TYPES = {
@@ -139,6 +140,12 @@ const std::unordered_map<std::string, std::unordered_map<std::string, std::strin
 };
 
 const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_METHODS_TO_CPP_METHODS = {
+	{
+		"Array",
+		{
+			{"append", "push_back"}
+		}
+	},
 	{
 		"Dictionary",
 		{
