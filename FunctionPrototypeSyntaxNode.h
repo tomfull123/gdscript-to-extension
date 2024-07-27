@@ -94,7 +94,11 @@ public:
 
 		std::string name = getName();
 
-		return code + data->toCppType(returnType_) + " " + name + "(" + argsString + ")";
+		auto typeCode = data->toCppType(returnType_);
+
+		if (!CPP_PRIMITIVE_TYPES.contains(typeCode) && !returnType_->subtypes.empty()) typeCode += "&";
+
+		return code + typeCode + " " + name + "(" + argsString + ")";
 	}
 
 private:
