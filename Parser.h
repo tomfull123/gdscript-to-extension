@@ -821,6 +821,11 @@ private:
 
 		if (!name) return nullptr;
 
+		if (!asValue && instance && isNextTokenType(TokenType::DotSeparator))
+		{
+			asValue = true; // getter
+		}
+
 		ValueSyntaxNode* variable = new VariableSyntaxNode(name, instance, asValue);
 
 		while (true)

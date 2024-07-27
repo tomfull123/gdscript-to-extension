@@ -117,26 +117,23 @@ const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
 	{"Color", "named"},
 };
 
-const std::unordered_map<std::string, std::unordered_map<std::string, std::string>> PROPERTY_SETTER = {
+const std::unordered_map<std::string, std::unordered_set<std::string>> GDTYPE_PROPERTIES = {
 	{
-		"Node3D",
+		"Vector3",
 		{
-			{"position", "set_position"},
+			"x",
+			"y",
+			"z",
 		}
 	},
 	{
-		"RayCast3D",
+		"Vector3i",
 		{
-			{"target_position", "set_target_position"},
-			{"global_position", "set_global_position"},
+			"x",
+			"y",
+			"z",
 		}
 	},
-	{
-		"Viewport",
-		{
-			{"debug_draw", "set_debug_draw"}
-		}
-	}
 };
 
 const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_METHODS_TO_CPP_METHODS = {
@@ -334,5 +331,19 @@ struct CppData
 	bool isGodotType(const std::string& type) const
 	{
 		return GODOTTYPES_TO_INCLUDE_PATH.contains(type);
+	}
+
+	static bool isProperty(ValueSyntaxNode* parentInstance, const Token* name)
+	{
+		if (!parentInstance) return false;
+
+		auto parentType = parentInstance->getType();
+		if (parentType && GDTYPE_PROPERTIES.contains(parentType->name))
+		{
+			auto& properties = GDTYPE_PROPERTIES.find(parentType->name)->second;
+			return properties.contains(name->value);
+		}
+
+		return false;
 	}
 };

@@ -20,19 +20,11 @@ public:
 
 	bool isFunction() const override
 	{
-		if (parentInstance_ && !asValue_)
+		if (CppData::isProperty(parentInstance_, name_)) return false;
+
+		if (parentInstance_ && !asValue_ && parentInstance_->getName() != "self")
 		{
-			auto parentType = parentInstance_->getType();
-
-			if (parentType && PROPERTY_SETTER.contains(parentType->name))
-			{
-				const auto& typeSetterMap = PROPERTY_SETTER.find(parentType->name)->second;
-
-				if (typeSetterMap.contains(name_->value))
-				{
-					return true;
-				}
-			}
+			return true;
 		}
 		return false;
 	}
@@ -108,9 +100,7 @@ public:
 			code += parentInstance_->toCpp(data, indents);
 
 			auto parentName = parentInstance_->getName();
-			if (data->enumDefinitions[parentName])
-				code += "::";
-			else if (GDTYPES_TO_CPPTYPES.contains(parentName))
+			if (data->enumDefinitions[parentName] || GDTYPES_TO_CPPTYPES.contains(parentName))
 				code += "::";
 			else if (!CPPTYPES_TO_FUNCTION.contains(parentName))
 			{
@@ -119,25 +109,6 @@ public:
 					code += ".";
 				else
 					code += "->";
-			}
-
-			if (asValue_) // getter
-			{
-			}
-			else // setter
-			{
-				auto parentType = parentInstance_->getType();
-
-				if (parentType && PROPERTY_SETTER.contains(parentType->name))
-				{
-					const auto& typeSetterMap = PROPERTY_SETTER.find(parentType->name)->second;
-
-					if (typeSetterMap.contains(name_->value))
-					{
-						auto& newName = typeSetterMap.find(name_->value)->second;
-						return code + newName;
-					}
-				}
 			}
 		}
 
@@ -152,7 +123,32 @@ public:
 			code += data->toCppType(new Type(name_->value));
 		else
 		{
-			code += data->toWrappedCppFunction(parentInstance_, name_);
+			if (parentInstance_)
+			{
+				auto parentName = parentInstance_->getName();
+
+				if (CPPTYPES_TO_FUNCTION.contains(parentName) || data->enumDefinitions[parentName]
+					|| CppData::isProperty(parentInstance_, name_) || GDTYPES_TO_CPPTYPES.contains(parentName)
+					|| parentName == "self")
+				{
+					code += data->toWrappedCppFunction(parentInstance_, name_);
+				}
+				else
+				{
+					if (asValue_) // getter
+					{
+						code += "get_" + name_->value + "()";
+					}
+					else // setter
+					{
+						code += "set_" + name_->value;
+					}
+				}
+			}
+			else
+			{
+				code += data->toWrappedCppFunction(parentInstance_, name_);
+			}
 		}
 
 		return code;
