@@ -37,6 +37,11 @@ public:
 		return name_->value[0] == '_';
 	}
 
+	bool isConstant() const
+	{
+		return isConstant_;
+	}
+
 	void hoist(CppData* data) override
 	{
 		data->variableDefinitions[name_->value] = this;

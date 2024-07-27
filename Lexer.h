@@ -77,6 +77,9 @@ struct Token
 	int columnNumber = -1;
 	std::string filename = "";
 	int indentDepth = -1;
+	Token() = default;
+	explicit Token(const std::string& newValue) :
+		value(newValue) {}
 };
 
 class Lexer

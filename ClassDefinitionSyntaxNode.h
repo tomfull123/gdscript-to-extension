@@ -3,6 +3,10 @@
 #include "FunctionDefinitionSyntaxNode.h"
 #include "VariableDefinitionSyntaxNode.h"
 #include "EnumDefinitionSyntaxNode.h"
+#include "ReturnSyntaxNode.h"
+#include "VariableSyntaxNode.h"
+#include "AssignmentSyntaxNode.h"
+#include "BodySyntaxNode.h"
 #include <algorithm>
 
 class ClassDefinitionSyntaxNode : public SyntaxNode
@@ -113,7 +117,7 @@ private:
 	std::vector<ClassDefinitionSyntaxNode*> innerClasses_;
 	bool isInnerClass_;
 
-	std::string classBody(CppData* data) const
+	std::string classBody(CppData* data)
 	{
 		std::string className = getName(data);
 
@@ -162,7 +166,15 @@ private:
 		for (auto v : memberVariableDefinitions_)
 		{
 			if (v->isPrivate()) privateMemberVariableDefinitionString += "\t\t" + v->toCpp(data, "\t\t") + ";\n";
-			else publicMemberVariableDefinitionString += "\t\t" + v->toCpp(data, "\t\t") + ";\n";
+			else
+			{
+				publicMemberVariableDefinitionString += "\t\t" + v->toCpp(data, "\t\t") + ";\n";
+				if (!v->isConstant())
+				{
+					addGetter(v);
+					addSetter(v);
+				}
+			}
 		}
 
 		std::string publicMemberFunctionDefinitionString;
@@ -287,5 +299,30 @@ private:
 		}
 
 		return enumCasts;
+	}
+
+	void addGetter(VariableDefinitionSyntaxNode* variableDefinition)
+	{
+		std::string name = "get_" + variableDefinition->getName();
+		auto prototype = new FunctionPrototypeSyntaxNode(new Token(name), {}, variableDefinition->getType(), false);
+
+		auto returnVariableStatement = new ReturnSyntaxNode(new VariableSyntaxNode(new Token(variableDefinition->getName()), nullptr, true));
+
+		auto body = new BodySyntaxNode({ returnVariableStatement });
+
+		memberFunctionDefinitions_.push_back(new FunctionDefinitionSyntaxNode(prototype, body));
+	}
+
+	void addSetter(VariableDefinitionSyntaxNode* variableDefinition)
+	{
+		auto argNameToken = new Token("new" + variableDefinition->getName());
+		auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false);
+		auto prototype = new FunctionPrototypeSyntaxNode(new Token("set_" + variableDefinition->getName()), { arg }, new Type("void"), false);
+
+		auto setVariableStatement = new AssignmentSyntaxNode(new VariableSyntaxNode(new Token(variableDefinition->getName()), nullptr, false), new VariableSyntaxNode(argNameToken, nullptr, true));
+
+		auto body = new BodySyntaxNode({ setVariableStatement });
+
+		memberFunctionDefinitions_.push_back(new FunctionDefinitionSyntaxNode(prototype, body));
 	}
 };
