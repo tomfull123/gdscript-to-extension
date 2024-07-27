@@ -80,7 +80,7 @@ public:
 			else code += varName + "++";
 		}
 		else
-			code += "auto& " + varName + " : " + array_->toCpp(data, "");
+			code += "const auto& " + varName + " : " + array_->toCpp(data, "");
 
 		code += ")\n";
 
