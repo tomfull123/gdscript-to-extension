@@ -32,7 +32,8 @@ public:
 		staticVariableDefinitions_(staticVariableDefinitions),
 		innerClasses_(innerClasses),
 		isInnerClass_(isInnerClass)
-	{}
+	{
+	}
 
 	std::string getName(CppData* data) const
 	{
@@ -165,10 +166,18 @@ private:
 
 		for (auto v : memberVariableDefinitions_)
 		{
-			if (v->isPrivate()) privateMemberVariableDefinitionString += "\t\t" + v->toCpp(data, "\t\t") + ";\n";
+			if (v->isTypeDef())
+			{
+				v->addTypeDef(data);
+				continue;
+			}
+
+			std::string variableDefString = "\t\t" + v->toCpp(data, "\t\t") + ";\n";
+
+			if (v->isPrivate()) privateMemberVariableDefinitionString += variableDefString;
 			else
 			{
-				publicMemberVariableDefinitionString += "\t\t" + v->toCpp(data, "\t\t") + ";\n";
+				publicMemberVariableDefinitionString += variableDefString;
 				if (!v->isConstant())
 				{
 					addGetter(v);
@@ -231,6 +240,15 @@ private:
 		const auto& types = data->types;
 		const auto& externalFunctions = data->externalFunctions;
 
+		std::unordered_set<std::string> typeDefinitions;
+
+		for (auto v : memberVariableDefinitions_)
+		{
+			if (v->isTypeDef()) {
+				typeDefinitions.emplace(v->getName());
+			}
+		}
+
 		std::string code = "";
 
 		if (!types.empty() || !externalFunctions.empty())
@@ -240,6 +258,8 @@ private:
 			{
 				if (CPP_PRIMITIVE_TYPES.contains(type)) continue;
 				if (type == data->currentClassName) continue;
+
+				if (typeDefinitions.contains(type)) continue;
 
 				auto include = data->getIncludePath(type);
 				if (include != "") includes.push_back(include);

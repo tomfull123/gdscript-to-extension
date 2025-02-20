@@ -159,7 +159,8 @@ struct Type
 	) :
 		name(name),
 		subtypes(subtypes)
-	{}
+	{
+	}
 
 	Type* subtype(int index)
 	{
@@ -198,6 +199,11 @@ public:
 		return false;
 	}
 
+	virtual ValueSyntaxNode* getParent() const
+	{
+		return nullptr;
+	}
+
 	virtual bool isFunction() const
 	{
 		return false;
@@ -216,7 +222,8 @@ struct CppData
 {
 	explicit CppData(const std::string& fileName) :
 		fileName(fileName)
-	{}
+	{
+	}
 
 	std::string fileName;
 	std::unordered_set<std::string> types;

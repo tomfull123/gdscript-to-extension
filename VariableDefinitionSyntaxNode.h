@@ -42,6 +42,11 @@ public:
 		return isConstant_;
 	}
 
+	bool isTypeDef() const
+	{
+		return isClassMember_ && isConstant_ && initialValue_ && initialValue_->hasParent();
+	}
+
 	void hoist(CppData* data) override
 	{
 		data->variableDefinitions[name_->value] = this;
@@ -105,6 +110,12 @@ public:
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
 		return variableCpp(data) + assignInitialValueCpp(data, indents);
+	}
+
+	void addTypeDef(CppData* data)
+	{
+		auto parent = initialValue_->getParent();
+		if (parent) data->toCppType(new Type(parent->getName()));
 	}
 
 private:

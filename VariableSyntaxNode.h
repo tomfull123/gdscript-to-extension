@@ -10,12 +10,18 @@ public:
 		name_(name),
 		parentInstance_(parentInstance),
 		asValue_(asValue)
-	{}
+	{
+	}
 
 	bool hasParent() const override
 	{
 		if (parentInstance_) return true;
 		return false;
+	}
+
+	virtual ValueSyntaxNode* getParent() const
+	{
+		return parentInstance_;
 	}
 
 	bool isFunction() const override
@@ -129,7 +135,7 @@ public:
 
 				if (CPPTYPES_TO_FUNCTION.contains(parentName) || data->enumDefinitions[parentName]
 					|| CppData::isProperty(parentInstance_, name_) || GDTYPES_TO_CPPTYPES.contains(parentName)
-					|| parentName == "self")
+						|| parentName == "self")
 				{
 					code += data->toWrappedCppFunction(parentInstance_, name_);
 				}
