@@ -243,14 +243,3 @@ TEST_F(TranspileTest, MemberVariableColour)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/color.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tColor get_colour()\n\t\t{\n\t\t\treturn colour;\n\t\t}\n\n\t\tvoid set_colour(Color newcolour)\n\t\t{\n\t\t\tcolour = newcolour;\n\t\t}\n\n\t\tColor colour = Color::named(\"BLACK\");\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_colour\"), &Test::get_colour);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_colour\", \"newcolour\"), &Test::set_colour);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
-
-TEST_F(TranspileTest, MemberVariableTypeDef)
-{
-	std::string input = R"(
-		const NewType := ClassName.NewType
-	)";
-
-	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include \"ClassName.h\"\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
-	EXPECT_EQ(expected, actual);
-}

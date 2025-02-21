@@ -115,7 +115,11 @@ public:
 	void addTypeDef(CppData* data)
 	{
 		auto parent = initialValue_->getParent();
-		if (parent) data->toCppType(new Type(parent->getName()));
+		if (parent)
+		{
+			data->toCppType(new Type(parent->getName()));
+			data->typeDefinitions.emplace(name_->value);
+		}
 	}
 
 private:

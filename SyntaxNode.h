@@ -231,6 +231,7 @@ struct CppData
 	std::unordered_map<std::string, VariableDefinitionSyntaxNode*> variableDefinitions;
 	std::unordered_map<std::string, FunctionPrototypeSyntaxNode*> functionPrototypeDefinitions;
 	std::unordered_map<std::string, EnumDefinitionSyntaxNode*> enumDefinitions;
+	std::unordered_set<std::string> typeDefinitions;
 	std::string currentClassName;
 
 	std::string toCppType(const Type* type)
@@ -271,6 +272,8 @@ struct CppData
 		if (typeName[0] == '_') typeName.erase(0, 1);
 
 		types.emplace(typeName);
+
+		if (typeDefinitions.contains(typeName)) return typeName;
 
 		if (isGodotType(typeName) || GDTYPES_TO_CPPTYPES.contains(typeName)) return "Ref<" + typeName + ">";
 		return "Ref<" + typeName + ">";

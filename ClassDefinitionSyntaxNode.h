@@ -239,15 +239,7 @@ private:
 	{
 		const auto& types = data->types;
 		const auto& externalFunctions = data->externalFunctions;
-
-		std::unordered_set<std::string> typeDefinitions;
-
-		for (auto v : memberVariableDefinitions_)
-		{
-			if (v->isTypeDef()) {
-				typeDefinitions.emplace(v->getName());
-			}
-		}
+		const auto& typeDefinitions = data->typeDefinitions;
 
 		std::string code = "";
 
