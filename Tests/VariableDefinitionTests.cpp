@@ -72,6 +72,18 @@ TEST_F(TranspileTest, MemberVariableVarDictionaryEmpty)
 	EXPECT_EQ(expected, actual);
 }
 
+TEST_F(TranspileTest, MemberVariableVarDictionaryWithSubtypesEmpty)
+{
+	std::string input = R"(
+		var x: Dictionary[int, string] = {
+		}
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include \"string.h\"\n#include <godot_cpp/classes/ref.hpp>\n#include <map>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstd::map<int, Ref<string>>& get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid set_x(std::map<int, Ref<string>> newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\t\tstd::map<int, Ref<string>> x = {\n\t\t};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Test::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newx\"), &Test::set_x);\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
 TEST_F(TranspileTest, MemberVariableVarDictionaryIntToInt)
 {
 	std::string input = R"(

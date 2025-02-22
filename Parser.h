@@ -42,7 +42,8 @@ struct Result
 	) :
 		ast(ast),
 		errors(errors)
-	{}
+	{
+	}
 
 	AbstractSyntaxTree* ast;
 	std::vector<ParserError> errors;
@@ -142,8 +143,12 @@ private:
 		{
 			next(); // eat [
 
-			auto subtype = parseType();
-			if (subtype) subtypes.push_back(subtype);
+			while (!isNextTokenType(TokenType::CloseSquareBracket))
+			{
+				auto subtype = parseType();
+				if (subtype) subtypes.push_back(subtype);
+				if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
+			}
 
 			if (!consume(TokenType::CloseSquareBracket)) return nullptr;
 		}
