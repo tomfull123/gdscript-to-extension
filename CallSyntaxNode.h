@@ -104,18 +104,25 @@ public:
 			if (a < args_.size() - 1) argsString += ", ";
 		}
 
-		if (!isConstructorCall)
+		if (FUNCTION_TO_MEMBER_METHOD_CALL.contains(name_->value))
 		{
-			std::string instanceTypeString = "";
-			if (instance_)
-			{
-				const auto* instanceType = instance_->getType();
-				if (instanceType) instanceTypeString = instanceType->name;
-			}
-			code += data->toCppFunction(name_->value, instanceTypeString);
+			code += "(" + argsString + ")" + "." + name_->value + "()";
 		}
+		else
+		{
+			if (!isConstructorCall)
+			{
+				std::string instanceTypeString = "";
+				if (instance_)
+				{
+					const auto* instanceType = instance_->getType();
+					if (instanceType) instanceTypeString = instanceType->name;
+				}
+				code += data->toCppFunction(name_->value, instanceTypeString);
+			}
 
-		code += "(" + argsString + ")";
+			code += "(" + argsString + ")";
+		}
 
 		if (isConstructorCall) code += ")";
 

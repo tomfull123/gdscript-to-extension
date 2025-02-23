@@ -36,8 +36,8 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 
 // Global methods
 const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS = {
-	{"absf", "abs"},
-	{"absi", "abs"},
+	{"absf", "Math::abs"},
+	{"absi", "Math::abs"},
 	{"minf", "std::fminf"},
 	{"mini", "std::min"},
 	{"roundi", "std::round"},
@@ -112,10 +112,15 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"TypedArray", "<godot_cpp/variant/typed_array.hpp>"},
 	{"PackedScene", "<godot_cpp/classes/packed_scene.hpp>"},
 	{"RayCast3D", "<godot_cpp/classes/ray_cast3d.hpp>"},
+	{"Math::abs", "<godot_cpp/core/math.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
 	{"Color", "named"},
+};
+
+const std::unordered_set<std::string> FUNCTION_TO_MEMBER_METHOD_CALL = {
+	"abs",
 };
 
 const std::unordered_map<std::string, std::unordered_set<std::string>> GDTYPE_PROPERTIES = {
