@@ -34,6 +34,7 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"Viewport", "Viewport"}
 };
 
+// Global methods
 const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS = {
 	{"absf", "abs"},
 	{"absi", "abs"},
@@ -149,7 +150,36 @@ const std::unordered_map<std::string, const std::unordered_map<std::string, std:
 		{
 			{"has", "contains"}
 		}
+	},
+	{
+		"MeshInstance3D",
+		{
+			{"mesh", "get_mesh"}
+		}
 	}
+};
+
+const std::unordered_map<std::string, const std::unordered_set<std::string>> GDTYPE_METHODS = {
+	{
+		"MeshInstance3D",
+		{
+			"mesh"
+		}
+	},
+	{
+		"Node3D",
+		{
+			"get_child"
+		}
+	}
+};
+
+const std::unordered_map<std::string, std::string> GDTYPE_INHERIT_TYPES = {
+	{ "MeshInstance3D", "GeometryInstance3D" },
+	{ "GeometryInstance3D", "VisualInstance3D" },
+	{ "VisualInstance3D", "Node3D" },
+	{ "Node3D", "Node" },
+	{ "Node", "Object" }
 };
 
 struct Type
@@ -234,6 +264,7 @@ struct CppData
 	std::unordered_map<std::string, EnumDefinitionSyntaxNode*> enumDefinitions;
 	std::unordered_set<std::string> typeDefinitions;
 	std::string currentClassName;
+	Type* classInheritedType;
 
 	std::string toCppType(const Type* type)
 	{
@@ -344,6 +375,34 @@ struct CppData
 		return GODOTTYPES_TO_INCLUDE_PATH.contains(type);
 	}
 
+	bool isClassMethod(const std::string& name) const
+	{
+		return isGodotTypeMethod(classInheritedType, name);
+	}
+
+	static bool isGodotTypeMethod(const Type* parentType, const std::string& name)
+	{
+		if (!parentType) return false;
+
+		std::string parentTypeName = parentType->name;
+
+		while (true)
+		{
+			if (GDTYPE_METHODS.contains(parentTypeName))
+			{
+				const auto& methods = GDTYPE_METHODS.find(parentTypeName)->second;
+				if (methods.contains(name)) return true;
+			}
+
+			if (GDTYPE_INHERIT_TYPES.contains(parentTypeName))
+				parentTypeName = GDTYPE_INHERIT_TYPES.find(parentTypeName)->second;
+			else
+				return false;
+		}
+
+		return false;
+	}
+
 	static bool isProperty(ValueSyntaxNode* parentInstance, const Token* name)
 	{
 		if (!parentInstance) return false;
@@ -351,7 +410,7 @@ struct CppData
 		auto parentType = parentInstance->getType();
 		if (parentType && GDTYPE_PROPERTIES.contains(parentType->name))
 		{
-			auto& properties = GDTYPE_PROPERTIES.find(parentType->name)->second;
+			const auto& properties = GDTYPE_PROPERTIES.find(parentType->name)->second;
 			return properties.contains(name->value);
 		}
 

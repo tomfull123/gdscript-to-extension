@@ -8,6 +8,9 @@
     <Filter Include="Source Files\Transpile">
       <UniqueIdentifier>{b979c91b-7846-4b7c-9aa0-97811bafcf18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Transpile\GodotClasses">
+      <UniqueIdentifier>{a535c681-65a0-431e-a684-e5896dc7c975}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -69,6 +72,9 @@
     </ClCompile>
     <ClCompile Include="TypeDefTests.cpp">
       <Filter>Source Files\Transpile</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshInstance3DTests.cpp">
+      <Filter>Source Files\Transpile\GodotClasses</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

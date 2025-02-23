@@ -57,6 +57,7 @@ public:
 	void hoist(CppData* data) override
 	{
 		data->currentClassName = getName(data);
+		data->classInheritedType = getInheritedType();
 		for (auto enumDef : enumDefinitions_) enumDef->hoist(data);
 		for (auto v : staticVariableDefinitions_) v->hoist(data);
 		for (auto f : staticFunctionDefinitions_) f->hoist(data);
@@ -202,10 +203,7 @@ private:
 			}
 		}
 
-		Type* inherits;
-
-		if (extends_) inherits = new Type(extends_->value);
-		else inherits = new Type("RefCounted");
+		Type* inherits = data->classInheritedType;
 
 		data->toCppType(inherits);
 
@@ -336,5 +334,11 @@ private:
 		auto body = new BodySyntaxNode({ setVariableStatement });
 
 		memberFunctionDefinitions_.push_back(new FunctionDefinitionSyntaxNode(prototype, body));
+	}
+
+	Type* getInheritedType()
+	{
+		if (extends_) return new Type(extends_->value);
+		return new Type("RefCounted");
 	}
 };

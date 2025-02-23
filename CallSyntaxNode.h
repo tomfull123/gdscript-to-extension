@@ -13,7 +13,8 @@ public:
 		instance_(instance),
 		name_(name),
 		args_(args)
-	{}
+	{
+	}
 
 	Type* getType() override
 	{
@@ -81,6 +82,8 @@ public:
 						code += "->";
 					else if (parentType && !data->isGodotType(parentType->name))
 						code += ".";
+					else if (data->isClassMethod(instance_->getName()))
+						code += "->";
 					else if (!parentType && !varDef && !instance_->hasParent()) // static method call
 					{
 						data->types.emplace(instanceName);
