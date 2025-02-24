@@ -91,7 +91,9 @@ public:
 					auto parentType = instance_->getType();
 					auto varDef = data->variableDefinitions[instanceName];
 
-					if ((parentType && data->isGodotType(parentType->name)) || (data->isGodotType(instanceName) || GDTYPES_TO_CPPTYPES.contains(instanceName)))
+					if (instanceName == "new")
+						code += "->";
+					else if ((parentType && data->isGodotType(parentType->name)) || (data->isGodotType(instanceName) || GDTYPES_TO_CPPTYPES.contains(instanceName)))
 						code += "->";
 					else if (parentType && !data->isGodotType(parentType->name))
 						code += ".";
