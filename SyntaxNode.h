@@ -125,6 +125,20 @@ const std::unordered_set<std::string> FUNCTION_TO_MEMBER_METHOD_CALL = {
 
 const std::unordered_map<std::string, std::unordered_set<std::string>> GDTYPE_PROPERTIES = {
 	{
+		"Vector2",
+		{
+			"x",
+			"y",
+		}
+	},
+	{
+		"Vector2i",
+		{
+			"x",
+			"y",
+		}
+	},
+	{
 		"Vector3",
 		{
 			"x",
