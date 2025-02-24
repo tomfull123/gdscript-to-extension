@@ -56,6 +56,19 @@ public:
 			auto& cppFunction = GDFUNCTIONS_TO_CPPFUNCTIONS.find(name_->value)->second;
 			if (CPPFUNCTION_RETURN_TYPES.contains(cppFunction)) type_ = new Type(CPPFUNCTION_RETURN_TYPES.find(cppFunction)->second);
 		}
+		else if (instance_)
+		{
+			auto instanceType = instance_->getType();
+
+			if (instanceType && GDTYPE_METHOD_DEFINITIONS.contains(instanceType->name))
+			{
+				const auto& methods = GDTYPE_METHOD_DEFINITIONS.find(instanceType->name)->second;
+				if (methods.contains(name_->value))
+				{
+					type_ = new Type(methods.find(name_->value)->second);
+				}
+			}
+		}
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
