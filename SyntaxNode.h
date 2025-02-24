@@ -175,22 +175,28 @@ const std::unordered_map<std::string, const std::unordered_map<std::string, std:
 		{
 			{"mesh", "get_mesh"}
 		}
-	}
+	},
 };
 
-const std::unordered_map<std::string, const std::unordered_set<std::string>> GDTYPE_METHODS = {
+const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_METHOD_DEFINITIONS = {
 	{
 		"MeshInstance3D",
 		{
-			"mesh"
+			{"mesh", "Mesh"}
 		}
 	},
 	{
-		"Node3D",
+		"Node",
 		{
-			"get_child"
+			{"get_child", "Node"}
 		}
-	}
+	},
+	{
+		"RayCast3D",
+		{
+			{"get_collision_point", "Vector3"}
+		}
+	},
 };
 
 const std::unordered_map<std::string, std::string> GDTYPE_INHERIT_TYPES = {
@@ -407,9 +413,9 @@ struct CppData
 
 		while (true)
 		{
-			if (GDTYPE_METHODS.contains(parentTypeName))
+			if (GDTYPE_METHOD_DEFINITIONS.contains(parentTypeName))
 			{
-				const auto& methods = GDTYPE_METHODS.find(parentTypeName)->second;
+				const auto& methods = GDTYPE_METHOD_DEFINITIONS.find(parentTypeName)->second;
 				if (methods.contains(name)) return true;
 			}
 
