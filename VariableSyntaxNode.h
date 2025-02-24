@@ -111,7 +111,9 @@ public:
 			else if (!CPPTYPES_TO_FUNCTION.contains(parentName))
 			{
 				auto parentType = parentInstance_->getType();
-				if (parentType && GDTYPES_TO_CPPTYPES.contains(parentType->name))
+				if (CPPFUNCTION_RETURN_TYPES.contains(parentName))
+					code += "->";
+				else if (parentType && GDTYPES_TO_CPPTYPES.contains(parentType->name))
 					code += ".";
 				else
 					code += "->";
