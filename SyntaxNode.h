@@ -128,7 +128,7 @@ const std::unordered_map<std::string, const std::unordered_map<std::string, std:
 	{
 		"Vector3",
 		{
-			{"ZERO", "zero"}
+			{"ZERO", "Vector3(0, 0, 0)"}
 		}
 	},
 };
