@@ -90,6 +90,7 @@ public:
 				{
 					auto parentType = instance_->getType();
 					auto varDef = data->variableDefinitions[instanceName];
+					auto functionDef = data->functionPrototypeDefinitions[instance_->getName()];
 
 					if (instanceName == "new")
 						code += "->";
@@ -99,7 +100,7 @@ public:
 						code += ".";
 					else if (data->isClassMethod(instance_->getName()))
 						code += "->";
-					else if (!parentType && !varDef && !instance_->hasParent()) // static method call
+					else if (!parentType && !varDef && !instance_->hasParent() && !functionDef) // static method call
 					{
 						data->types.emplace(instanceName);
 						code += "::";
