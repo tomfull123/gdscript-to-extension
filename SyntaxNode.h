@@ -113,6 +113,7 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"PackedScene", "<godot_cpp/classes/packed_scene.hpp>"},
 	{"RayCast3D", "<godot_cpp/classes/ray_cast3d.hpp>"},
 	{"Math::abs", "<godot_cpp/core/math.hpp>"},
+	{"Camera3D", "<godot_cpp/classes/camera3d.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
@@ -195,6 +196,12 @@ const std::unordered_map<std::string, const std::unordered_map<std::string, std:
 		"RayCast3D",
 		{
 			{"get_collision_point", "Vector3"}
+		}
+	},
+	{
+		"Viewport",
+		{
+			{"get_camera_3d", "Camera3D"}
 		}
 	},
 };

@@ -157,6 +157,7 @@
     <ClCompile Include="TernaryTests.cpp" />
     <ClCompile Include="TypeDefTests.cpp" />
     <ClCompile Include="VariableDefinitionTests.cpp" />
+    <ClCompile Include="ViewportTests.cpp" />
     <ClCompile Include="WhileLoopTests.cpp" />
   </ItemGroup>
   <ItemGroup>
