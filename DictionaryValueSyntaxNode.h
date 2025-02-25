@@ -61,6 +61,8 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
+		if (keys_.empty()) return "{}";
+
 		std::string valuesString;
 
 		for (int i = 0; i < keys_.size(); i++)
