@@ -124,35 +124,45 @@ const std::unordered_set<std::string> FUNCTION_TO_MEMBER_METHOD_CALL = {
 	"abs",
 };
 
-const std::unordered_map<std::string, std::unordered_set<std::string>> GDTYPE_PROPERTIES = {
+const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_PROPERTIES_TO_CPP_PROPERTIES = {
+	{
+		"Vector3",
+		{
+			{"ZERO", "zero"}
+		}
+	},
+};
+
+const std::unordered_map<std::string, std::unordered_map<std::string, std::string>> GDTYPE_PROPERTY_DEFINITIONS = {
 	{
 		"Vector2",
 		{
-			"x",
-			"y",
+			{"x", "float"},
+			{"y", "float"},
 		}
 	},
 	{
 		"Vector2i",
 		{
-			"x",
-			"y",
+			{"x", "int"},
+			{"y", "int"},
 		}
 	},
 	{
 		"Vector3",
 		{
-			"x",
-			"y",
-			"z",
+			{"x", "float"},
+			{"y", "float"},
+			{"z", "float"},
+			{"ZERO", "Vector3"}
 		}
 	},
 	{
 		"Vector3i",
 		{
-			"x",
-			"y",
-			"z",
+			{"x", "int"},
+			{"y", "int"},
+			{"z", "int"},
 		}
 	},
 };
@@ -384,6 +394,12 @@ struct CppData
 			{
 				return it->second + "(\"" + name + "\")";
 			}
+
+			if (GDTYPE_PROPERTIES_TO_CPP_PROPERTIES.contains(parentName))
+			{
+				const auto& methods = GDTYPE_PROPERTIES_TO_CPP_PROPERTIES.find(parentName)->second;
+				if (methods.contains(name)) return methods.find(name)->second;
+			}
 		}
 
 		return name;
@@ -440,9 +456,9 @@ struct CppData
 		if (!parentInstance) return false;
 
 		auto parentType = parentInstance->getType();
-		if (parentType && GDTYPE_PROPERTIES.contains(parentType->name))
+		if (parentType && GDTYPE_PROPERTY_DEFINITIONS.contains(parentType->name))
 		{
-			const auto& properties = GDTYPE_PROPERTIES.find(parentType->name)->second;
+			const auto& properties = GDTYPE_PROPERTY_DEFINITIONS.find(parentType->name)->second;
 			return properties.contains(name->value);
 		}
 

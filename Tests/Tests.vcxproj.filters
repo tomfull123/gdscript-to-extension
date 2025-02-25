@@ -82,6 +82,9 @@
     <ClCompile Include="ViewportTests.cpp">
       <Filter>Source Files\Transpile\GodotClasses</Filter>
     </ClCompile>
+    <ClCompile Include="Vector3Tests.cpp">
+      <Filter>Source Files\Transpile\GodotClasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TranspileTest.h">
