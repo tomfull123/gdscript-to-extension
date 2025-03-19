@@ -18,14 +18,14 @@ static void printErrors(const std::vector<ParserError>& errors)
 	}
 }
 
-static bool buildClassAST(const std::string& filePath, AbstractSyntaxTree* ast)
+static std::string readFile(const std::string& filePath)
 {
 	FileIO file(filePath);
 
 	if (!file.isOpen())
 	{
 		std::cout << "File " << filePath << " not found" << std::endl;
-		return false;
+		return "";
 	}
 
 	std::string allLines;
@@ -33,6 +33,13 @@ static bool buildClassAST(const std::string& filePath, AbstractSyntaxTree* ast)
 	file.readAllLines(allLines);
 
 	file.close();
+
+	return allLines;
+}
+
+static bool buildClassAST(const std::string& filePath, AbstractSyntaxTree* ast)
+{
+	std::string allLines = readFile(filePath);
 
 	auto fileNameExtensionStart = filePath.find_last_of(".");
 	auto filePathLength = filePath.length();
