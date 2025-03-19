@@ -126,8 +126,7 @@ int main(int argc, char* argv[])
 
 	if (projectPath.empty())
 	{
-		std::cout << "No directory provided" << std::endl;
-		return 1;
+		projectPath = std::filesystem::current_path().string();
 	}
 
 	std::cout << "Looking for files in: " << projectPath << "\n" << std::endl;
