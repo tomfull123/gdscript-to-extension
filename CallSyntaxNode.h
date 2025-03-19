@@ -35,7 +35,7 @@ public:
 
 	void resolveDefinitions(CppData* data) override
 	{
-		prototype_ = data->functionPrototypeDefinitions[getName()];
+		prototype_ = data->currentClass->functionPrototypeDefinitions[getName()];
 
 		if (instance_) instance_->resolveDefinitions(data);
 		for (auto a : args_) a->resolveDefinitions(data);
@@ -89,20 +89,20 @@ public:
 				if (!isConstructorCall)
 				{
 					auto parentType = instance_->getType();
-					auto varDef = data->variableDefinitions[instanceName];
-					auto functionDef = data->functionPrototypeDefinitions[instance_->getName()];
+					auto varDef = data->currentClass->variableDefinitions[instanceName];
+					auto functionDef = data->currentClass->functionPrototypeDefinitions[instance_->getName()];
 
 					if (instanceName == "new")
 						code += "->";
-					else if ((parentType && data->isGodotType(parentType->name)) || (data->isGodotType(instanceName) || GDTYPES_TO_CPPTYPES.contains(instanceName)))
+					else if ((parentType && data->currentClass->isGodotType(parentType->name)) || (data->currentClass->isGodotType(instanceName) || GDTYPES_TO_CPPTYPES.contains(instanceName)))
 						code += "->";
-					else if (parentType && !data->isGodotType(parentType->name))
+					else if (parentType && !data->currentClass->isGodotType(parentType->name))
 						code += ".";
-					else if (data->isClassMethod(instance_->getName()))
+					else if (data->currentClass->isClassMethod(instance_->getName()))
 						code += "->";
 					else if (!parentType && !varDef && !instance_->hasParent() && !functionDef) // static method call
 					{
-						data->types.emplace(instanceName);
+						data->currentClass->types.emplace(instanceName);
 						code += "::";
 					}
 					else
@@ -134,7 +134,7 @@ public:
 					const auto* instanceType = instance_->getType();
 					if (instanceType) instanceTypeString = instanceType->name;
 				}
-				code += data->toCppFunction(name_->value, instanceTypeString);
+				code += data->currentClass->toCppFunction(name_->value, instanceTypeString);
 			}
 
 			code += "(" + argsString + ")";

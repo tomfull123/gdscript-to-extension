@@ -8,7 +8,8 @@ public:
 	CastSyntaxNode(ValueSyntaxNode* value, Type* type) :
 		value_(value),
 		type_(type)
-	{}
+	{
+	}
 
 	Type* getType() override
 	{
@@ -37,7 +38,7 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return "(" + data->toCppType(type_) + ")" + value_->toCpp(data, "");
+		return "(" + data->currentClass->toCppType(type_) + ")" + value_->toCpp(data, "");
 	}
 
 private:

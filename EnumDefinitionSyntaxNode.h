@@ -12,7 +12,8 @@ public:
 	) :
 		name_(name),
 		values_(values)
-	{}
+	{
+	}
 
 	const std::string& getName() const
 	{
@@ -21,7 +22,7 @@ public:
 
 	void hoist(CppData* data) override
 	{
-		data->enumDefinitions[name_->value] = this;
+		data->currentClass->enumDefinitions[name_->value] = this;
 		for (auto v : values_) v->hoist(data);
 	}
 

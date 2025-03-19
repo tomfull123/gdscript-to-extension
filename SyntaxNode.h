@@ -290,8 +290,15 @@ public:
 class VariableDefinitionSyntaxNode;
 class FunctionPrototypeSyntaxNode;
 class EnumDefinitionSyntaxNode;
+struct CppClassData;
 
 struct CppData
+{
+	std::unordered_map<std::string, CppClassData*> classData;
+	CppClassData* currentClass;
+};
+
+struct CppClassData
 {
 	std::unordered_set<std::string> types;
 	std::unordered_set<std::string> externalFunctions;

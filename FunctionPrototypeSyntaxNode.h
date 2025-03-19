@@ -49,7 +49,7 @@ public:
 
 	void hoist(CppData* data) override
 	{
-		data->functionPrototypeDefinitions[name_->value] = this;
+		data->currentClass->functionPrototypeDefinitions[name_->value] = this;
 		for (auto a : argDefs_) a->hoist(data);
 	}
 
@@ -60,7 +60,7 @@ public:
 
 	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
-		if (name_->value == "_init") returnType_ = new Type(data->currentClassName);
+		if (name_->value == "_init") returnType_ = new Type(data->currentClass->currentClassName);
 		else if (!returnType_) returnType_ = new Type("void");
 
 		for (auto a : argDefs_) a->resolveTypes(data);
@@ -94,7 +94,7 @@ public:
 
 		std::string name = getName();
 
-		auto typeCode = data->toCppType(returnType_);
+		auto typeCode = data->currentClass->toCppType(returnType_);
 
 		if (!CPP_PRIMITIVE_TYPES.contains(typeCode) && !returnType_->subtypes.empty()) typeCode += "&";
 

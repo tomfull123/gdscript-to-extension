@@ -26,7 +26,7 @@ public:
 
 	bool isFunction() const override
 	{
-		if (CppData::isProperty(parentInstance_, name_)) return false;
+		if (CppClassData::isProperty(parentInstance_, name_)) return false;
 
 		if (parentInstance_ && !asValue_ && parentInstance_->getName() != "self")
 		{
@@ -52,11 +52,11 @@ public:
 
 	void resolveDefinitions(CppData* data) override
 	{
-		if (!parentInstance_) variableDefinition_ = data->variableDefinitions[name_->value];
+		if (!parentInstance_) variableDefinition_ = data->currentClass->variableDefinitions[name_->value];
 		else
 		{
 			parentInstance_->resolveDefinitions(data);
-			if (!variableDefinition_) enumDefinition_ = data->enumDefinitions[parentInstance_->getName()];
+			if (!variableDefinition_) enumDefinition_ = data->currentClass->enumDefinitions[parentInstance_->getName()];
 		}
 
 		if (variableDefinition_) variableDefinition_->resolveDefinitions(data);
@@ -109,7 +109,7 @@ public:
 			code += parentInstance_->toCpp(data, indents);
 
 			auto parentName = parentInstance_->getName();
-			if (data->enumDefinitions[parentName] || GDTYPES_TO_CPPTYPES.contains(parentName))
+			if (data->currentClass->enumDefinitions[parentName] || GDTYPES_TO_CPPTYPES.contains(parentName))
 				code += "::";
 			else if (!CPPTYPES_TO_FUNCTION.contains(parentName))
 			{
@@ -123,7 +123,7 @@ public:
 			}
 		}
 
-		auto varDef = data->variableDefinitions[name_->value];
+		auto varDef = data->currentClass->variableDefinitions[name_->value];
 
 		if (name_->value == "self")
 		{
@@ -131,20 +131,20 @@ public:
 		}
 		// static call
 		else if (!parentInstance_ && !varDef && GDTYPES_TO_CPPTYPES.contains(name_->value))
-			code += data->toCppType(new Type(name_->value));
-		else if (data->isClassMethod(name_->value))
-			code += data->toCppFunction(name_->value, data->classInheritedType->name) + "()";
+			code += data->currentClass->toCppType(new Type(name_->value));
+		else if (data->currentClass->isClassMethod(name_->value))
+			code += data->currentClass->toCppFunction(name_->value, data->currentClass->classInheritedType->name) + "()";
 		else
 		{
 			if (parentInstance_)
 			{
 				auto parentName = parentInstance_->getName();
 
-				if (CPPTYPES_TO_FUNCTION.contains(parentName) || data->enumDefinitions[parentName]
-					|| CppData::isProperty(parentInstance_, name_) || GDTYPES_TO_CPPTYPES.contains(parentName)
+				if (CPPTYPES_TO_FUNCTION.contains(parentName) || data->currentClass->enumDefinitions[parentName]
+					|| CppClassData::isProperty(parentInstance_, name_) || GDTYPES_TO_CPPTYPES.contains(parentName)
 						|| parentName == "self")
 				{
-					code += data->toWrappedCppFunction(parentInstance_, name_);
+					code += data->currentClass->toWrappedCppFunction(parentInstance_, name_);
 				}
 				else
 				{
@@ -160,7 +160,7 @@ public:
 			}
 			else
 			{
-				code += data->toWrappedCppFunction(parentInstance_, name_);
+				code += data->currentClass->toWrappedCppFunction(parentInstance_, name_);
 			}
 		}
 

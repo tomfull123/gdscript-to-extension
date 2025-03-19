@@ -49,7 +49,7 @@ public:
 
 	void hoist(CppData* data) override
 	{
-		data->variableDefinitions[name_->value] = this;
+		data->currentClass->variableDefinitions[name_->value] = this;
 		if (initialValue_) initialValue_->hoist(data);
 	}
 
@@ -90,13 +90,13 @@ public:
 			if (initialValue_)
 			{
 				auto valueType = initialValue_->getType();
-				code += data->toCppType(valueType);
+				code += data->currentClass->toCppType(valueType);
 			}
 			else code += "Variant";
 		}
-		else code += data->toCppType(dataType_);
+		else code += data->currentClass->toCppType(dataType_);
 		code += " ";
-		if (outsideClass) code += data->currentClassName + "::";
+		if (outsideClass) code += data->currentClass->currentClassName + "::";
 		code += name_->value;
 
 		return code;
@@ -117,8 +117,8 @@ public:
 		auto parent = initialValue_->getParent();
 		if (parent)
 		{
-			data->toCppType(new Type(parent->getName()));
-			data->typeDefinitions.emplace(name_->value);
+			data->currentClass->toCppType(new Type(parent->getName()));
+			data->currentClass->typeDefinitions.emplace(name_->value);
 		}
 	}
 

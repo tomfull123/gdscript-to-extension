@@ -14,7 +14,8 @@ public:
 		lhs_(lhs),
 		rhs_(rhs),
 		type_(new Type("bool"))
-	{}
+	{
+	}
 
 	Type* getType() override
 	{
@@ -46,7 +47,7 @@ public:
 		return "std::is_same<decltype(" +
 			lhs_->toCpp(data, indents) +
 			"), " +
-			data->toCppType(rhs_) +
+			data->currentClass->toCppType(rhs_) +
 			"> == true";
 	}
 

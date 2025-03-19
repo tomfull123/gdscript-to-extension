@@ -58,18 +58,22 @@ public:
 
 	void hoist(CppData* data) override
 	{
-		data->currentClassName = getName();
-		data->classInheritedType = getInheritedType();
+		data->currentClass = new CppClassData();
+		data->currentClass->currentClassName = getName();
+		data->currentClass->classInheritedType = getInheritedType();
 		for (auto enumDef : enumDefinitions_) enumDef->hoist(data);
 		for (auto v : staticVariableDefinitions_) v->hoist(data);
 		for (auto f : staticFunctionDefinitions_) f->hoist(data);
 		for (auto v : memberVariableDefinitions_) v->hoist(data);
 		for (auto f : memberFunctionDefinitions_) f->hoist(data);
 		for (auto c : innerClasses_) c->hoist(data);
+		data->classData[getName()] = data->currentClass;
 	}
 
 	void resolveDefinitions(CppData* data) override
 	{
+		setCurrentClass(data);
+
 		for (auto enumDef : enumDefinitions_) enumDef->resolveDefinitions(data);
 		for (auto v : staticVariableDefinitions_) v->resolveDefinitions(data);
 		for (auto f : staticFunctionDefinitions_) f->resolveDefinitions(data);
@@ -80,6 +84,8 @@ public:
 
 	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
+		setCurrentClass(data);
+
 		for (auto enumDef : enumDefinitions_) enumDef->resolveTypes(data);
 		for (auto v : staticVariableDefinitions_) v->resolveTypes(data);
 		for (auto f : staticFunctionDefinitions_) f->resolveTypes(data);
@@ -90,6 +96,8 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
+		setCurrentClass(data);
+
 		std::vector<std::string> enumNames;
 
 		for (auto enumDef : enumDefinitions_)
@@ -206,9 +214,9 @@ private:
 			}
 		}
 
-		Type* inherits = data->classInheritedType;
+		Type* inherits = data->currentClass->classInheritedType;
 
-		data->toCppType(inherits);
+		data->currentClass->toCppType(inherits);
 
 		return ""
 			+ enumDefString
@@ -238,9 +246,9 @@ private:
 
 	std::string cppIncludes(const CppData* data) const
 	{
-		const auto& types = data->types;
-		const auto& externalFunctions = data->externalFunctions;
-		const auto& typeDefinitions = data->typeDefinitions;
+		const auto& types = data->currentClass->types;
+		const auto& externalFunctions = data->currentClass->externalFunctions;
+		const auto& typeDefinitions = data->currentClass->typeDefinitions;
 
 		std::string code = "";
 
@@ -250,18 +258,18 @@ private:
 			for (const auto& type : types)
 			{
 				if (CPP_PRIMITIVE_TYPES.contains(type)) continue;
-				if (type == data->currentClassName) continue;
+				if (type == data->currentClass->currentClassName) continue;
 
 				if (typeDefinitions.contains(type)) continue;
 
-				auto include = data->getIncludePath(type);
+				auto include = data->currentClass->getIncludePath(type);
 				if (include != "") includes.push_back(include);
 				else includes.push_back("\"" + type + ".h\"");
 			}
 
 			for (const auto& externalFunction : externalFunctions)
 			{
-				auto include = data->getIncludePath(externalFunction);
+				auto include = data->currentClass->getIncludePath(externalFunction);
 				if (include != "") includes.push_back(include);
 			}
 
@@ -343,5 +351,10 @@ private:
 	{
 		if (extends_) return new Type(extends_->value);
 		return new Type("RefCounted");
+	}
+
+	void setCurrentClass(CppData* data)
+	{
+		data->currentClass = data->classData[getName()];
 	}
 };
