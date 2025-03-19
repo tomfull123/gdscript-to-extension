@@ -31,18 +31,14 @@ public:
 		return cppFileName;
 	}
 
-	static std::string getOutputFilePath(const std::string& cppFilePathWithoutExtension, const std::string& cppFileName, const std::string& overridePath)
+	static std::string getOutputFilePath(const std::string& cppFileName, const std::string& overridePath)
 	{
-		if (overridePath.empty()) return cppFilePathWithoutExtension + ".h";
-		else
+		std::string outputCppPath = std::filesystem::absolute(overridePath).generic_string();
+		if (!std::filesystem::path(overridePath).has_extension())
 		{
-			std::string outputCppPath = std::filesystem::absolute(overridePath).generic_string();
-			if (!std::filesystem::path(overridePath).has_extension())
-			{
-				outputCppPath += "/" + cppFileName + ".h";
-			}
-			std::filesystem::create_directories(std::filesystem::path(outputCppPath).remove_filename());
-			return outputCppPath;
+			outputCppPath += "/" + cppFileName + ".h";
 		}
+		std::filesystem::create_directories(std::filesystem::path(outputCppPath).remove_filename());
+		return outputCppPath;
 	}
 };

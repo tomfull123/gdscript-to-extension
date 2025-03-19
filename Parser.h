@@ -54,21 +54,19 @@ class Parser
 public:
 	explicit Parser(const std::vector<Token*>& tokens);
 
-	void buildAST(AbstractSyntaxTree* ast);
+	void buildAST(AbstractSyntaxTree* ast, const std::string& fileName);
 
 	const std::vector<ParserError>& getErrors() const { return errors_; }
 
-	static Result* parse(const std::string& input)
+	static Result* parse(const std::string& input, AbstractSyntaxTree* ast, const std::string& fileName)
 	{
-		AbstractSyntaxTree* ast = new AbstractSyntaxTree();
-
 		Lexer lexer(input);
 
 		std::vector<Token*> tokens = lexer.readAllTokens();
 
 		Parser parser(tokens);
 
-		parser.buildAST(ast);
+		parser.buildAST(ast, fileName);
 
 		const auto& errors = parser.getErrors();
 
@@ -378,7 +376,7 @@ private:
 		return consume(TokenType::Identifier);
 	}
 
-	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, Token* nameToken = nullptr, bool isInnerClass = false)
+	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, const std::string& fileName, Token* nameToken = nullptr, bool isInnerClass = false)
 	{
 		Token* name = nameToken;
 		Token* extends = nullptr;
@@ -448,7 +446,7 @@ private:
 				next(); // eat class
 				auto subclassName = consume(TokenType::Identifier);
 				consume(TokenType::ColonSeparator);
-				auto internalClass = parseScriptBody(t->indentDepth + 1, subclassName, true);
+				auto internalClass = parseScriptBody(t->indentDepth + 1, "", subclassName, true);
 				if (internalClass) innerClasses.push_back(internalClass);
 				break;
 			}
@@ -466,7 +464,8 @@ private:
 			staticFunctionDefinitions,
 			staticVariableDefinitions,
 			innerClasses,
-			isInnerClass
+			isInnerClass,
+			fileName
 		);
 	}
 

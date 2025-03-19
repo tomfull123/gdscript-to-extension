@@ -21,7 +21,8 @@ public:
 		const std::vector<FunctionDefinitionSyntaxNode*>& staticFunctionDefinitions,
 		const std::vector<VariableDefinitionSyntaxNode*>& staticVariableDefinitions,
 		const std::vector<ClassDefinitionSyntaxNode*>& innerClasses,
-		bool isInnerClass
+		bool isInnerClass,
+		const std::string& fileName
 	) :
 		name_(name),
 		extends_(extends),
@@ -31,11 +32,12 @@ public:
 		staticFunctionDefinitions_(staticFunctionDefinitions),
 		staticVariableDefinitions_(staticVariableDefinitions),
 		innerClasses_(innerClasses),
-		isInnerClass_(isInnerClass)
+		isInnerClass_(isInnerClass),
+		fileName_(fileName)
 	{
 	}
 
-	std::string getName(CppData* data) const
+	std::string getName() const
 	{
 		std::string className;
 
@@ -46,7 +48,7 @@ public:
 		}
 		else
 		{
-			auto& fileName = data->fileName;
+			auto& fileName = fileName_;
 			auto firstLetter = (char)std::toupper(fileName[0]);
 			className = firstLetter + fileName.substr(1);
 		}
@@ -56,7 +58,7 @@ public:
 
 	void hoist(CppData* data) override
 	{
-		data->currentClassName = getName(data);
+		data->currentClassName = getName();
 		data->classInheritedType = getInheritedType();
 		for (auto enumDef : enumDefinitions_) enumDef->hoist(data);
 		for (auto v : staticVariableDefinitions_) v->hoist(data);
@@ -118,10 +120,11 @@ private:
 	std::vector<VariableDefinitionSyntaxNode*> staticVariableDefinitions_;
 	std::vector<ClassDefinitionSyntaxNode*> innerClasses_;
 	bool isInnerClass_;
+	std::string fileName_;
 
 	std::string classBody(CppData* data)
 	{
-		std::string className = getName(data);
+		std::string className = getName();
 
 		std::string staticVariableDefinitionString;
 		std::string staticVariableDeclarationString;

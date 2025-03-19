@@ -147,6 +147,9 @@
     <ClInclude Include="CastSyntaxNode.h" />
     <ClInclude Include="ClassDefinitionSyntaxNode.h" />
     <ClInclude Include="ContinueSyntaxNode.h" />
+    <ClInclude Include="CPPClassFile.h" />
+    <ClInclude Include="CPPClassFileWriter.h" />
+    <ClInclude Include="CPPModule.h" />
     <ClInclude Include="DictionaryValueSyntaxNode.h" />
     <ClInclude Include="EnumDefinitionSyntaxNode.h" />
     <ClInclude Include="EnumValueSyntaxNode.h" />
@@ -157,6 +160,7 @@
     <ClInclude Include="BodySyntaxNode.h" />
     <ClInclude Include="FunctionDefinitionSyntaxNode.h" />
     <ClInclude Include="FunctionPrototypeSyntaxNode.h" />
+    <ClInclude Include="Generator.h" />
     <ClInclude Include="IfSyntaxNode.h" />
     <ClInclude Include="IsOperatorSyntaxNode.h" />
     <ClInclude Include="LiteralValueSyntaxNode.h" />

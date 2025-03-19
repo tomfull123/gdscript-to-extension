@@ -293,12 +293,6 @@ class EnumDefinitionSyntaxNode;
 
 struct CppData
 {
-	explicit CppData(const std::string& fileName) :
-		fileName(fileName)
-	{
-	}
-
-	std::string fileName;
 	std::unordered_set<std::string> types;
 	std::unordered_set<std::string> externalFunctions;
 	std::unordered_map<std::string, VariableDefinitionSyntaxNode*> variableDefinitions;

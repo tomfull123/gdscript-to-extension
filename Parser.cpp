@@ -5,7 +5,7 @@ Parser::Parser(const std::vector<Token*>& tokens) :
 {
 }
 
-void Parser::buildAST(AbstractSyntaxTree* ast)
+void Parser::buildAST(AbstractSyntaxTree* ast, const std::string& fileName)
 {
-	ast->classes.push_back(parseScriptBody(0));
+	ast->classes.push_back(parseScriptBody(0, fileName));
 }

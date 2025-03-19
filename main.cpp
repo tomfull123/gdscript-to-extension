@@ -5,8 +5,8 @@
 #include <iostream>
 #include <filesystem>
 #include "FileNameTransformer.h"
-
-const int PROJECT_PATH_INDEX = 1;
+#include "Generator.h"
+#include "CPPClassFileWriter.h"
 
 static void printErrors(const std::vector<ParserError>& errors)
 {
@@ -18,13 +18,13 @@ static void printErrors(const std::vector<ParserError>& errors)
 	}
 }
 
-static bool transpileFile(const std::string& filePath, const std::string& outputPath)
+static bool buildClassAST(const std::string& filePath, AbstractSyntaxTree* ast)
 {
 	FileIO file(filePath);
 
 	if (!file.isOpen())
 	{
-		std::cout << "File not found" << std::endl;
+		std::cout << "File " << filePath << " not found" << std::endl;
 		return false;
 	}
 
@@ -34,7 +34,15 @@ static bool transpileFile(const std::string& filePath, const std::string& output
 
 	file.close();
 
-	const Result* result = Parser::parse(allLines);
+	auto fileNameExtensionStart = filePath.find_last_of(".");
+	auto filePathLength = filePath.length();
+	std::string filePathWithoutExtension = filePath.substr(0, filePathLength - (filePathLength - fileNameExtensionStart));
+	auto fileNameStart = filePathWithoutExtension.find_last_of("/") + 1;
+	std::string fileName = filePathWithoutExtension.substr(fileNameStart);
+
+	std::string cppFileName = FileNameTransformer::toCppFileName(fileName);
+
+	const Result* result = Parser::parse(allLines, ast, cppFileName);
 
 	const auto& errors = result->errors;
 
@@ -42,31 +50,6 @@ static bool transpileFile(const std::string& filePath, const std::string& output
 	{
 		printErrors(errors);
 		return false;
-	}
-	else
-	{
-		auto fileNameExtensionStart = filePath.find_last_of(".");
-		auto filePathLength = filePath.length();
-		std::string filePathWithoutExtension = filePath.substr(0, filePathLength - (filePathLength - fileNameExtensionStart));
-		auto fileNameStart = filePathWithoutExtension.find_last_of("/") + 1;
-		std::string fileName = filePathWithoutExtension.substr(fileNameStart);
-
-		std::string cppFileName = FileNameTransformer::toCppFileName(fileName);
-		std::string cppFilePathWithoutExtension = filePathWithoutExtension.substr(0, fileNameStart) + cppFileName;
-
-		for (auto c : result->ast->classes)
-		{
-			auto data = CppData(cppFileName);
-			c->hoist(&data);
-			c->resolveDefinitions(&data);
-			c->resolveTypes(&data);
-			std::string classCode = c->toCpp(&data, "");
-			std::string outputCppPath = FileNameTransformer::getOutputFilePath(cppFilePathWithoutExtension, cppFileName, outputPath);
-			std::ofstream headerFile(outputCppPath);
-			headerFile << classCode;
-			headerFile.close();
-			std::cout << "Transpiled " << outputCppPath << std::endl;
-		}
 	}
 
 	return true;
@@ -117,10 +100,9 @@ int main(int argc, char* argv[])
 	std::string projectPath;
 	std::string outputPath;
 
-	if (PROJECT_PATH_INDEX < argc) projectPath = argv[PROJECT_PATH_INDEX];
-
 	for (int i = 2; i < argc; i++)
 	{
+		readArgValue(argc, argv, i, "-p", projectPath); // Project Path
 		readArgValue(argc, argv, i, "-o", outputPath); // Output Path
 	}
 
@@ -131,10 +113,18 @@ int main(int argc, char* argv[])
 
 	std::cout << "Looking for files in: " << projectPath << "\n" << std::endl;
 
+	AbstractSyntaxTree* ast = new AbstractSyntaxTree();
+
 	for (const auto& filePath : getFilePaths(projectPath))
 	{
-		if (!transpileFile(filePath.generic_string(), outputPath)) return 1;
+		if (!buildClassAST(filePath.generic_string(), ast)) return 1;
 	}
+
+	Generator generator;
+
+	auto cppModule = generator.generateCode(ast);
+
+	CPPClassFileWriter::write(cppModule, outputPath);
 
 	return 0;
 }
