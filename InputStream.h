@@ -28,6 +28,35 @@ public:
 		return front;
 	}
 
+	template<class Function>
+	std::string readWhile(const Function& function)
+	{
+		std::string str;
+
+		while (!eof() && function(peek()))
+		{
+			str += next();
+		}
+
+		return str;
+	}
+
+	template<class Function>
+	std::string readUntil(const Function& function, bool includeLast = false)
+	{
+		std::string str;
+
+		while (!eof())
+		{
+			bool matches = function(peek());
+			if (matches && !includeLast) break;
+			str += next();
+			if (matches) break;
+		}
+
+		return str;
+	}
+
 	char peek(unsigned int offset = 0)
 	{
 		return input_[offset];

@@ -79,7 +79,8 @@ struct Token
 	int indentDepth = -1;
 	Token() = default;
 	explicit Token(const std::string& newValue) :
-		value(newValue) {}
+		value(newValue) {
+	}
 };
 
 class Lexer
@@ -87,7 +88,8 @@ class Lexer
 public:
 	explicit Lexer(const std::string& input) :
 		inputStream_(input)
-	{}
+	{
+	}
 
 	bool end() const
 	{
@@ -96,11 +98,11 @@ public:
 
 	Token* readNext()
 	{
-		readWhile(isWhitespace);
+		inputStream_.readWhile(isWhitespace);
 
 		if (isNewLine(inputStream_.peek())) readIndents();
 
-		readWhile(isWhitespace);
+		inputStream_.readWhile(isWhitespace);
 
 		if (end()) return nullptr;
 
@@ -341,7 +343,7 @@ private:
 
 		if (token->type == TokenType::SingleLineComment)
 		{
-			readUntil(isNewLine);
+			inputStream_.readUntil(isNewLine);
 			return nullptr;
 		}
 		/*if (token->type == TokenType::MultiLineComment)
@@ -424,7 +426,7 @@ private:
 		token->lineNumber = inputStream_.getLineNumber();
 		token->columnNumber = inputStream_.getColumnNumber();
 
-		token->value = readUntil(isWhitespace, false);
+		token->value = inputStream_.readUntil(isWhitespace, false);
 		token->type = TokenType::Error;
 
 		token->indentDepth = currentIndent_;
@@ -440,7 +442,7 @@ private:
 		token->lineNumber = inputStream_.getLineNumber();
 		token->columnNumber = inputStream_.getColumnNumber();
 
-		token->value = readWhile(function);
+		token->value = inputStream_.readWhile(function);
 		token->type = type;
 
 		token->indentDepth = currentIndent_;
@@ -472,42 +474,13 @@ private:
 
 		inputStream_.next(); // eat "
 
-		token->value = readUntil(isStringLiteral, false);
+		token->value = inputStream_.readUntil(isStringLiteral, false);
 		unescape(token->value);
 		token->type = TokenType::StringLiteral;
 
 		inputStream_.next(); // eat "
 
 		return token;
-	}
-
-	template<class Function>
-	std::string readWhile(const Function& function)
-	{
-		std::string str;
-
-		while (!inputStream_.eof() && function(inputStream_.peek()))
-		{
-			str += inputStream_.next();
-		}
-
-		return str;
-	}
-
-	template<class Function>
-	std::string readUntil(const Function& function, bool includeLast = false)
-	{
-		std::string str;
-
-		while (!inputStream_.eof())
-		{
-			bool matches = function(inputStream_.peek());
-			if (matches && !includeLast) break;
-			str += inputStream_.next();
-			if (matches) break;
-		}
-
-		return str;
 	}
 
 	static bool isWhitespace(const char& ch)
