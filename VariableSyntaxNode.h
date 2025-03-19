@@ -78,21 +78,24 @@ public:
 			type_ = new Type(enumDefinition_->getName());
 		}
 
-		if (!type_)
+		if (!type_ && parentInstance_)
 		{
-			if (parentInstance_)
+			auto parentName = parentInstance_->getName();
+			if (CPPTYPES_TO_FUNCTION.contains(parentName))
 			{
-				auto parentName = parentInstance_->getName();
-				if (CPPTYPES_TO_FUNCTION.contains(parentName))
-				{
-					auto it = CPPTYPES_TO_FUNCTION.find(parentName);
-					auto functionName = parentName + "::" + it->second;
+				auto it = CPPTYPES_TO_FUNCTION.find(parentName);
+				auto functionName = parentName + "::" + it->second;
 
-					if (CPPFUNCTION_RETURN_TYPES.contains(functionName))
-					{
-						type_ = new Type(CPPFUNCTION_RETURN_TYPES.find(functionName)->second);
-					}
+				if (CPPFUNCTION_RETURN_TYPES.contains(functionName))
+				{
+					type_ = new Type(CPPFUNCTION_RETURN_TYPES.find(functionName)->second);
+					return;
 				}
+			}
+			auto functionName = parentName + "::" + name_->value;
+			if (CPPFUNCTION_RETURN_TYPES.contains(functionName))
+			{
+				type_ = new Type(CPPFUNCTION_RETURN_TYPES.find(functionName)->second);
 			}
 		}
 	}

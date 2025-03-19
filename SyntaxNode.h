@@ -76,6 +76,7 @@ const std::unordered_map<std::string, std::string> CPPFUNCTION_RETURN_TYPES = {
 	{"ResourceLoader::get_singleton()->load", "PackedScene"},
 	{"Color::named", "Color"},
 	{"get_viewport", "Viewport"},
+	{"Vector3::ZERO", "Vector3"},
 };
 
 const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = {
@@ -154,7 +155,6 @@ const std::unordered_map<std::string, std::unordered_map<std::string, std::strin
 			{"x", "float"},
 			{"y", "float"},
 			{"z", "float"},
-			{"ZERO", "Vector3"}
 		}
 	},
 	{
