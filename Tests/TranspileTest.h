@@ -8,7 +8,9 @@ struct TranspileTest : testing::Test
 {
 	std::string transpile(const std::string& input) const
 	{
-		const Result* result = Parser::parse(input);
+		AbstractSyntaxTree* ast = new AbstractSyntaxTree();
+
+		const Result* result = Parser::parse(input, ast, "Test");
 
 		const auto& errors = result->errors;
 
@@ -16,7 +18,7 @@ struct TranspileTest : testing::Test
 
 		for (auto c : result->ast->classes)
 		{
-			CppData data("Test");
+			CppData data;
 			c->hoist(&data);
 			c->resolveDefinitions(&data);
 			c->resolveTypes(&data);
