@@ -16,6 +16,9 @@
     <Filter Include="Header Files\SyntaxNodes">
       <UniqueIdentifier>{faf5f59a-8769-4eba-a5f1-1440a04f9ab0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Docs">
+      <UniqueIdentifier>{f81b4dd3-0372-4f73-b21f-d04b261363e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileIO.cpp">
@@ -169,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="CPPClassFile.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLLexer.h">
+      <Filter>Header Files\Docs</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

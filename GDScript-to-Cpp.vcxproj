@@ -183,6 +183,7 @@
     <ClInclude Include="VariableDefinitionSyntaxNode.h" />
     <ClInclude Include="VariableSyntaxNode.h" />
     <ClInclude Include="WhileSyntaxNode.h" />
+    <ClInclude Include="XMLLexer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
