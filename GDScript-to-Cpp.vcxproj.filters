@@ -16,8 +16,14 @@
     <Filter Include="Header Files\SyntaxNodes">
       <UniqueIdentifier>{faf5f59a-8769-4eba-a5f1-1440a04f9ab0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Docs">
+    <Filter Include="Header Files\Parsing">
+      <UniqueIdentifier>{a3a49e27-7a73-40f8-9996-222fbc257cf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parsing\Docs">
       <UniqueIdentifier>{f81b4dd3-0372-4f73-b21f-d04b261363e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parsing\GD">
+      <UniqueIdentifier>{08f876ae-fb40-4572-ac7d-c4419bc0d0b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -36,12 +42,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Parser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GDLexer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InputStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TokenStream.h">
@@ -174,13 +174,19 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="XMLLexer.h">
-      <Filter>Header Files\Docs</Filter>
+      <Filter>Header Files\Parsing\Docs</Filter>
     </ClInclude>
     <ClInclude Include="DocsParser.h">
-      <Filter>Header Files\Docs</Filter>
+      <Filter>Header Files\Parsing\Docs</Filter>
     </ClInclude>
     <ClInclude Include="XMLTokenStream.h">
-      <Filter>Header Files\Docs</Filter>
+      <Filter>Header Files\Parsing\Docs</Filter>
+    </ClInclude>
+    <ClInclude Include="InputStream.h">
+      <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="GDLexer.h">
+      <Filter>Header Files\Parsing\GD</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
