@@ -5,7 +5,7 @@
 class PreloadSyntaxNode : public ValueSyntaxNode
 {
 public:
-	explicit PreloadSyntaxNode(Token* path) :
+	explicit PreloadSyntaxNode(GDToken* path) :
 		path_(path),
 		type_(new Type("PackedScene"))
 	{
@@ -39,6 +39,6 @@ public:
 	}
 
 private:
-	Token* path_;
+	GDToken* path_;
 	Type* type_;
 };

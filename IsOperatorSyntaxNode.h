@@ -6,7 +6,7 @@ class IsOperatorSyntaxNode : public ValueSyntaxNode
 {
 public:
 	IsOperatorSyntaxNode(
-		Token* operatorToken,
+		GDToken* operatorToken,
 		ValueSyntaxNode* lhs,
 		Type* rhs
 	) :
@@ -52,7 +52,7 @@ public:
 	}
 
 private:
-	Token* operatorToken_;
+	GDToken* operatorToken_;
 	ValueSyntaxNode* lhs_;
 	Type* rhs_;
 	Type* type_;

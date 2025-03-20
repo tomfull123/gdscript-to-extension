@@ -52,7 +52,7 @@ struct Result
 class Parser
 {
 public:
-	explicit Parser(const std::vector<Token*>& tokens);
+	explicit Parser(const std::vector<GDToken*>& tokens);
 
 	void buildAST(AbstractSyntaxTree* ast, const std::string& fileName);
 
@@ -62,7 +62,7 @@ public:
 	{
 		GDLexer lexer(input);
 
-		std::vector<Token*> tokens = lexer.readAllTokens();
+		std::vector<GDToken*> tokens = lexer.readAllTokens();
 
 		Parser parser(tokens);
 
@@ -83,7 +83,7 @@ private:
 		return stream_.peek(offset)->type == type;
 	}
 
-	SyntaxNode* addError(const std::string& error, const Token* token)
+	SyntaxNode* addError(const std::string& error, const GDToken* token)
 	{
 		if (token)
 			errors_.emplace_back(error, token->lineNumber, token->columnNumber, token->filename);
@@ -95,7 +95,7 @@ private:
 		return nullptr;
 	}
 
-	SyntaxNode* addUnexpectedTokenError(const Token* token)
+	SyntaxNode* addUnexpectedTokenError(const GDToken* token)
 	{
 		if (token == nullptr) return addError("Unexpected end of file", nullptr);
 		return addError("Unexpected token: " + token->value, token);
@@ -106,12 +106,12 @@ private:
 		return addUnexpectedTokenError(next());
 	}
 
-	Token* next()
+	GDToken* next()
 	{
 		return stream_.next();
 	}
 
-	Token* peek(unsigned int offset = 0)
+	GDToken* peek(unsigned int offset = 0)
 	{
 		return stream_.peek(offset);
 	}
@@ -121,7 +121,7 @@ private:
 		return stream_.end();
 	}
 
-	Token* consume(TokenType tokenType)
+	GDToken* consume(TokenType tokenType)
 	{
 		if (isNextTokenType(tokenType))
 		{
@@ -134,7 +134,7 @@ private:
 
 	Type* parseType()
 	{
-		const Token* typeToken = next();
+		const GDToken* typeToken = next();
 		std::vector<Type*> subtypes = {};
 
 		if (isNextTokenType(TokenType::OpenSquareBracket))
@@ -156,7 +156,7 @@ private:
 
 	VariableDefinitionSyntaxNode* parseArgDefinition()
 	{
-		Token* name = consume(TokenType::Identifier);
+		GDToken* name = consume(TokenType::Identifier);
 
 		if (!name) return nullptr;
 
@@ -186,7 +186,7 @@ private:
 	{
 		consume(TokenType::FuncKeyword); // eat func
 
-		Token* name = consume(TokenType::Identifier);
+		GDToken* name = consume(TokenType::Identifier);
 
 		if (!name) return nullptr;
 
@@ -238,7 +238,7 @@ private:
 
 		if (returnThis)
 		{
-			auto thisToken = new Token();
+			auto thisToken = new GDToken();
 			thisToken->value = "this";
 			nodes.push_back(new ReturnSyntaxNode(new VariableSyntaxNode(thisToken, nullptr, false)));
 		}
@@ -261,7 +261,7 @@ private:
 		return new FunctionDefinitionSyntaxNode(prototype, body);
 	}
 
-	Token* parseClassName()
+	GDToken* parseClassName()
 	{
 		consume(TokenType::ClassNameKeyword); // eat class_name
 
@@ -369,17 +369,17 @@ private:
 		return new EnumDefinitionSyntaxNode(name, values);
 	}
 
-	Token* parseExtends()
+	GDToken* parseExtends()
 	{
 		consume(TokenType::ExtendsKeyword); // eat extends
 
 		return consume(TokenType::Identifier);
 	}
 
-	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, const std::string& fileName, Token* nameToken = nullptr, bool isInnerClass = false)
+	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, const std::string& fileName, GDToken* nameToken = nullptr, bool isInnerClass = false)
 	{
-		Token* name = nameToken;
-		Token* extends = nullptr;
+		GDToken* name = nameToken;
+		GDToken* extends = nullptr;
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
 		std::vector<EnumDefinitionSyntaxNode*> enumDefinitions;
@@ -498,7 +498,7 @@ private:
 
 	BooleanLiteralSyntaxNode* parseBooleanLiteral()
 	{
-		Token* t = next();
+		GDToken* t = next();
 
 		if (t->type == TokenType::TrueKeyword) return new BooleanLiteralSyntaxNode(t, true);
 		if (t->type == TokenType::FalseKeyword) return new BooleanLiteralSyntaxNode(t, false);
@@ -618,7 +618,7 @@ private:
 
 	ValueSyntaxNode* parseSingleValueObject()
 	{
-		Token* value = peek();
+		GDToken* value = peek();
 		TokenType type = value->type;
 
 		switch (type)
@@ -670,7 +670,7 @@ private:
 			bracketCount++;
 		}
 
-		const Token* name = peek();
+		const GDToken* name = peek();
 
 		ValueSyntaxNode* lhs = parseSingleValueObject();
 
@@ -683,7 +683,7 @@ private:
 				|| isNextTokenType(TokenType::GreaterThanSeparator) || isNextTokenType(TokenType::GreaterThanEqualSeparator)
 				|| isNextTokenType(TokenType::LessThanSeparator) || isNextTokenType(TokenType::LessThanEqualSeparator))
 			{
-				Token* boolOperator = next();
+				GDToken* boolOperator = next();
 
 				ValueSyntaxNode* rhs = parseValueExpression();
 
@@ -708,7 +708,7 @@ private:
 			// Math operators
 			if (isNextTokenType(TokenType::Operator))
 			{
-				Token* operatorToken = next();
+				GDToken* operatorToken = next();
 
 				ValueSyntaxNode* rhs = nullptr;
 
@@ -911,7 +911,7 @@ private:
 				// Math operators
 				if (isNextTokenType(TokenType::Operator))
 				{
-					Token* operatorToken = next();
+					GDToken* operatorToken = next();
 
 					ValueSyntaxNode* rhs = nullptr;
 
@@ -1022,7 +1022,7 @@ private:
 
 	SyntaxNode* parseExpression()
 	{
-		const Token* t = stream_.peek();
+		const GDToken* t = stream_.peek();
 
 		switch (t->type) {
 		case TokenType::ReturnKeyword:

@@ -382,7 +382,7 @@ struct CppClassData
 		return functionName;
 	}
 
-	std::string toWrappedCppFunction(ValueSyntaxNode* parentInstance, const Token* nameToken) const
+	std::string toWrappedCppFunction(ValueSyntaxNode* parentInstance, const GDToken* nameToken) const
 	{
 		std::string name = nameToken->value;
 
@@ -452,7 +452,7 @@ struct CppClassData
 		return false;
 	}
 
-	static bool isProperty(ValueSyntaxNode* parentInstance, const Token* name)
+	static bool isProperty(ValueSyntaxNode* parentInstance, const GDToken* name)
 	{
 		if (!parentInstance) return false;
 

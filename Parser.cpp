@@ -1,6 +1,6 @@
 #include "Parser.h"
 
-Parser::Parser(const std::vector<Token*>& tokens) :
+Parser::Parser(const std::vector<GDToken*>& tokens) :
 	stream_(tokens)
 {
 }

@@ -6,14 +6,15 @@ class MathOperatorSyntaxNode : public ValueSyntaxNode
 {
 public:
 	MathOperatorSyntaxNode(
-		Token* operatorToken,
+		GDToken* operatorToken,
 		ValueSyntaxNode* lhs,
 		ValueSyntaxNode* rhs
 	) :
 		operatorToken_(operatorToken),
 		lhs_(lhs),
 		rhs_(rhs)
-	{}
+	{
+	}
 
 	Type* getType() override
 	{
@@ -51,7 +52,7 @@ public:
 	}
 
 private:
-	Token* operatorToken_;
+	GDToken* operatorToken_;
 	ValueSyntaxNode* lhs_;
 	ValueSyntaxNode* rhs_;
 	Type* type_ = nullptr;

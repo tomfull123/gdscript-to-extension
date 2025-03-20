@@ -7,7 +7,7 @@ class EnumDefinitionSyntaxNode : public SyntaxNode
 {
 public:
 	EnumDefinitionSyntaxNode(
-		Token* name,
+		GDToken* name,
 		const std::vector<EnumValueSyntaxNode*>& values
 	) :
 		name_(name),
@@ -52,6 +52,6 @@ public:
 	}
 
 private:
-	Token* name_;
+	GDToken* name_;
 	std::vector<EnumValueSyntaxNode*> values_;
 };

@@ -69,7 +69,7 @@ enum class TokenType
 	NodePath,
 };
 
-struct Token
+struct GDToken
 {
 	std::string value;
 	TokenType type;
@@ -77,8 +77,8 @@ struct Token
 	int columnNumber = -1;
 	std::string filename = "";
 	int indentDepth = -1;
-	Token() = default;
-	explicit Token(const std::string& newValue) :
+	GDToken() = default;
+	explicit GDToken(const std::string& newValue) :
 		value(newValue) {
 	}
 };
@@ -96,7 +96,7 @@ public:
 		return inputStream_.eof();
 	}
 
-	Token* readNext()
+	GDToken* readNext()
 	{
 		inputStream_.readWhile(isWhitespace);
 
@@ -126,13 +126,13 @@ public:
 		return readError();
 	}
 
-	std::vector<Token*> readAllTokens()
+	std::vector<GDToken*> readAllTokens()
 	{
-		std::vector<Token*> tokens;
+		std::vector<GDToken*> tokens;
 
 		while (!end())
 		{
-			Token* t = readNext();
+			GDToken* t = readNext();
 			if (t == nullptr) continue;
 			tokens.push_back(t);
 		}
@@ -178,9 +178,9 @@ private:
 		return isalpha(ch) || ch == '_' || isdigit(ch);
 	}
 
-	Token* readIdentifierOrKeyword()
+	GDToken* readIdentifierOrKeyword()
 	{
-		Token* token = readToken(isIdentifier, TokenType::Identifier);
+		GDToken* token = readToken(isIdentifier, TokenType::Identifier);
 
 		token->type = getKeywordTokenType(token->value);
 		token->indentDepth = currentIndent_;
@@ -247,9 +247,9 @@ private:
 		return ch == '.';
 	}
 
-	Token* readNumberLiteral()
+	GDToken* readNumberLiteral()
 	{
-		Token* token = new Token();
+		GDToken* token = new GDToken();
 		bool hasDecimal = false;
 
 		token->lineNumber = inputStream_.getLineNumber();
@@ -294,9 +294,9 @@ private:
 		return false;
 	}
 
-	Token* readSeparator()
+	GDToken* readSeparator()
 	{
-		Token* token = new Token();
+		GDToken* token = new GDToken();
 
 		token->lineNumber = inputStream_.getLineNumber();
 		token->columnNumber = inputStream_.getColumnNumber();
@@ -360,7 +360,7 @@ private:
 		return ch == '$';
 	}
 
-	Token* readNodePath()
+	GDToken* readNodePath()
 	{
 		inputStream_.next(); // eat $
 
@@ -372,11 +372,11 @@ private:
 		return isalpha(ch) || ch == '_';
 	}
 
-	Token* readAnnotation()
+	GDToken* readAnnotation()
 	{
 		inputStream_.next(); // eat @
 
-		Token* token = readToken(isAnnotation, TokenType::Annotation);
+		GDToken* token = readToken(isAnnotation, TokenType::Annotation);
 
 		return token;
 	}
@@ -419,9 +419,9 @@ private:
 		return TokenType::Error;
 	}
 
-	Token* readError()
+	GDToken* readError()
 	{
-		Token* token = new Token();
+		GDToken* token = new GDToken();
 
 		token->lineNumber = inputStream_.getLineNumber();
 		token->columnNumber = inputStream_.getColumnNumber();
@@ -435,9 +435,9 @@ private:
 	}
 
 	template<class Function>
-	Token* readToken(const Function& function, TokenType type)
+	GDToken* readToken(const Function& function, TokenType type)
 	{
-		Token* token = new Token();
+		GDToken* token = new GDToken();
 
 		token->lineNumber = inputStream_.getLineNumber();
 		token->columnNumber = inputStream_.getColumnNumber();
@@ -465,9 +465,9 @@ private:
 		currentIndent_ = indent;
 	}
 
-	Token* readStringLiteral()
+	GDToken* readStringLiteral()
 	{
-		Token* token = new Token();
+		GDToken* token = new GDToken();
 
 		token->lineNumber = inputStream_.getLineNumber();
 		token->columnNumber = inputStream_.getColumnNumber();

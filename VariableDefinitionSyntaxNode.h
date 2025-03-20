@@ -6,7 +6,7 @@ class VariableDefinitionSyntaxNode : public SyntaxNode
 {
 public:
 	VariableDefinitionSyntaxNode(
-		Token* name,
+		GDToken* name,
 		Type* dataType,
 		ValueSyntaxNode* initialValue,
 		bool isConstant,
@@ -123,7 +123,7 @@ public:
 	}
 
 private:
-	Token* name_;
+	GDToken* name_;
 	Type* dataType_;
 	ValueSyntaxNode* initialValue_;
 	bool isConstant_;

@@ -6,12 +6,13 @@ class LiteralValueSyntaxNode : public ValueSyntaxNode
 {
 public:
 	LiteralValueSyntaxNode(
-		Token* value,
+		GDToken* value,
 		Type* type
 	) :
 		value_(value),
 		type_(type)
-	{}
+	{
+	}
 
 	Type* getType() override
 	{
@@ -49,6 +50,6 @@ public:
 	}
 
 private:
-	Token* value_;
+	GDToken* value_;
 	Type* type_;
 };

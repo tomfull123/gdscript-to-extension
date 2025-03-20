@@ -6,7 +6,7 @@
 class VariableSyntaxNode : public ValueSyntaxNode
 {
 public:
-	VariableSyntaxNode(Token* name, ValueSyntaxNode* parentInstance, bool asValue) :
+	VariableSyntaxNode(GDToken* name, ValueSyntaxNode* parentInstance, bool asValue) :
 		name_(name),
 		parentInstance_(parentInstance),
 		asValue_(asValue)
@@ -168,7 +168,7 @@ public:
 	}
 
 private:
-	Token* name_;
+	GDToken* name_;
 	ValueSyntaxNode* parentInstance_;
 	bool asValue_;
 	Type* type_ = nullptr;

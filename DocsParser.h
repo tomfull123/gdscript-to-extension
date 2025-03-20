@@ -162,8 +162,8 @@ private:
 		}
 
 		return new ClassDefinitionSyntaxNode(
-			new Token(),
-			new Token(),
+			new GDToken(),
+			new GDToken(),
 			memberFunctionDefinitions,
 			memberVariableDefinitions,
 			enumDefinitions,

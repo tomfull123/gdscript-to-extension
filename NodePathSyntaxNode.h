@@ -5,9 +5,10 @@
 class NodePathSyntaxNode : public ValueSyntaxNode
 {
 public:
-	NodePathSyntaxNode(Token* nodePath) :
+	NodePathSyntaxNode(GDToken* nodePath) :
 		nodePath_(nodePath)
-	{}
+	{
+	}
 
 	Type* getType() override
 	{
@@ -31,5 +32,5 @@ public:
 	}
 
 private:
-	Token* nodePath_;
+	GDToken* nodePath_;
 };

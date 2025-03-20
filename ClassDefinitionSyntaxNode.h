@@ -13,8 +13,8 @@ class ClassDefinitionSyntaxNode : public SyntaxNode
 {
 public:
 	ClassDefinitionSyntaxNode(
-		Token* name,
-		Token* extends,
+		GDToken* name,
+		GDToken* extends,
 		const std::vector<FunctionDefinitionSyntaxNode*>& memberFunctionDefinitions,
 		const std::vector<VariableDefinitionSyntaxNode*>& memberVariableDefinitions,
 		const std::vector<EnumDefinitionSyntaxNode*>& enumDefinitions,
@@ -119,8 +119,8 @@ public:
 	}
 
 private:
-	Token* name_;
-	Token* extends_;
+	GDToken* name_;
+	GDToken* extends_;
 	std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions_;
 	std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions_;
 	std::vector<EnumDefinitionSyntaxNode*> enumDefinitions_;
@@ -325,9 +325,9 @@ private:
 	void addGetter(VariableDefinitionSyntaxNode* variableDefinition)
 	{
 		std::string name = "get_" + variableDefinition->getName();
-		auto prototype = new FunctionPrototypeSyntaxNode(new Token(name), {}, variableDefinition->getType(), false);
+		auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(name), {}, variableDefinition->getType(), false);
 
-		auto returnVariableStatement = new ReturnSyntaxNode(new VariableSyntaxNode(new Token(variableDefinition->getName()), nullptr, true));
+		auto returnVariableStatement = new ReturnSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, true));
 
 		auto body = new BodySyntaxNode({ returnVariableStatement });
 
@@ -336,11 +336,11 @@ private:
 
 	void addSetter(VariableDefinitionSyntaxNode* variableDefinition)
 	{
-		auto argNameToken = new Token("new" + variableDefinition->getName());
+		auto argNameToken = new GDToken("new" + variableDefinition->getName());
 		auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false);
-		auto prototype = new FunctionPrototypeSyntaxNode(new Token("set_" + variableDefinition->getName()), { arg }, new Type("void"), false);
+		auto prototype = new FunctionPrototypeSyntaxNode(new GDToken("set_" + variableDefinition->getName()), { arg }, new Type("void"), false);
 
-		auto setVariableStatement = new AssignmentSyntaxNode(new VariableSyntaxNode(new Token(variableDefinition->getName()), nullptr, false), new VariableSyntaxNode(argNameToken, nullptr, true));
+		auto setVariableStatement = new AssignmentSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, false), new VariableSyntaxNode(argNameToken, nullptr, true));
 
 		auto body = new BodySyntaxNode({ setVariableStatement });
 

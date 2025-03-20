@@ -6,7 +6,7 @@ class EqualityOperatorSyntaxNode : public ValueSyntaxNode
 {
 public:
 	EqualityOperatorSyntaxNode(
-		Token* operatorToken,
+		GDToken* operatorToken,
 		ValueSyntaxNode* lhs,
 		ValueSyntaxNode* rhs
 	) :
@@ -14,7 +14,8 @@ public:
 		lhs_(lhs),
 		rhs_(rhs),
 		type_(new Type("bool"))
-	{}
+	{
+	}
 
 	Type* getType() override
 	{
@@ -50,7 +51,7 @@ public:
 	}
 
 private:
-	Token* operatorToken_;
+	GDToken* operatorToken_;
 	ValueSyntaxNode* lhs_;
 	ValueSyntaxNode* rhs_;
 	Type* type_;

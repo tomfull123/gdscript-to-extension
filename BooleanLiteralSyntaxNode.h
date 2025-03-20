@@ -5,11 +5,12 @@
 class BooleanLiteralSyntaxNode : public ValueSyntaxNode
 {
 public:
-	BooleanLiteralSyntaxNode(Token* token, bool value) :
+	BooleanLiteralSyntaxNode(GDToken* token, bool value) :
 		token_(token),
 		value_(value),
 		type_(new Type("bool"))
-	{}
+	{
+	}
 
 	Type* getType() override
 	{
@@ -40,7 +41,7 @@ public:
 	}
 
 private:
-	Token* token_;
+	GDToken* token_;
 	bool value_;
 	Type* type_;
 };

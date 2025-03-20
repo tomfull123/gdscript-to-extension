@@ -5,9 +5,10 @@
 class EnumValueSyntaxNode : public SyntaxNode
 {
 public:
-	explicit EnumValueSyntaxNode(Token* name) :
+	explicit EnumValueSyntaxNode(GDToken* name) :
 		name_(name)
-	{}
+	{
+	}
 
 	void hoist(CppData* data) override
 	{
@@ -27,5 +28,5 @@ public:
 	}
 
 private:
-	Token* name_;
+	GDToken* name_;
 };

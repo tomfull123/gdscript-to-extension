@@ -6,7 +6,7 @@ class NotOperatorSyntaxNode : public ValueSyntaxNode
 {
 public:
 	NotOperatorSyntaxNode(
-		Token* token,
+		GDToken* token,
 		ValueSyntaxNode* value
 	) :
 		token_(token),
@@ -46,7 +46,7 @@ public:
 	}
 
 private:
-	Token* token_;
+	GDToken* token_;
 	ValueSyntaxNode* value_;
 	Type* type_;
 };

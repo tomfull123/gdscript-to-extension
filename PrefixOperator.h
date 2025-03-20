@@ -6,12 +6,13 @@ class PrefixOperator : public ValueSyntaxNode
 {
 public:
 	PrefixOperator(
-		Token* operatorToken,
+		GDToken* operatorToken,
 		ValueSyntaxNode* value
 	) :
 		operatorToken_(operatorToken),
 		value_(value)
-	{}
+	{
+	}
 
 	Type* getType() override
 	{
@@ -44,6 +45,6 @@ public:
 	}
 
 private:
-	Token* operatorToken_;
+	GDToken* operatorToken_;
 	ValueSyntaxNode* value_;
 };

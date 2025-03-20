@@ -7,7 +7,7 @@ class CallSyntaxNode : public ValueSyntaxNode
 public:
 	CallSyntaxNode(
 		ValueSyntaxNode* instance,
-		Token* name,
+		GDToken* name,
 		const std::vector<ValueSyntaxNode*>& args
 	) :
 		instance_(instance),
@@ -146,7 +146,7 @@ public:
 	}
 private:
 	ValueSyntaxNode* instance_;
-	Token* name_;
+	GDToken* name_;
 	std::vector<ValueSyntaxNode*> args_;
 	Type* type_ = nullptr;
 	FunctionPrototypeSyntaxNode* prototype_ = nullptr;

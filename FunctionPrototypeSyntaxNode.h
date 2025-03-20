@@ -7,7 +7,7 @@ class FunctionPrototypeSyntaxNode : public SyntaxNode
 {
 public:
 	FunctionPrototypeSyntaxNode(
-		Token* name,
+		GDToken* name,
 		const std::vector<VariableDefinitionSyntaxNode*>& argDefs,
 		Type* returnType,
 		bool isStatic
@@ -19,7 +19,7 @@ public:
 	{
 	}
 
-	Token* getToken() const
+	GDToken* getToken() const
 	{
 		return name_;
 	}
@@ -102,7 +102,7 @@ public:
 	}
 
 private:
-	Token* name_;
+	GDToken* name_;
 	std::vector<VariableDefinitionSyntaxNode*> argDefs_;
 	Type* returnType_;
 	bool isStatic_;
