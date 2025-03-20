@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gtest/gtest.h>
-#include <Parser.h>
+#include <GDParser.h>
 
 struct TranspileTest : testing::Test
 {

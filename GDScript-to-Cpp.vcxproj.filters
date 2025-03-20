@@ -38,7 +38,7 @@
     <ClInclude Include="FileIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Parser.h">
+    <ClInclude Include="GDParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TokenStream.h">
