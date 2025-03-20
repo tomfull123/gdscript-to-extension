@@ -1,7 +1,7 @@
 #include "AbstractSyntaxTree.h"
 #include "FileIO.h"
 #include "GDLexer.h"
-#include "Parser.h"
+#include "GDParser.h"
 #include <iostream>
 #include <filesystem>
 #include "FileNameTransformer.h"

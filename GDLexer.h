@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "InputStream.h"
+#include "Lexer.h"
 
 enum class GDTokenType
 {
@@ -69,17 +70,12 @@ enum class GDTokenType
 	NodePath,
 };
 
-struct GDToken
+struct GDToken : public Token
 {
-	std::string value;
 	GDTokenType type;
-	int lineNumber = -1;
-	int columnNumber = -1;
-	std::string filename = "";
-	int indentDepth = -1;
 	GDToken() = default;
 	explicit GDToken(const std::string& newValue) :
-		value(newValue) {
+		Token(newValue) {
 	}
 };
 

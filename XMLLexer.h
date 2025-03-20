@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "InputStream.h"
+#include "Lexer.h"
 
 enum class XMLTokenType
 {
@@ -20,13 +21,9 @@ enum class XMLTokenType
 	DeclarationEndSeparator, // ?>
 };
 
-struct XMLToken
+struct XMLToken : public Token
 {
-	std::string value;
 	XMLTokenType type;
-	int lineNumber = -1;
-	int columnNumber = -1;
-	std::string filename = "";
 };
 
 class XMLLexer

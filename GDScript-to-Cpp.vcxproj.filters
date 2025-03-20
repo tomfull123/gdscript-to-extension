@@ -185,5 +185,8 @@
     <ClInclude Include="GDTokenStream.h">
       <Filter>Header Files\Parsing\GD</Filter>
     </ClInclude>
+    <ClInclude Include="Lexer.h">
+      <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

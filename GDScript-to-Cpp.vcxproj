@@ -165,6 +165,7 @@
     <ClInclude Include="Generator.h" />
     <ClInclude Include="IfSyntaxNode.h" />
     <ClInclude Include="IsOperatorSyntaxNode.h" />
+    <ClInclude Include="Lexer.h" />
     <ClInclude Include="LiteralValueSyntaxNode.h" />
     <ClInclude Include="MathOperatorSyntaxNode.h" />
     <ClInclude Include="NodePathSyntaxNode.h" />
