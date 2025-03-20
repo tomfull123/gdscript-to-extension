@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TokenStream.h"
+#include "GDTokenStream.h"
 #include "AbstractSyntaxTree.h"
 #include "ParserError.h"
 #include "ClassDefinitionSyntaxNode.h"
@@ -80,7 +80,7 @@ public:
 	}
 
 private:
-	TokenStream stream_;
+	GDTokenStream stream_;
 	std::vector<ParserError> errors_;
 
 	bool isNextTokenType(GDTokenType type, unsigned int offset = 0)

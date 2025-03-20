@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TokenStream.h"
+#include "GDTokenStream.h"
 #include <unordered_set>
 #include <unordered_map>
 

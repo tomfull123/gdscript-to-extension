@@ -2,10 +2,10 @@
 
 #include "GDLexer.h"
 
-class TokenStream
+class GDTokenStream
 {
 public:
-	explicit TokenStream(const std::vector<GDToken*>& tokens) :
+	explicit GDTokenStream(const std::vector<GDToken*>& tokens) :
 		tokens_(tokens)
 	{
 		if (!tokens.empty())
