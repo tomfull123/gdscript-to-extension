@@ -188,5 +188,8 @@
     <ClInclude Include="Lexer.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
+    <ClInclude Include="TokenStream.h">
+      <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

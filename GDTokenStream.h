@@ -1,8 +1,9 @@
 #pragma once
 
 #include "GDLexer.h"
+#include "TokenStream.h"
 
-class GDTokenStream
+class GDTokenStream : public TokenStream
 {
 public:
 	explicit GDTokenStream(const std::vector<GDToken*>& tokens) :
@@ -36,16 +37,6 @@ public:
 		return tokens_.empty();
 	}
 
-	int getLastTokenLineNumber() const
-	{
-		return lastTokenLineNumber_;
-	}
-
-	int getLastTokenColumnNumber() const
-	{
-		return lastTokenColumnNumber_;
-	}
-
 	size_t getLength() const
 	{
 		return tokens_.size();
@@ -53,6 +44,4 @@ public:
 
 private:
 	std::vector<GDToken*> tokens_;
-	int lastTokenLineNumber_ = 0;
-	int lastTokenColumnNumber_ = 0;
 };

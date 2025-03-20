@@ -1,8 +1,9 @@
 #pragma once
 
 #include "XMLLexer.h"
+#include "TokenStream.h"
 
-class XMLTokenStream
+class XMLTokenStream : public TokenStream
 {
 public:
 	explicit XMLTokenStream(const std::vector<XMLToken*>& tokens) :
@@ -36,16 +37,6 @@ public:
 		return tokens_.empty();
 	}
 
-	int getLastTokenLineNumber() const
-	{
-		return lastTokenLineNumber_;
-	}
-
-	int getLastTokenColumnNumber() const
-	{
-		return lastTokenColumnNumber_;
-	}
-
 	size_t getLength() const
 	{
 		return tokens_.size();
@@ -53,6 +44,4 @@ public:
 
 private:
 	std::vector<XMLToken*> tokens_;
-	int lastTokenLineNumber_ = 0;
-	int lastTokenColumnNumber_ = 0;
 };
