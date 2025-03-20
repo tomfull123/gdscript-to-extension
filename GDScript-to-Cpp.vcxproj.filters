@@ -38,9 +38,6 @@
     <ClInclude Include="FileIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GDParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TokenStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -183,6 +180,9 @@
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
     <ClInclude Include="GDLexer.h">
+      <Filter>Header Files\Parsing\GD</Filter>
+    </ClInclude>
+    <ClInclude Include="GDParser.h">
       <Filter>Header Files\Parsing\GD</Filter>
     </ClInclude>
   </ItemGroup>
