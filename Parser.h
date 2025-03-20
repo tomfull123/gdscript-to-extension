@@ -52,9 +52,15 @@ struct Result
 class GDParser
 {
 public:
-	explicit GDParser(const std::vector<GDToken*>& tokens);
+	explicit GDParser(const std::vector<GDToken*>& tokens) :
+		stream_(tokens)
+	{
+	}
 
-	void buildAST(AbstractSyntaxTree* ast, const std::string& fileName);
+	void buildAST(AbstractSyntaxTree* ast, const std::string& fileName)
+	{
+		ast->classes.push_back(parseScriptBody(0, fileName));
+	}
 
 	const std::vector<ParserError>& getErrors() const { return errors_; }
 
