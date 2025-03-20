@@ -38,7 +38,7 @@
     <ClInclude Include="Parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Lexer.h">
+    <ClInclude Include="GDLexer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InputStream.h">

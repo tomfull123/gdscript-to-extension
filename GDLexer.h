@@ -83,10 +83,10 @@ struct Token
 	}
 };
 
-class Lexer
+class GDLexer
 {
 public:
-	explicit Lexer(const std::string& input) :
+	explicit GDLexer(const std::string& input) :
 		inputStream_(input)
 	{
 	}

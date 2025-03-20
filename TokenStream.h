@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Lexer.h"
+#include "GDLexer.h"
 
 class TokenStream
 {

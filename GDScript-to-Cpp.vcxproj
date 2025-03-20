@@ -173,7 +173,7 @@
     <ClInclude Include="RangeSyntaxNode.h" />
     <ClInclude Include="ReturnSyntaxNode.h" />
     <ClInclude Include="InputStream.h" />
-    <ClInclude Include="Lexer.h" />
+    <ClInclude Include="GDLexer.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="ParserError.h" />
     <ClInclude Include="SyntaxNode.h" />

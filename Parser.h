@@ -60,7 +60,7 @@ public:
 
 	static Result* parse(const std::string& input, AbstractSyntaxTree* ast, const std::string& fileName)
 	{
-		Lexer lexer(input);
+		GDLexer lexer(input);
 
 		std::vector<Token*> tokens = lexer.readAllTokens();
 

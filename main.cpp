@@ -1,6 +1,6 @@
 #include "AbstractSyntaxTree.h"
 #include "FileIO.h"
-#include "Lexer.h"
+#include "GDLexer.h"
 #include "Parser.h"
 #include <iostream>
 #include <filesystem>
