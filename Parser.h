@@ -77,7 +77,7 @@ private:
 	TokenStream stream_;
 	std::vector<ParserError> errors_;
 
-	bool isNextTokenType(TokenType type, unsigned int offset = 0)
+	bool isNextTokenType(GDTokenType type, unsigned int offset = 0)
 	{
 		if (offset >= stream_.getLength()) return false;
 		return stream_.peek(offset)->type == type;
@@ -121,7 +121,7 @@ private:
 		return stream_.end();
 	}
 
-	GDToken* consume(TokenType tokenType)
+	GDToken* consume(GDTokenType tokenType)
 	{
 		if (isNextTokenType(tokenType))
 		{
@@ -137,18 +137,18 @@ private:
 		const GDToken* typeToken = next();
 		std::vector<Type*> subtypes = {};
 
-		if (isNextTokenType(TokenType::OpenSquareBracket))
+		if (isNextTokenType(GDTokenType::OpenSquareBracket))
 		{
 			next(); // eat [
 
-			while (!isNextTokenType(TokenType::CloseSquareBracket))
+			while (!isNextTokenType(GDTokenType::CloseSquareBracket))
 			{
 				auto subtype = parseType();
 				if (subtype) subtypes.push_back(subtype);
-				if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
+				if (isNextTokenType(GDTokenType::CommaSeparator)) next(); // eat ,
 			}
 
-			if (!consume(TokenType::CloseSquareBracket)) return nullptr;
+			if (!consume(GDTokenType::CloseSquareBracket)) return nullptr;
 		}
 
 		return new Type(typeToken->value, subtypes);
@@ -156,16 +156,16 @@ private:
 
 	VariableDefinitionSyntaxNode* parseArgDefinition()
 	{
-		GDToken* name = consume(TokenType::Identifier);
+		GDToken* name = consume(GDTokenType::Identifier);
 
 		if (!name) return nullptr;
 
 		Type* type = nullptr;
 
-		if (isNextTokenType(TokenType::ColonSeparator))
+		if (isNextTokenType(GDTokenType::ColonSeparator))
 		{
 			next(); // eat :
-			if (!isNextTokenType(TokenType::AssignmentOperator))
+			if (!isNextTokenType(GDTokenType::AssignmentOperator))
 			{
 				type = parseType();
 			}
@@ -173,7 +173,7 @@ private:
 
 		ValueSyntaxNode* assignmentValue = nullptr;
 
-		if (isNextTokenType(TokenType::AssignmentOperator))
+		if (isNextTokenType(GDTokenType::AssignmentOperator))
 		{
 			next(); // eat =
 			assignmentValue = parseValueExpression();
@@ -184,17 +184,17 @@ private:
 
 	FunctionPrototypeSyntaxNode* parseFunctionProtoype(bool isStatic)
 	{
-		consume(TokenType::FuncKeyword); // eat func
+		consume(GDTokenType::FuncKeyword); // eat func
 
-		GDToken* name = consume(TokenType::Identifier);
+		GDToken* name = consume(GDTokenType::Identifier);
 
 		if (!name) return nullptr;
 
-		if (!consume(TokenType::OpenBracketSeparator)) return nullptr;
+		if (!consume(GDTokenType::OpenBracketSeparator)) return nullptr;
 
 		std::vector<VariableDefinitionSyntaxNode*> argDefs;
 
-		while (stream_.peek()->type != TokenType::CloseBracketSeparator)
+		while (stream_.peek()->type != GDTokenType::CloseBracketSeparator)
 		{
 			auto* argDef = parseArgDefinition();
 
@@ -202,8 +202,8 @@ private:
 			{
 				argDefs.push_back(argDef);
 
-				if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
-				else if (!isNextTokenType(TokenType::CloseBracketSeparator)) return (FunctionPrototypeSyntaxNode*)addUnexpectedNextTokenError();
+				if (isNextTokenType(GDTokenType::CommaSeparator)) next(); // eat ,
+				else if (!isNextTokenType(GDTokenType::CloseBracketSeparator)) return (FunctionPrototypeSyntaxNode*)addUnexpectedNextTokenError();
 			}
 			else
 			{
@@ -215,13 +215,13 @@ private:
 
 		Type* returnType = nullptr;
 
-		if (isNextTokenType(TokenType::ArrowSeparator))
+		if (isNextTokenType(GDTokenType::ArrowSeparator))
 		{
 			next(); // eat ->
 			returnType = parseType();
 		}
 
-		if (!consume(TokenType::ColonSeparator)) return nullptr;
+		if (!consume(GDTokenType::ColonSeparator)) return nullptr;
 
 		return new FunctionPrototypeSyntaxNode(name, argDefs, returnType, isStatic);
 	}
@@ -263,25 +263,25 @@ private:
 
 	GDToken* parseClassName()
 	{
-		consume(TokenType::ClassNameKeyword); // eat class_name
+		consume(GDTokenType::ClassNameKeyword); // eat class_name
 
-		return consume(TokenType::Identifier);
+		return consume(GDTokenType::Identifier);
 	}
 
 	VariableDefinitionSyntaxNode* parseVariableDefinition(bool isClassMember, bool isStatic)
 	{
 		auto varOrConst = next();
 
-		auto name = consume(TokenType::Identifier);
+		auto name = consume(GDTokenType::Identifier);
 
 		if (!name) return nullptr;
 
 		Type* type = nullptr;
 
-		if (isNextTokenType(TokenType::ColonSeparator))
+		if (isNextTokenType(GDTokenType::ColonSeparator))
 		{
 			next(); // eat :
-			if (!isNextTokenType(TokenType::AssignmentOperator))
+			if (!isNextTokenType(GDTokenType::AssignmentOperator))
 			{
 				type = parseType();
 			}
@@ -289,30 +289,30 @@ private:
 
 		ValueSyntaxNode* assignmentValue = nullptr;
 
-		if (isNextTokenType(TokenType::AssignmentOperator))
+		if (isNextTokenType(GDTokenType::AssignmentOperator))
 		{
 			next(); // eat =
 			assignmentValue = parseValueExpression();
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->type == TokenType::ConstKeyword, isClassMember, isStatic);
+		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->type == GDTokenType::ConstKeyword, isClassMember, isStatic);
 	}
 
 	VariableDefinitionSyntaxNode* parseSignalDefinitions()
 	{
 		next(); // eat signal
 
-		auto signalName = consume(TokenType::Identifier);
+		auto signalName = consume(GDTokenType::Identifier);
 
 		if (!signalName) return nullptr;
 
-		if (isNextTokenType(TokenType::OpenBracketSeparator))
+		if (isNextTokenType(GDTokenType::OpenBracketSeparator))
 		{
 			next(); // eat (
 
 			std::vector<VariableDefinitionSyntaxNode*> args;
 
-			while (!isNextTokenType(TokenType::CloseBracketSeparator))
+			while (!isNextTokenType(GDTokenType::CloseBracketSeparator))
 			{
 				auto arg = parseArgDefinition();
 				if (arg) args.push_back(arg);
@@ -328,17 +328,17 @@ private:
 	{
 		next(); // eat warning_ignore or tool
 
-		if (isNextTokenType(TokenType::OpenBracketSeparator))
+		if (isNextTokenType(GDTokenType::OpenBracketSeparator))
 		{
-			if (!consume(TokenType::OpenBracketSeparator)) return;
-			if (!consume(TokenType::StringLiteral)) return;
-			if (!consume(TokenType::CloseBracketSeparator)) return;
+			if (!consume(GDTokenType::OpenBracketSeparator)) return;
+			if (!consume(GDTokenType::StringLiteral)) return;
+			if (!consume(GDTokenType::CloseBracketSeparator)) return;
 		}
 	}
 
 	EnumValueSyntaxNode* parseEnumValueDefinition()
 	{
-		auto name = consume(TokenType::Identifier);
+		auto name = consume(GDTokenType::Identifier);
 		if (!name) return nullptr;
 		return new EnumValueSyntaxNode(name);
 	}
@@ -347,21 +347,21 @@ private:
 	{
 		next(); // eat enum
 
-		auto name = consume(TokenType::Identifier);
+		auto name = consume(GDTokenType::Identifier);
 
 		if (!name) return nullptr;
 
-		if (!consume(TokenType::OpenCurlyBracketSeparator)) return nullptr;
+		if (!consume(GDTokenType::OpenCurlyBracketSeparator)) return nullptr;
 
 		std::vector<EnumValueSyntaxNode*> values;
 
-		while (!isNextTokenType(TokenType::CloseCurlyBracketSeparator))
+		while (!isNextTokenType(GDTokenType::CloseCurlyBracketSeparator))
 		{
 			auto value = parseEnumValueDefinition();
 			if (value) values.push_back(value);
 
-			if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
-			else if (!isNextTokenType(TokenType::CloseCurlyBracketSeparator)) return (EnumDefinitionSyntaxNode*)addUnexpectedNextTokenError();
+			if (isNextTokenType(GDTokenType::CommaSeparator)) next(); // eat ,
+			else if (!isNextTokenType(GDTokenType::CloseCurlyBracketSeparator)) return (EnumDefinitionSyntaxNode*)addUnexpectedNextTokenError();
 		}
 
 		next(); // eat }
@@ -371,9 +371,9 @@ private:
 
 	GDToken* parseExtends()
 	{
-		consume(TokenType::ExtendsKeyword); // eat extends
+		consume(GDTokenType::ExtendsKeyword); // eat extends
 
-		return consume(TokenType::Identifier);
+		return consume(GDTokenType::Identifier);
 	}
 
 	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, const std::string& fileName, GDToken* nameToken = nullptr, bool isInnerClass = false)
@@ -401,38 +401,38 @@ private:
 
 			switch (t->type)
 			{
-			case TokenType::ClassNameKeyword:
+			case GDTokenType::ClassNameKeyword:
 				name = parseClassName();
 				break;
-			case TokenType::ExtendsKeyword:
+			case GDTokenType::ExtendsKeyword:
 				extends = parseExtends();
 				break;
-			case TokenType::FuncKeyword:
+			case GDTokenType::FuncKeyword:
 				memberFunctionDefinitions.push_back(parseFunction(false));
 				break;
-			case TokenType::VarKeyword:
-			case TokenType::ConstKeyword:
+			case GDTokenType::VarKeyword:
+			case GDTokenType::ConstKeyword:
 				memberVariableDefinitions.push_back(parseVariableDefinition(true, false));
 				break;
-			case TokenType::SignalKeyword:
+			case GDTokenType::SignalKeyword:
 				memberVariableDefinitions.push_back(parseSignalDefinitions());
 				break;
-			case TokenType::Annotation:
+			case GDTokenType::Annotation:
 				parseAnnotation();
 				break;
-			case TokenType::EnumKeyword:
+			case GDTokenType::EnumKeyword:
 				enumDefinitions.push_back(parseEnumDefinition());
 				break;
-			case TokenType::StaticKeyword:
+			case GDTokenType::StaticKeyword:
 				next(); // eat static
 
-				if (isNextTokenType(TokenType::FuncKeyword))
+				if (isNextTokenType(GDTokenType::FuncKeyword))
 				{
 					staticFunctionDefinitions.push_back(parseFunction(true));
 					break;
 				}
 
-				if (isNextTokenType(TokenType::VarKeyword) || isNextTokenType(TokenType::ConstKeyword))
+				if (isNextTokenType(GDTokenType::VarKeyword) || isNextTokenType(GDTokenType::ConstKeyword))
 				{
 					staticVariableDefinitions.push_back(parseVariableDefinition(false, true));
 					break;
@@ -441,11 +441,11 @@ private:
 				addUnexpectedNextTokenError();
 
 				break;
-			case TokenType::ClassKeyword:
+			case GDTokenType::ClassKeyword:
 			{
 				next(); // eat class
-				auto subclassName = consume(TokenType::Identifier);
-				consume(TokenType::ColonSeparator);
+				auto subclassName = consume(GDTokenType::Identifier);
+				consume(GDTokenType::ColonSeparator);
 				auto internalClass = parseScriptBody(t->indentDepth + 1, "", subclassName, true);
 				if (internalClass) innerClasses.push_back(internalClass);
 				break;
@@ -472,13 +472,13 @@ private:
 	LiteralValueSyntaxNode* parseLiteralValue()
 	{
 		auto value = next();
-		TokenType type = value->type;
+		GDTokenType type = value->type;
 
 		switch (type)
 		{
-		case TokenType::IntLiteral: return new LiteralValueSyntaxNode(value, new Type("int"));
-		case TokenType::FloatLiteral: return new LiteralValueSyntaxNode(value, new Type("float"));
-		case TokenType::StringLiteral: return new LiteralValueSyntaxNode(value, new Type("string"));
+		case GDTokenType::IntLiteral: return new LiteralValueSyntaxNode(value, new Type("int"));
+		case GDTokenType::FloatLiteral: return new LiteralValueSyntaxNode(value, new Type("float"));
+		case GDTokenType::StringLiteral: return new LiteralValueSyntaxNode(value, new Type("string"));
 		}
 
 		return (LiteralValueSyntaxNode*)addUnexpectedTokenError(value);
@@ -486,7 +486,7 @@ private:
 
 	NotOperatorSyntaxNode* parseNotOperator()
 	{
-		if (auto token = consume(TokenType::NotOperator))
+		if (auto token = consume(GDTokenType::NotOperator))
 		{
 			ValueSyntaxNode* condition = parseValueExpression();
 
@@ -500,25 +500,25 @@ private:
 	{
 		GDToken* t = next();
 
-		if (t->type == TokenType::TrueKeyword) return new BooleanLiteralSyntaxNode(t, true);
-		if (t->type == TokenType::FalseKeyword) return new BooleanLiteralSyntaxNode(t, false);
+		if (t->type == GDTokenType::TrueKeyword) return new BooleanLiteralSyntaxNode(t, true);
+		if (t->type == GDTokenType::FalseKeyword) return new BooleanLiteralSyntaxNode(t, false);
 
 		return (BooleanLiteralSyntaxNode*)addUnexpectedTokenError(t);
 	}
 
 	ValueSyntaxNode* parseArrayValue()
 	{
-		if (!consume(TokenType::OpenSquareBracket)) return nullptr;
+		if (!consume(GDTokenType::OpenSquareBracket)) return nullptr;
 
 		std::vector<ValueSyntaxNode*> expressions;
 
-		while (!isNextTokenType(TokenType::CloseSquareBracket))
+		while (!isNextTokenType(GDTokenType::CloseSquareBracket))
 		{
 			auto ex = parseValueExpression();
 			if (ex) expressions.push_back(ex);
 
-			if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
-			else if (!isNextTokenType(TokenType::CloseSquareBracket)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+			if (isNextTokenType(GDTokenType::CommaSeparator)) next(); // eat ,
+			else if (!isNextTokenType(GDTokenType::CloseSquareBracket)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
 		}
 
 		next(); // eat ]
@@ -532,11 +532,11 @@ private:
 		std::vector<ValueSyntaxNode*> keys;
 		std::vector<ValueSyntaxNode*> values;
 
-		while (!isNextTokenType(TokenType::CloseCurlyBracketSeparator))
+		while (!isNextTokenType(GDTokenType::CloseCurlyBracketSeparator))
 		{
 			auto key = parseSingleValueObject();
 
-			if (!consume(TokenType::ColonSeparator)) return nullptr;
+			if (!consume(GDTokenType::ColonSeparator)) return nullptr;
 
 			auto value = parseValueExpression();
 			if (value)
@@ -545,8 +545,8 @@ private:
 				values.push_back(value);
 			}
 
-			if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
-			else if (!isNextTokenType(TokenType::CloseCurlyBracketSeparator)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+			if (isNextTokenType(GDTokenType::CommaSeparator)) next(); // eat ,
+			else if (!isNextTokenType(GDTokenType::CloseCurlyBracketSeparator)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
 		}
 
 		next(); // eat }
@@ -556,58 +556,58 @@ private:
 
 	ValueSyntaxNode* parsePreload()
 	{
-		if (!consume(TokenType::PreloadKeyword)) return nullptr;
-		if (!consume(TokenType::OpenBracketSeparator)) return nullptr;
-		auto preloadPath = consume(TokenType::StringLiteral);
+		if (!consume(GDTokenType::PreloadKeyword)) return nullptr;
+		if (!consume(GDTokenType::OpenBracketSeparator)) return nullptr;
+		auto preloadPath = consume(GDTokenType::StringLiteral);
 
 		if (!preloadPath) return nullptr;
 
-		if (!consume(TokenType::CloseBracketSeparator)) return nullptr;
+		if (!consume(GDTokenType::CloseBracketSeparator)) return nullptr;
 
 		return new PreloadSyntaxNode(preloadPath);
 	}
 
 	NullSyntaxNode* parseNullValue()
 	{
-		if (!consume(TokenType::NullKeyword)) return nullptr;
+		if (!consume(GDTokenType::NullKeyword)) return nullptr;
 
 		return new NullSyntaxNode();
 	}
 
 	RangeSyntaxNode* parseRange()
 	{
-		if (!consume(TokenType::RangeKeyword)) return nullptr;
-		if (!consume(TokenType::OpenBracketSeparator)) return nullptr;
+		if (!consume(GDTokenType::RangeKeyword)) return nullptr;
+		if (!consume(GDTokenType::OpenBracketSeparator)) return nullptr;
 
 		ValueSyntaxNode* startValue = parseValueExpression();
 
-		if (!consume(TokenType::CommaSeparator)) return nullptr;
+		if (!consume(GDTokenType::CommaSeparator)) return nullptr;
 
 		ValueSyntaxNode* endValue = parseValueExpression();
 
-		if (isNextTokenType(TokenType::CommaSeparator)) next();
+		if (isNextTokenType(GDTokenType::CommaSeparator)) next();
 
 		ValueSyntaxNode* incrementValue = nullptr;
 
-		if (!isNextTokenType(TokenType::CloseBracketSeparator))
+		if (!isNextTokenType(GDTokenType::CloseBracketSeparator))
 		{
 			incrementValue = parseValueExpression();
 		}
 
-		if (!consume(TokenType::CloseBracketSeparator)) return nullptr;
+		if (!consume(GDTokenType::CloseBracketSeparator)) return nullptr;
 
 		return new RangeSyntaxNode(startValue, endValue, incrementValue);
 	}
 
 	NodePathSyntaxNode* parseNodePath()
 	{
-		auto nodePathToken = consume(TokenType::NodePath);
+		auto nodePathToken = consume(GDTokenType::NodePath);
 		return new NodePathSyntaxNode(nodePathToken);
 	}
 
 	CastSyntaxNode* parseCast(ValueSyntaxNode* value)
 	{
-		if (!consume(TokenType::AsKeyword)) return nullptr;
+		if (!consume(GDTokenType::AsKeyword)) return nullptr;
 
 		auto type = parseType();
 
@@ -619,25 +619,25 @@ private:
 	ValueSyntaxNode* parseSingleValueObject()
 	{
 		GDToken* value = peek();
-		TokenType type = value->type;
+		GDTokenType type = value->type;
 
 		switch (type)
 		{
-		case TokenType::IntLiteral:
-		case TokenType::FloatLiteral:
-		case TokenType::StringLiteral:
+		case GDTokenType::IntLiteral:
+		case GDTokenType::FloatLiteral:
+		case GDTokenType::StringLiteral:
 		{
 			auto literalValue = parseLiteralValue();
 
 			return literalValue;
 		}
-		case TokenType::Identifier: return parseVariableOrFunctionCall(true);
-		case TokenType::NotOperator: return parseNotOperator();
-		case TokenType::TrueKeyword: return parseBooleanLiteral();
-		case TokenType::FalseKeyword: return parseBooleanLiteral();
-		case TokenType::OpenSquareBracket: return parseArrayValue();
-		case TokenType::OpenCurlyBracketSeparator: return parseDictionaryValue();
-		case TokenType::Operator:
+		case GDTokenType::Identifier: return parseVariableOrFunctionCall(true);
+		case GDTokenType::NotOperator: return parseNotOperator();
+		case GDTokenType::TrueKeyword: return parseBooleanLiteral();
+		case GDTokenType::FalseKeyword: return parseBooleanLiteral();
+		case GDTokenType::OpenSquareBracket: return parseArrayValue();
+		case GDTokenType::OpenCurlyBracketSeparator: return parseDictionaryValue();
+		case GDTokenType::Operator:
 		{
 			if (value->value == "-")
 			{
@@ -647,13 +647,13 @@ private:
 			}
 			break;
 		}
-		case TokenType::PreloadKeyword:
+		case GDTokenType::PreloadKeyword:
 			return parsePreload();
-		case TokenType::NullKeyword:
+		case GDTokenType::NullKeyword:
 			return parseNullValue();
-		case TokenType::RangeKeyword:
+		case GDTokenType::RangeKeyword:
 			return parseRange();
-		case TokenType::NodePath:
+		case GDTokenType::NodePath:
 			return parseNodePath();
 		}
 
@@ -664,7 +664,7 @@ private:
 	{
 		int bracketCount = 0;
 
-		while (isNextTokenType(TokenType::OpenBracketSeparator))
+		while (isNextTokenType(GDTokenType::OpenBracketSeparator))
 		{
 			next(); // eat (
 			bracketCount++;
@@ -679,9 +679,9 @@ private:
 		while (true)
 		{
 			// Bool operators
-			if (isNextTokenType(TokenType::EqualityOperator) || isNextTokenType(TokenType::NotEqualityOperator)
-				|| isNextTokenType(TokenType::GreaterThanSeparator) || isNextTokenType(TokenType::GreaterThanEqualSeparator)
-				|| isNextTokenType(TokenType::LessThanSeparator) || isNextTokenType(TokenType::LessThanEqualSeparator))
+			if (isNextTokenType(GDTokenType::EqualityOperator) || isNextTokenType(GDTokenType::NotEqualityOperator)
+				|| isNextTokenType(GDTokenType::GreaterThanSeparator) || isNextTokenType(GDTokenType::GreaterThanEqualSeparator)
+				|| isNextTokenType(GDTokenType::LessThanSeparator) || isNextTokenType(GDTokenType::LessThanEqualSeparator))
 			{
 				GDToken* boolOperator = next();
 
@@ -694,7 +694,7 @@ private:
 				continue;
 			}
 
-			if (isNextTokenType(TokenType::IsKeyword))
+			if (isNextTokenType(GDTokenType::IsKeyword))
 			{
 				auto isToken = next();
 
@@ -706,7 +706,7 @@ private:
 			}
 
 			// Math operators
-			if (isNextTokenType(TokenType::Operator))
+			if (isNextTokenType(GDTokenType::Operator))
 			{
 				GDToken* operatorToken = next();
 
@@ -721,7 +721,7 @@ private:
 				continue;
 			}
 
-			if (isNextTokenType(TokenType::AndOperator) || isNextTokenType(TokenType::OrOperator))
+			if (isNextTokenType(GDTokenType::AndOperator) || isNextTokenType(GDTokenType::OrOperator))
 			{
 				auto booleanOperator = next(); // eat && or ||
 
@@ -731,19 +731,19 @@ private:
 				continue;
 			}
 
-			if (isNextTokenType(TokenType::IfKeyword) && peek()->lineNumber == name->lineNumber)
+			if (isNextTokenType(GDTokenType::IfKeyword) && peek()->lineNumber == name->lineNumber)
 			{
 				lhs = parseTernaryValue(lhs);
 				continue;
 			}
 
-			if (isNextTokenType(TokenType::AsKeyword))
+			if (isNextTokenType(GDTokenType::AsKeyword))
 			{
 				lhs = parseCast(lhs);
 				continue;
 			}
 
-			if (bracketCount > 0 && isNextTokenType(TokenType::CloseBracketSeparator))
+			if (bracketCount > 0 && isNextTokenType(GDTokenType::CloseBracketSeparator))
 			{
 				next(); // eat )
 				bracketCount--;
@@ -758,7 +758,7 @@ private:
 
 	ReturnSyntaxNode* parseReturnStatement()
 	{
-		auto returnToken = consume(TokenType::ReturnKeyword);
+		auto returnToken = consume(GDTokenType::ReturnKeyword);
 
 		if (!returnToken) return nullptr;
 
@@ -774,27 +774,27 @@ private:
 
 	BreakSyntaxNode* parseBreakStatement()
 	{
-		if (!consume(TokenType::BreakKeyword)) return nullptr;
+		if (!consume(GDTokenType::BreakKeyword)) return nullptr;
 
 		return new BreakSyntaxNode();
 	}
 
 	ContinueSyntaxNode* parseContinueStatement()
 	{
-		if (!consume(TokenType::ContinueKeyword)) return nullptr;
+		if (!consume(GDTokenType::ContinueKeyword)) return nullptr;
 
 		return new ContinueSyntaxNode();
 	}
 
 	ValueSyntaxNode* parseValueIndexValue(ValueSyntaxNode* variable)
 	{
-		if (isNextTokenType(TokenType::OpenSquareBracket))
+		if (isNextTokenType(GDTokenType::OpenSquareBracket))
 		{
 			next(); // eat [
 
 			ValueSyntaxNode* indexNode = parseValueExpression();
 
-			if (!isNextTokenType(TokenType::CloseSquareBracket)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+			if (!isNextTokenType(GDTokenType::CloseSquareBracket)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
 
 			next(); // eat ]
 
@@ -806,13 +806,13 @@ private:
 
 	ValueSyntaxNode* parseTernaryValue(ValueSyntaxNode* thenValue)
 	{
-		if (!consume(TokenType::IfKeyword)) return nullptr;
+		if (!consume(GDTokenType::IfKeyword)) return nullptr;
 
 		ValueSyntaxNode* condition = parseValueExpression();
 
 		if (!condition) return nullptr;
 
-		if (!consume(TokenType::ElseKeyword)) return nullptr;
+		if (!consume(GDTokenType::ElseKeyword)) return nullptr;
 
 		ValueSyntaxNode* elseValue = parseValueExpression();
 
@@ -821,11 +821,11 @@ private:
 
 	ValueSyntaxNode* parseVariableOrFunctionCall(bool asValue, ValueSyntaxNode* instance = nullptr)
 	{
-		auto name = consume(TokenType::Identifier);
+		auto name = consume(GDTokenType::Identifier);
 
 		if (!name) return nullptr;
 
-		if (!asValue && instance && isNextTokenType(TokenType::DotSeparator))
+		if (!asValue && instance && isNextTokenType(GDTokenType::DotSeparator))
 		{
 			asValue = true; // getter
 		}
@@ -836,11 +836,11 @@ private:
 		{
 			if (variable == nullptr) return nullptr;
 
-			if (isNextTokenType(TokenType::DotSeparator))
+			if (isNextTokenType(GDTokenType::DotSeparator))
 			{
 				next(); // eat .
 
-				if (isNextTokenType(TokenType::Identifier))
+				if (isNextTokenType(GDTokenType::Identifier))
 				{
 					variable = parseVariableOrFunctionCall(asValue, variable);
 					continue;
@@ -848,21 +848,21 @@ private:
 			}
 
 			// Function call
-			if (isNextTokenType(TokenType::OpenBracketSeparator))
+			if (isNextTokenType(GDTokenType::OpenBracketSeparator))
 			{
 				next(); // eat (
 
 				std::vector<ValueSyntaxNode*> args;
 
-				while (!isNextTokenType(TokenType::CloseBracketSeparator))
+				while (!isNextTokenType(GDTokenType::CloseBracketSeparator))
 				{
 					auto e = parseValueExpression();
 					if (e)
 					{
 						args.push_back(e);
 
-						if (isNextTokenType(TokenType::CommaSeparator)) next(); // eat ,
-						else if (!isNextTokenType(TokenType::CloseBracketSeparator)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+						if (isNextTokenType(GDTokenType::CommaSeparator)) next(); // eat ,
+						else if (!isNextTokenType(GDTokenType::CloseBracketSeparator)) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
 					}
 					else
 					{
@@ -870,19 +870,19 @@ private:
 					}
 				}
 
-				if (!consume(TokenType::CloseBracketSeparator)) return nullptr;
+				if (!consume(GDTokenType::CloseBracketSeparator)) return nullptr;
 
 				variable = new CallSyntaxNode(instance, name, args);
 				continue;
 			}
 
-			if (isNextTokenType(TokenType::OpenSquareBracket))
+			if (isNextTokenType(GDTokenType::OpenSquareBracket))
 			{
 				variable = parseValueIndexValue(variable);
 				continue;
 			}
 
-			if (isNextTokenType(TokenType::IfKeyword) && peek()->lineNumber == name->lineNumber)
+			if (isNextTokenType(GDTokenType::IfKeyword) && peek()->lineNumber == name->lineNumber)
 			{
 				variable = parseTernaryValue(variable);
 				continue;
@@ -895,7 +895,7 @@ private:
 			else
 			{
 				// Variable assignment
-				if (isNextTokenType(TokenType::AssignmentOperator))
+				if (isNextTokenType(GDTokenType::AssignmentOperator))
 				{
 					next(); // eat =
 
@@ -909,7 +909,7 @@ private:
 				}
 
 				// Math operators
-				if (isNextTokenType(TokenType::Operator))
+				if (isNextTokenType(GDTokenType::Operator))
 				{
 					GDToken* operatorToken = next();
 
@@ -925,7 +925,7 @@ private:
 				}
 
 				// bitwise operators
-				if (isNextTokenType(TokenType::LogicalOrOperator) || isNextTokenType(TokenType::LogicalOrAssignOperator))
+				if (isNextTokenType(GDTokenType::LogicalOrOperator) || isNextTokenType(GDTokenType::LogicalOrAssignOperator))
 				{
 					auto operatorToken = next(); // eat | or |=
 
@@ -943,7 +943,7 @@ private:
 
 	IfSyntaxNode* parseIfStatement()
 	{
-		auto ifToken = consume(TokenType::IfKeyword); // eat if
+		auto ifToken = consume(GDTokenType::IfKeyword); // eat if
 
 		if (!ifToken) return nullptr;
 
@@ -951,17 +951,17 @@ private:
 
 		if (!condition) return nullptr;
 
-		if (!consume(TokenType::ColonSeparator)) return nullptr;
+		if (!consume(GDTokenType::ColonSeparator)) return nullptr;
 
 		BodySyntaxNode* thenBody = parseBody(ifToken->indentDepth, ifToken->lineNumber);
 
 		BodySyntaxNode* elseBody = nullptr;
 
-		if (isNextTokenType(TokenType::ElseKeyword))
+		if (isNextTokenType(GDTokenType::ElseKeyword))
 		{
 			auto elseToken = next(); // eat else
 
-			if (!consume(TokenType::ColonSeparator)) return nullptr;
+			if (!consume(GDTokenType::ColonSeparator)) return nullptr;
 
 			elseBody = parseBody(elseToken->indentDepth, elseToken->lineNumber);
 		}
@@ -971,13 +971,13 @@ private:
 
 	WhileSyntaxNode* parseWhileLoop()
 	{
-		auto whileToken = consume(TokenType::WhileKeyword);
+		auto whileToken = consume(GDTokenType::WhileKeyword);
 
 		if (!whileToken) return nullptr;
 
 		auto condition = parseValueExpression();
 
-		if (!consume(TokenType::ColonSeparator)) return nullptr;
+		if (!consume(GDTokenType::ColonSeparator)) return nullptr;
 
 		BodySyntaxNode* body = parseBody(whileToken->indentDepth, whileToken->lineNumber);
 
@@ -988,30 +988,30 @@ private:
 
 	ForSyntaxNode* parseForLoop()
 	{
-		auto forToken = consume(TokenType::ForKeyword);
+		auto forToken = consume(GDTokenType::ForKeyword);
 
 		if (!forToken) return nullptr;
 
-		auto variableToken = consume(TokenType::Identifier);
+		auto variableToken = consume(GDTokenType::Identifier);
 
 		if (!variableToken) return nullptr;
 
 		Type* variableType = nullptr;
 
-		if (isNextTokenType(TokenType::ColonSeparator))
+		if (isNextTokenType(GDTokenType::ColonSeparator))
 		{
 			next(); // eat :
 
 			variableType = parseType();
 		}
 
-		if (!consume(TokenType::InKeyword)) return nullptr;
+		if (!consume(GDTokenType::InKeyword)) return nullptr;
 
 		auto arrayToken = parseValueExpression();
 
 		if (!arrayToken) return nullptr;
 
-		if (!consume(TokenType::ColonSeparator)) return nullptr;
+		if (!consume(GDTokenType::ColonSeparator)) return nullptr;
 
 		auto body = parseBody(forToken->indentDepth, forToken->lineNumber);
 
@@ -1025,25 +1025,25 @@ private:
 		const GDToken* t = stream_.peek();
 
 		switch (t->type) {
-		case TokenType::ReturnKeyword:
+		case GDTokenType::ReturnKeyword:
 			return parseReturnStatement();
-		case TokenType::BreakKeyword:
+		case GDTokenType::BreakKeyword:
 			return parseBreakStatement();
-		case TokenType::ContinueKeyword:
+		case GDTokenType::ContinueKeyword:
 			return parseContinueStatement();
-		case TokenType::Identifier:
+		case GDTokenType::Identifier:
 			return parseVariableOrFunctionCall(false);
-		case TokenType::IfKeyword:
+		case GDTokenType::IfKeyword:
 			return parseIfStatement();
-		case TokenType::VarKeyword:
-		case TokenType::ConstKeyword:
+		case GDTokenType::VarKeyword:
+		case GDTokenType::ConstKeyword:
 			return parseVariableDefinition(false, false);
-		case TokenType::PassKeyword:
+		case GDTokenType::PassKeyword:
 			next(); // eat pass
 			return nullptr;
-		case TokenType::WhileKeyword:
+		case GDTokenType::WhileKeyword:
 			return parseWhileLoop();
-		case TokenType::ForKeyword:
+		case GDTokenType::ForKeyword:
 			return parseForLoop();
 		default:
 			return addUnexpectedNextTokenError();

@@ -40,9 +40,9 @@ public:
 	{
 		switch (value_->type)
 		{
-		case TokenType::FloatLiteral:
+		case GDTokenType::FloatLiteral:
 			return value_->value + "f";
-		case TokenType::StringLiteral:
+		case GDTokenType::StringLiteral:
 			return "\"" + value_->value + "\"";
 		}
 

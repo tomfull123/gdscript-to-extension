@@ -58,12 +58,12 @@ private:
 
 	std::string toCPPOperator() const
 	{
-		const TokenType type = operatorToken_->type;
+		const GDTokenType type = operatorToken_->type;
 
 		switch (type) {
-		case TokenType::OrOperator:
+		case GDTokenType::OrOperator:
 			return "||";
-		case TokenType::AndOperator:
+		case GDTokenType::AndOperator:
 			return "&&";
 		}
 		return "";

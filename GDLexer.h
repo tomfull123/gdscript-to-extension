@@ -4,7 +4,7 @@
 #include <vector>
 #include "InputStream.h"
 
-enum class TokenType
+enum class GDTokenType
 {
 	Identifier,
 	Error,
@@ -72,7 +72,7 @@ enum class TokenType
 struct GDToken
 {
 	std::string value;
-	TokenType type;
+	GDTokenType type;
 	int lineNumber = -1;
 	int columnNumber = -1;
 	std::string filename = "";
@@ -180,7 +180,7 @@ private:
 
 	GDToken* readIdentifierOrKeyword()
 	{
-		GDToken* token = readToken(isIdentifier, TokenType::Identifier);
+		GDToken* token = readToken(isIdentifier, GDTokenType::Identifier);
 
 		token->type = getKeywordTokenType(token->value);
 		token->indentDepth = currentIndent_;
@@ -188,38 +188,38 @@ private:
 		return token;
 	}
 
-	TokenType getKeywordTokenType(const std::string& value) const
+	GDTokenType getKeywordTokenType(const std::string& value) const
 	{
-		if (value == "func") return TokenType::FuncKeyword;
-		if (value == "var") return TokenType::VarKeyword;
-		if (value == "const") return TokenType::ConstKeyword;
-		if (value == "class_name") return TokenType::ClassNameKeyword;
-		if (value == "extends") return TokenType::ExtendsKeyword;
-		if (value == "return") return TokenType::ReturnKeyword;
-		if (value == "for") return TokenType::ForKeyword;
-		if (value == "if") return TokenType::IfKeyword;
-		if (value == "else") return TokenType::ElseKeyword;
-		if (value == "true") return TokenType::TrueKeyword;
-		if (value == "false") return TokenType::FalseKeyword;
-		if (value == "class") return TokenType::ClassKeyword;
-		if (value == "null") return TokenType::NullKeyword;
+		if (value == "func") return GDTokenType::FuncKeyword;
+		if (value == "var") return GDTokenType::VarKeyword;
+		if (value == "const") return GDTokenType::ConstKeyword;
+		if (value == "class_name") return GDTokenType::ClassNameKeyword;
+		if (value == "extends") return GDTokenType::ExtendsKeyword;
+		if (value == "return") return GDTokenType::ReturnKeyword;
+		if (value == "for") return GDTokenType::ForKeyword;
+		if (value == "if") return GDTokenType::IfKeyword;
+		if (value == "else") return GDTokenType::ElseKeyword;
+		if (value == "true") return GDTokenType::TrueKeyword;
+		if (value == "false") return GDTokenType::FalseKeyword;
+		if (value == "class") return GDTokenType::ClassKeyword;
+		if (value == "null") return GDTokenType::NullKeyword;
 		//if (value == "get") return TokenType::GetKeyword;
-		if (value == "while") return TokenType::WhileKeyword;
-		if (value == "enum") return TokenType::EnumKeyword;
-		if (value == "static") return TokenType::StaticKeyword;
-		if (value == "break") return TokenType::BreakKeyword;
-		if (value == "continue") return TokenType::ContinueKeyword;
-		if (value == "pass") return TokenType::PassKeyword;
-		if (value == "signal") return TokenType::SignalKeyword;
-		if (value == "preload") return TokenType::PreloadKeyword;
-		if (value == "in") return TokenType::InKeyword;
-		if (value == "is") return TokenType::IsKeyword;
-		if (value == "or") return TokenType::OrOperator;
-		if (value == "not") return TokenType::NotOperator;
-		if (value == "range") return TokenType::RangeKeyword;
-		if (value == "as") return TokenType::AsKeyword;
+		if (value == "while") return GDTokenType::WhileKeyword;
+		if (value == "enum") return GDTokenType::EnumKeyword;
+		if (value == "static") return GDTokenType::StaticKeyword;
+		if (value == "break") return GDTokenType::BreakKeyword;
+		if (value == "continue") return GDTokenType::ContinueKeyword;
+		if (value == "pass") return GDTokenType::PassKeyword;
+		if (value == "signal") return GDTokenType::SignalKeyword;
+		if (value == "preload") return GDTokenType::PreloadKeyword;
+		if (value == "in") return GDTokenType::InKeyword;
+		if (value == "is") return GDTokenType::IsKeyword;
+		if (value == "or") return GDTokenType::OrOperator;
+		if (value == "not") return GDTokenType::NotOperator;
+		if (value == "range") return GDTokenType::RangeKeyword;
+		if (value == "as") return GDTokenType::AsKeyword;
 
-		return TokenType::Identifier;
+		return GDTokenType::Identifier;
 	}
 
 	static bool isStringLiteralStart(const char& ch)
@@ -275,9 +275,9 @@ private:
 
 		token->value = str;
 		if (hasDecimal)
-			token->type = TokenType::FloatLiteral;
+			token->type = GDTokenType::FloatLiteral;
 		else
-			token->type = TokenType::IntLiteral;
+			token->type = GDTokenType::IntLiteral;
 
 		token->indentDepth = currentIndent_;
 
@@ -341,7 +341,7 @@ private:
 
 		token->type = getSeparatorTokenType(token->value);
 
-		if (token->type == TokenType::SingleLineComment)
+		if (token->type == GDTokenType::SingleLineComment)
 		{
 			inputStream_.readUntil(isNewLine);
 			return nullptr;
@@ -364,7 +364,7 @@ private:
 	{
 		inputStream_.next(); // eat $
 
-		return readToken(isIdentifier, TokenType::NodePath);
+		return readToken(isIdentifier, GDTokenType::NodePath);
 	}
 
 	static bool isAnnotation(const char& ch)
@@ -376,47 +376,47 @@ private:
 	{
 		inputStream_.next(); // eat @
 
-		GDToken* token = readToken(isAnnotation, TokenType::Annotation);
+		GDToken* token = readToken(isAnnotation, GDTokenType::Annotation);
 
 		return token;
 	}
 
-	TokenType getSeparatorTokenType(const std::string& value) const
+	GDTokenType getSeparatorTokenType(const std::string& value) const
 	{
-		if (value == ":") return TokenType::ColonSeparator;
-		if (value == "->") return TokenType::ArrowSeparator;
-		if (value == "(") return TokenType::OpenBracketSeparator;
-		if (value == ")") return TokenType::CloseBracketSeparator;
-		if (value == "{") return TokenType::OpenCurlyBracketSeparator;
-		if (value == "}") return TokenType::CloseCurlyBracketSeparator;
-		if (value == "[") return TokenType::OpenSquareBracket;
-		if (value == "]") return TokenType::CloseSquareBracket;
-		if (value == ",") return TokenType::CommaSeparator;
-		if (value == "<") return TokenType::LessThanSeparator;
-		if (value == "<=") return TokenType::LessThanEqualSeparator;
-		if (value == ">") return TokenType::GreaterThanSeparator;
-		if (value == ">=") return TokenType::GreaterThanEqualSeparator;
-		if (value == ".") return TokenType::DotSeparator;
-		if (value == "!") return TokenType::NotOperator;
-		if (value == "=") return TokenType::AssignmentOperator;
-		if (value == "==") return TokenType::EqualityOperator;
-		if (value == "!=") return TokenType::NotEqualityOperator;
-		if (value == "+") return TokenType::Operator;
-		if (value == "-") return TokenType::Operator;
-		if (value == "/") return TokenType::Operator;
-		if (value == "*") return TokenType::Operator;
-		if (value == "+=") return TokenType::Operator;
-		if (value == "++") return TokenType::Operator;
-		if (value == "-=") return TokenType::Operator;
-		if (value == "--") return TokenType::Operator;
-		if (value == "&&") return TokenType::AndOperator;
-		if (value == "||") return TokenType::OrOperator;
-		if (value == "|") return TokenType::LogicalOrOperator;
-		if (value == "|=") return TokenType::LogicalOrAssignOperator;
-		if (value == "#") return TokenType::SingleLineComment;
-		if (value == "\"\"\"") return TokenType::MultiLineComment;
+		if (value == ":") return GDTokenType::ColonSeparator;
+		if (value == "->") return GDTokenType::ArrowSeparator;
+		if (value == "(") return GDTokenType::OpenBracketSeparator;
+		if (value == ")") return GDTokenType::CloseBracketSeparator;
+		if (value == "{") return GDTokenType::OpenCurlyBracketSeparator;
+		if (value == "}") return GDTokenType::CloseCurlyBracketSeparator;
+		if (value == "[") return GDTokenType::OpenSquareBracket;
+		if (value == "]") return GDTokenType::CloseSquareBracket;
+		if (value == ",") return GDTokenType::CommaSeparator;
+		if (value == "<") return GDTokenType::LessThanSeparator;
+		if (value == "<=") return GDTokenType::LessThanEqualSeparator;
+		if (value == ">") return GDTokenType::GreaterThanSeparator;
+		if (value == ">=") return GDTokenType::GreaterThanEqualSeparator;
+		if (value == ".") return GDTokenType::DotSeparator;
+		if (value == "!") return GDTokenType::NotOperator;
+		if (value == "=") return GDTokenType::AssignmentOperator;
+		if (value == "==") return GDTokenType::EqualityOperator;
+		if (value == "!=") return GDTokenType::NotEqualityOperator;
+		if (value == "+") return GDTokenType::Operator;
+		if (value == "-") return GDTokenType::Operator;
+		if (value == "/") return GDTokenType::Operator;
+		if (value == "*") return GDTokenType::Operator;
+		if (value == "+=") return GDTokenType::Operator;
+		if (value == "++") return GDTokenType::Operator;
+		if (value == "-=") return GDTokenType::Operator;
+		if (value == "--") return GDTokenType::Operator;
+		if (value == "&&") return GDTokenType::AndOperator;
+		if (value == "||") return GDTokenType::OrOperator;
+		if (value == "|") return GDTokenType::LogicalOrOperator;
+		if (value == "|=") return GDTokenType::LogicalOrAssignOperator;
+		if (value == "#") return GDTokenType::SingleLineComment;
+		if (value == "\"\"\"") return GDTokenType::MultiLineComment;
 
-		return TokenType::Error;
+		return GDTokenType::Error;
 	}
 
 	GDToken* readError()
@@ -427,7 +427,7 @@ private:
 		token->columnNumber = inputStream_.getColumnNumber();
 
 		token->value = inputStream_.readUntil(isWhitespace, false);
-		token->type = TokenType::Error;
+		token->type = GDTokenType::Error;
 
 		token->indentDepth = currentIndent_;
 
@@ -435,7 +435,7 @@ private:
 	}
 
 	template<class Function>
-	GDToken* readToken(const Function& function, TokenType type)
+	GDToken* readToken(const Function& function, GDTokenType type)
 	{
 		GDToken* token = new GDToken();
 
@@ -476,7 +476,7 @@ private:
 
 		token->value = inputStream_.readUntil(isStringLiteral, false);
 		unescape(token->value);
-		token->type = TokenType::StringLiteral;
+		token->type = GDTokenType::StringLiteral;
 
 		inputStream_.next(); // eat "
 
