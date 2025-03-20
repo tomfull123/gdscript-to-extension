@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "InputStream.h"
 
 struct Token
 {
@@ -13,4 +14,21 @@ struct Token
 	explicit Token(const std::string& newValue) :
 		value(newValue) {
 	}
+};
+
+class Lexer
+{
+public:
+	explicit Lexer(const std::string& input) :
+		inputStream_(input)
+	{
+	}
+
+	bool end() const
+	{
+		return inputStream_.eof();
+	}
+
+protected:
+	InputStream inputStream_;
 };

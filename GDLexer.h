@@ -1,8 +1,6 @@
 #pragma once
 
-#include <string>
 #include <vector>
-#include "InputStream.h"
 #include "Lexer.h"
 
 enum class GDTokenType
@@ -79,18 +77,30 @@ struct GDToken : public Token
 	}
 };
 
-class GDLexer
+class GDLexer : public Lexer
 {
 public:
 	explicit GDLexer(const std::string& input) :
-		inputStream_(input)
+		Lexer(input)
 	{
 	}
 
-	bool end() const
+	std::vector<GDToken*> readAllTokens()
 	{
-		return inputStream_.eof();
+		std::vector<GDToken*> tokens;
+
+		while (!end())
+		{
+			GDToken* t = readNext();
+			if (t == nullptr) continue;
+			tokens.push_back(t);
+		}
+
+		return tokens;
 	}
+
+private:
+	int currentIndent_ = 0;
 
 	GDToken* readNext()
 	{
@@ -121,24 +131,6 @@ public:
 
 		return readError();
 	}
-
-	std::vector<GDToken*> readAllTokens()
-	{
-		std::vector<GDToken*> tokens;
-
-		while (!end())
-		{
-			GDToken* t = readNext();
-			if (t == nullptr) continue;
-			tokens.push_back(t);
-		}
-
-		return tokens;
-	}
-
-private:
-	InputStream inputStream_;
-	int currentIndent_ = 0;
 
 	const std::vector<char> separators = {
 		'(',

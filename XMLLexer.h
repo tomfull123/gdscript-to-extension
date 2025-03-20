@@ -1,8 +1,6 @@
 #pragma once
 
-#include <string>
 #include <vector>
-#include "InputStream.h"
 #include "Lexer.h"
 
 enum class XMLTokenType
@@ -26,34 +24,12 @@ struct XMLToken : public Token
 	XMLTokenType type;
 };
 
-class XMLLexer
+class XMLLexer : public Lexer
 {
 public:
 	explicit XMLLexer(const std::string& input) :
-		inputStream_(input)
+		Lexer(input)
 	{
-	}
-
-	bool end() const
-	{
-		return inputStream_.eof();
-	}
-
-	XMLToken* readNext()
-	{
-		inputStream_.readWhile(isWhitespace);
-
-		if (end()) return nullptr;
-
-		char ch = inputStream_.peek();
-
-		if (isIdentifierStart(ch)) return readIdentifier();
-
-		if (isStringLiteralStart(ch)) return readStringLiteral();
-
-		if (isSeparator(ch)) return readSeparator();
-
-		return readError();
 	}
 
 	std::vector<XMLToken*> readAllTokens()
@@ -71,7 +47,22 @@ public:
 	}
 
 private:
-	InputStream inputStream_;
+	XMLToken* readNext()
+	{
+		inputStream_.readWhile(isWhitespace);
+
+		if (end()) return nullptr;
+
+		char ch = inputStream_.peek();
+
+		if (isIdentifierStart(ch)) return readIdentifier();
+
+		if (isStringLiteralStart(ch)) return readStringLiteral();
+
+		if (isSeparator(ch)) return readSeparator();
+
+		return readError();
+	}
 
 	const std::vector<char> separators = {
 		'<',
