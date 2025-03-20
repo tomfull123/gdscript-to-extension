@@ -49,10 +49,10 @@ struct Result
 	std::vector<ParserError> errors;
 };
 
-class Parser
+class GDParser
 {
 public:
-	explicit Parser(const std::vector<GDToken*>& tokens);
+	explicit GDParser(const std::vector<GDToken*>& tokens);
 
 	void buildAST(AbstractSyntaxTree* ast, const std::string& fileName);
 
@@ -64,7 +64,7 @@ public:
 
 		std::vector<GDToken*> tokens = lexer.readAllTokens();
 
-		Parser parser(tokens);
+		GDParser parser(tokens);
 
 		parser.buildAST(ast, fileName);
 

@@ -9,7 +9,7 @@ struct TranspileTest : testing::Test
 	{
 		AbstractSyntaxTree* ast = new AbstractSyntaxTree();
 
-		const Result* result = Parser::parse(input, ast, "Test");
+		const Result* result = GDParser::parse(input, ast, "Test");
 
 		const auto& errors = result->errors;
 

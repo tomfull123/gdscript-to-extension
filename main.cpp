@@ -49,7 +49,7 @@ static bool buildClassAST(const std::string& filePath, AbstractSyntaxTree* ast)
 
 	std::string cppFileName = FileNameTransformer::toCppFileName(fileName);
 
-	const Result* result = Parser::parse(allLines, ast, cppFileName);
+	const Result* result = GDParser::parse(allLines, ast, cppFileName);
 
 	const auto& errors = result->errors;
 
