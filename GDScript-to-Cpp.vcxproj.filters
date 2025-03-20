@@ -176,5 +176,11 @@
     <ClInclude Include="XMLLexer.h">
       <Filter>Header Files\Docs</Filter>
     </ClInclude>
+    <ClInclude Include="DocsParser.h">
+      <Filter>Header Files\Docs</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLTokenStream.h">
+      <Filter>Header Files\Docs</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

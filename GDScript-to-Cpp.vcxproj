@@ -184,6 +184,8 @@
     <ClInclude Include="VariableSyntaxNode.h" />
     <ClInclude Include="WhileSyntaxNode.h" />
     <ClInclude Include="XMLLexer.h" />
+    <ClInclude Include="DocsParser.h" />
+    <ClInclude Include="XMLTokenStream.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
