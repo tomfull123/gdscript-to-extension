@@ -7,7 +7,7 @@
 #include "AbstractSyntaxTree.h"
 #include "SyntaxNode.h"
 #include "FunctionDefinitionSyntaxNode.h"
-#include "ClassDefinitionSyntaxNode.h"
+#include "GDParser.h"
 
 class DocsParser
 {
@@ -48,7 +48,7 @@ public:
 
 	const std::vector<ParserError>& getErrors() const { return errors_; }
 
-	static void parse(const std::string& input, AbstractSyntaxTree* ast, const std::string& fileName)
+	static Result* parse(const std::string& input, AbstractSyntaxTree* ast, const std::string& fileName)
 	{
 		XMLLexer lexer(input);
 
@@ -57,6 +57,10 @@ public:
 		DocsParser parser(tokens);
 
 		parser.buildAST(ast, fileName);
+
+		const auto& errors = parser.getErrors();
+
+		return new Result(ast, errors);
 	}
 
 private:

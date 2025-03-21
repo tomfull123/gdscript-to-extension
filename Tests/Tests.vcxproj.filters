@@ -11,6 +11,9 @@
     <Filter Include="Source Files\Transpile\GodotClasses">
       <UniqueIdentifier>{a535c681-65a0-431e-a684-e5896dc7c975}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Docs">
+      <UniqueIdentifier>{ffef868e-8da4-47ef-96a8-f226dfb3c83e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -85,10 +88,16 @@
     <ClCompile Include="Vector3Tests.cpp">
       <Filter>Source Files\Transpile\GodotClasses</Filter>
     </ClCompile>
+    <ClCompile Include="DocsMethodTests.cpp">
+      <Filter>Source Files\Docs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TranspileTest.h">
       <Filter>Source Files\Transpile</Filter>
+    </ClInclude>
+    <ClInclude Include="DocsTest.h">
+      <Filter>Source Files\Docs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -143,6 +143,7 @@
     <ClCompile Include="BitwiseOperatorTests.cpp" />
     <ClCompile Include="ClassTests.cpp" />
     <ClCompile Include="DictionaryTests.cpp" />
+    <ClCompile Include="DocsMethodTests.cpp" />
     <ClCompile Include="EnumDefinitionTests.cpp" />
     <ClCompile Include="FileNameTests.cpp" />
     <ClCompile Include="ForLoopTests.cpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="WhileLoopTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DocsTest.h" />
     <ClInclude Include="TranspileTest.h" />
   </ItemGroup>
   <ItemGroup>
