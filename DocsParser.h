@@ -309,6 +309,7 @@ private:
 		auto properties = parseTagProperties();
 
 		Type* returnType = nullptr;
+		std::vector<VariableDefinitionSyntaxNode*> args;
 
 		while (isNotEndTag("method"))
 		{
@@ -323,6 +324,18 @@ private:
 					auto returnTag = parseTagProperties();
 					returnType = new Type(returnTag["type"]->value);
 				}
+				else if (tagName == "param")
+				{
+					auto paramTag = parseTagProperties();
+					args.push_back(new VariableDefinitionSyntaxNode(
+						paramTag["name"],
+						new Type(paramTag["type"]->value),
+						nullptr,
+						false,
+						true,
+						false
+					));
+				}
 				else
 				{
 					skipTag(tagName);
@@ -336,7 +349,7 @@ private:
 
 		consumeEndTag();
 
-		FunctionPrototypeSyntaxNode* prototype = new FunctionPrototypeSyntaxNode(properties["name"], {}, returnType, false);
+		FunctionPrototypeSyntaxNode* prototype = new FunctionPrototypeSyntaxNode(properties["name"], args, returnType, false);
 
 		return new FunctionDefinitionSyntaxNode(
 			prototype,
