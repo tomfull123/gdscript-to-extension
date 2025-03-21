@@ -120,7 +120,7 @@ private:
 		token->columnNumber = inputStream_.getColumnNumber();
 
 		token->value = inputStream_.next();
-		std::string value = token->value;
+		const auto& value = token->value;
 
 		if (value == "<")
 		{
