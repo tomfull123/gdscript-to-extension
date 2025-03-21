@@ -13,8 +13,8 @@ class ClassDefinitionSyntaxNode : public SyntaxNode
 {
 public:
 	ClassDefinitionSyntaxNode(
-		GDToken* name,
-		GDToken* extends,
+		Token* name,
+		Token* extends,
 		const std::vector<FunctionDefinitionSyntaxNode*>& memberFunctionDefinitions,
 		const std::vector<VariableDefinitionSyntaxNode*>& memberVariableDefinitions,
 		const std::vector<EnumDefinitionSyntaxNode*>& enumDefinitions,
@@ -119,8 +119,8 @@ public:
 	}
 
 private:
-	GDToken* name_;
-	GDToken* extends_;
+	Token* name_;
+	Token* extends_;
 	std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions_;
 	std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions_;
 	std::vector<EnumDefinitionSyntaxNode*> enumDefinitions_;

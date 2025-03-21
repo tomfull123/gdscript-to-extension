@@ -28,11 +28,20 @@ public:
 				parseXMLDeclaration();
 				break;
 			case XMLTokenType::OpenAngleBracketSeparator:
+			{
 				const auto* nextToken = peek(1);
 				if (nextToken->type == XMLTokenType::Identifier && nextToken->value == "class")
 				{
 					ast->classes.push_back(parseClass(fileName));
 				}
+				else
+				{
+					next();
+				}
+				break;
+			}
+			default:
+				next();
 			}
 		}
 	}
@@ -121,33 +130,94 @@ private:
 		next(); // eat ?>
 	}
 
-	ClassDefinitionSyntaxNode* parseClass(const std::string& fileName)
+	void skipTag(const std::string& tagName)
 	{
 		consume(XMLTokenType::OpenAngleBracketSeparator); // eat <
-		consume(XMLTokenType::Identifier); // eat class
 
-		XMLToken* name = nullptr;
-		XMLToken* extends = nullptr;
+		consume(XMLTokenType::Identifier); // eat tag name
 
-		while (!isNextTokenType(XMLTokenType::CloseAngleBracketSeparator))
+		while (!isNextTokenType(XMLTokenType::CloseAngleBracketSeparator) && !isNextTokenType(XMLTokenType::EmptyTagEndSeparator))
 		{
 			XMLToken* identifierToken = consume(XMLTokenType::Identifier);
 			if (identifierToken)
 			{
 				consume(XMLTokenType::EqualsSeparator); // eat =
 
-				if (identifierToken->value == "name")
-				{
-					name = consume(XMLTokenType::StringLiteral);
-				}
-				else
-				{
-					next(); // skip value
-				}
+				consume(XMLTokenType::StringLiteral);
 			}
 		}
 
-		next(); // eat >
+		if (next()->type == XMLTokenType::EmptyTagEndSeparator) return;
+
+		while (isNotEndTag(tagName))
+		{
+			next();
+		}
+
+		consumeEndTag();
+	}
+
+	void consumeEndTag()
+	{
+		consume(XMLTokenType::ClosingTagStartSeparator); // </
+
+		consume(XMLTokenType::Identifier); // eat tag name
+
+		consume(XMLTokenType::CloseAngleBracketSeparator); // eat >
+	}
+
+	bool isNotEndTag(const std::string& tagName)
+	{
+		return (!isNextTokenType(XMLTokenType::ClosingTagStartSeparator) || peek(1)->value != tagName) && !end();
+	}
+
+	Token* peekTag()
+	{
+		const auto* t1 = peek();
+		if (t1->type == XMLTokenType::OpenAngleBracketSeparator)
+		{
+			auto* t2 = peek(1);
+
+			if (t2->type == XMLTokenType::Identifier)
+			{
+				return t2;
+			}
+		}
+		return nullptr;
+	}
+
+	std::unordered_map<std::string, XMLToken*> parseTagProperties()
+	{
+		consume(XMLTokenType::OpenAngleBracketSeparator); // eat <
+
+		consume(XMLTokenType::Identifier); // eat tag name
+
+		std::unordered_map<std::string, XMLToken*> properties;
+
+		while (!isNextTokenType(XMLTokenType::CloseAngleBracketSeparator) && !isNextTokenType(XMLTokenType::EmptyTagEndSeparator))
+		{
+			XMLToken* identifierToken = consume(XMLTokenType::Identifier);
+			if (identifierToken)
+			{
+				consume(XMLTokenType::EqualsSeparator); // eat =
+
+				properties[identifierToken->value] = consume(XMLTokenType::StringLiteral);
+			}
+		}
+
+		next(); // eat > or />
+
+		return properties;
+	}
+
+	ClassDefinitionSyntaxNode* parseClass(const std::string& fileName)
+	{
+		XMLToken* name = nullptr;
+		XMLToken* extends = nullptr;
+
+		auto properties = parseTagProperties();
+
+		name = properties["name"];
 
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
@@ -156,14 +226,34 @@ private:
 		std::vector<VariableDefinitionSyntaxNode*> staticVariableDefinitions;
 		std::vector<ClassDefinitionSyntaxNode*> innerClasses;
 
-		while (!isNextTokenType(XMLTokenType::ClosingTagStartSeparator) && peek(1)->value != "class")
+		while (isNotEndTag("class"))
 		{
-			next();
+			const auto* tag = peekTag();
+			if (tag)
+			{
+				const auto& tagName = tag->value;
+
+				// if (tagName == "constructors")
+				if (tagName == "methods")
+				{
+					memberFunctionDefinitions = parseMethods();
+				}
+				else
+				{
+					skipTag(tagName);
+				}
+			}
+			else
+			{
+				addUnexpectedNextTokenError();
+			}
 		}
 
+		consumeEndTag();
+
 		return new ClassDefinitionSyntaxNode(
-			new GDToken(),
-			new GDToken(),
+			name,
+			extends,
 			memberFunctionDefinitions,
 			memberVariableDefinitions,
 			enumDefinitions,
@@ -172,6 +262,85 @@ private:
 			innerClasses,
 			false,
 			fileName
+		);
+	}
+
+	std::vector<FunctionDefinitionSyntaxNode*> parseMethods()
+	{
+		consume(XMLTokenType::OpenAngleBracketSeparator); // eat <
+
+		consume(XMLTokenType::Identifier); // eat methods
+
+		consume(XMLTokenType::CloseAngleBracketSeparator); // eat >
+
+		std::vector<FunctionDefinitionSyntaxNode*> methods;
+
+		while (isNotEndTag("methods"))
+		{
+			const auto* tag = peekTag();
+
+			if (tag)
+			{
+				const auto& tagName = tag->value;
+
+				if (tagName == "method")
+				{
+					auto method = parseMethod();
+					if (method) methods.push_back(method);
+				}
+				else
+				{
+					skipTag(tagName);
+				}
+			}
+			else
+			{
+				addUnexpectedNextTokenError();
+			}
+		}
+
+		consumeEndTag();
+
+		return methods;
+	}
+
+	FunctionDefinitionSyntaxNode* parseMethod()
+	{
+		auto properties = parseTagProperties();
+
+		Type* returnType = nullptr;
+
+		while (isNotEndTag("method"))
+		{
+			const auto* tag = peekTag();
+
+			if (tag)
+			{
+				const auto& tagName = tag->value;
+
+				if (tagName == "return")
+				{
+					auto returnTag = parseTagProperties();
+					returnType = new Type(returnTag["type"]->value);
+				}
+				else
+				{
+					skipTag(tagName);
+				}
+			}
+			else
+			{
+				addUnexpectedNextTokenError();
+			}
+		}
+
+		consumeEndTag();
+
+		FunctionPrototypeSyntaxNode* prototype = new FunctionPrototypeSyntaxNode(properties["name"], {}, returnType, false);
+
+		return new FunctionDefinitionSyntaxNode(
+			prototype,
+			new BodySyntaxNode({})
 		);
 	}
 };
