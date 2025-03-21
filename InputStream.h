@@ -17,8 +17,8 @@ public:
 
 	char next()
 	{
-		char front = input_.front();
-		input_.erase(0, 1);
+		char front = input_[currentIndex_];
+		currentIndex_++;
 		columnNumber_++;
 		if (isNewLine(front))
 		{
@@ -59,12 +59,12 @@ public:
 
 	char peek(unsigned int offset = 0)
 	{
-		return input_[offset];
+		return input_[currentIndex_ + offset];
 	}
 
 	bool eof() const
 	{
-		return input_.length() <= 0;
+		return currentIndex_ >= input_.length();
 	}
 
 	void croak() const
@@ -79,4 +79,5 @@ private:
 	std::string input_;
 	int columnNumber_ = 1;
 	int lineNumber_ = 1;
+	int currentIndex_ = 0;
 };
