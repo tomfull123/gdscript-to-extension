@@ -64,6 +64,11 @@ static bool buildClassAST(const std::string& filePath, AbstractSyntaxTree* ast)
 
 static std::vector<std::filesystem::path> getGDFilesInDirectory(const std::filesystem::path& directory)
 {
+	return getFilesWithExtensionInDirectory(".gd", directory);
+}
+
+static std::vector<std::filesystem::path> getFilesWithExtensionInDirectory(const std::string& extension, const std::filesystem::path& directory)
+{
 	std::vector<std::filesystem::path> filePaths;
 
 	for (auto& entry : std::filesystem::directory_iterator(directory))
@@ -71,16 +76,16 @@ static std::vector<std::filesystem::path> getGDFilesInDirectory(const std::files
 		const auto& filePath = entry;
 		if (entry.is_directory())
 		{
-			auto currentDirectoryFiles = getGDFilesInDirectory(filePath);
+			auto currentDirectoryFiles = getFilesWithExtensionInDirectory(extension, filePath);
 			filePaths.insert(filePaths.end(), currentDirectoryFiles.begin(), currentDirectoryFiles.end());
 		}
-		else if (filePath.path().extension() == ".gd") filePaths.push_back(filePath);
+		else if (filePath.path().extension() == extension) filePaths.push_back(filePath);
 	}
 
 	return filePaths;
 }
 
-static std::vector<std::filesystem::path> getFilePaths(const std::filesystem::path& path)
+static std::vector<std::filesystem::path> getGDFilePaths(const std::filesystem::path& path)
 {
 	if (std::filesystem::is_directory(path))
 	{
@@ -122,7 +127,7 @@ int main(int argc, char* argv[])
 
 	AbstractSyntaxTree* ast = new AbstractSyntaxTree();
 
-	for (const auto& filePath : getFilePaths(projectPath))
+	for (const auto& filePath : getGDFilePaths(projectPath))
 	{
 		if (!buildClassAST(filePath.generic_string(), ast)) return 1;
 	}
