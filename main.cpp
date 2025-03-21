@@ -62,11 +62,6 @@ static bool buildClassAST(const std::string& filePath, AbstractSyntaxTree* ast)
 	return true;
 }
 
-static std::vector<std::filesystem::path> getGDFilesInDirectory(const std::filesystem::path& directory)
-{
-	return getFilesWithExtensionInDirectory(".gd", directory);
-}
-
 static std::vector<std::filesystem::path> getFilesWithExtensionInDirectory(const std::string& extension, const std::filesystem::path& directory)
 {
 	std::vector<std::filesystem::path> filePaths;
@@ -83,6 +78,11 @@ static std::vector<std::filesystem::path> getFilesWithExtensionInDirectory(const
 	}
 
 	return filePaths;
+}
+
+static std::vector<std::filesystem::path> getGDFilesInDirectory(const std::filesystem::path& directory)
+{
+	return getFilesWithExtensionInDirectory(".gd", directory);
 }
 
 static std::vector<std::filesystem::path> getGDFilePaths(const std::filesystem::path& path)
