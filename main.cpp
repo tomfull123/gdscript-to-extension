@@ -151,25 +151,25 @@ int main(int argc, char* argv[])
 
 	std::cout << "Loading docs..." << "\n" << std::endl;
 
-	AbstractSyntaxTree* ast = new AbstractSyntaxTree();
+	auto ast = AbstractSyntaxTree();
 
 	const auto& docPaths = getFilesWithExtensionInDirectory(".xml", "./godot_docs");
 
 	for (const auto& filePath : docPaths)
 	{
-		parseDocFile(filePath.generic_string(), ast);
+		parseDocFile(filePath.generic_string(), &ast);
 	}
 
 	std::cout << "Looking for files in: " << projectPath << "\n" << std::endl;
 
 	for (const auto& filePath : getGDFilePaths(projectPath))
 	{
-		if (!buildClassAST(filePath.generic_string(), ast)) return 1;
+		if (!buildClassAST(filePath.generic_string(), &ast)) return 1;
 	}
 
 	Generator generator;
 
-	auto cppModule = generator.generateCode(ast);
+	auto cppModule = generator.generateCode(&ast);
 
 	CPPClassFileWriter::write(cppModule, outputPath);
 
