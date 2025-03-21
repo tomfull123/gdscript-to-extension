@@ -7,6 +7,7 @@
 #include "FileNameTransformer.h"
 #include "Generator.h"
 #include "CPPClassFileWriter.h"
+#include "DocsParser.h"
 
 static void printErrors(const std::vector<ParserError>& errors)
 {
@@ -50,6 +51,31 @@ static bool buildClassAST(const std::string& filePath, AbstractSyntaxTree* ast)
 	std::string cppFileName = FileNameTransformer::toCppFileName(fileName);
 
 	const Result* result = GDParser::parse(allLines, ast, cppFileName);
+
+	const auto& errors = result->errors;
+
+	if (!errors.empty())
+	{
+		printErrors(errors);
+		return false;
+	}
+
+	return true;
+}
+
+static bool parseDocFile(const std::string& filePath, AbstractSyntaxTree* ast)
+{
+	std::string allLines = readFile(filePath);
+
+	auto fileNameExtensionStart = filePath.find_last_of(".");
+	auto filePathLength = filePath.length();
+	std::string filePathWithoutExtension = filePath.substr(0, filePathLength - (filePathLength - fileNameExtensionStart));
+	auto fileNameStart = filePathWithoutExtension.find_last_of("/") + 1;
+	std::string fileName = filePathWithoutExtension.substr(fileNameStart);
+
+	std::string cppFileName = FileNameTransformer::toCppFileName(fileName);
+
+	const Result* result = DocsParser::parse(allLines, ast, cppFileName);
 
 	const auto& errors = result->errors;
 
@@ -123,9 +149,18 @@ int main(int argc, char* argv[])
 		projectPath = std::filesystem::current_path().string();
 	}
 
-	std::cout << "Looking for files in: " << projectPath << "\n" << std::endl;
+	std::cout << "Loading docs..." << "\n" << std::endl;
 
 	AbstractSyntaxTree* ast = new AbstractSyntaxTree();
+
+	const auto& docPaths = getFilesWithExtensionInDirectory(".xml", "./godot_docs");
+
+	for (const auto& filePath : docPaths)
+	{
+		parseDocFile(filePath.generic_string(), ast);
+	}
+
+	std::cout << "Looking for files in: " << projectPath << "\n" << std::endl;
 
 	for (const auto& filePath : getGDFilePaths(projectPath))
 	{
