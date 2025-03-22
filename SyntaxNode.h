@@ -189,33 +189,6 @@ const std::unordered_map<std::string, const std::unordered_map<std::string, std:
 	},
 };
 
-const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_METHOD_DEFINITIONS = {
-	{
-		"MeshInstance3D",
-		{
-			{"mesh", "Mesh"}
-		}
-	},
-	{
-		"Node",
-		{
-			{"get_child", "Node"}
-		}
-	},
-	{
-		"RayCast3D",
-		{
-			{"get_collision_point", "Vector3"}
-		}
-	},
-	{
-		"Viewport",
-		{
-			{"get_camera_3d", "Camera3D"}
-		}
-	},
-};
-
 struct Type
 {
 	Type(
@@ -430,10 +403,11 @@ struct CppClassData
 
 		while (true)
 		{
-			if (GDTYPE_METHOD_DEFINITIONS.contains(parentTypeName))
+			if (data->classData.contains(parentTypeName))
 			{
-				const auto& methods = GDTYPE_METHOD_DEFINITIONS.find(parentTypeName)->second;
-				if (methods.contains(name)) return true;
+				const auto typeClass = data->classData.find(parentTypeName)->second;
+
+				if (typeClass->functionPrototypeDefinitions.contains(name)) return true;
 			}
 
 			if (data->inheritTypes.contains(parentTypeName))
