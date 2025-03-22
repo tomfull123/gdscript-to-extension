@@ -65,7 +65,7 @@ struct TranspileTest : testing::Test
 
 	static void SetUpTestCase()
 	{
-		const auto& docPaths = getFilesWithExtensionInDirectory(".xml", "./godot_docs");
+		const auto& docPaths = getFilesWithExtensionInDirectory(".xml", "./../godot_docs");
 
 		for (const auto& filePath : docPaths)
 		{
