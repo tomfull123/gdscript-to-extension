@@ -42,10 +42,10 @@ private:
 
 		for (auto* classDef : ast->classes)
 		{
-			const auto& className = classDef->getName();
-			if (!className.empty() && className[0] == '_')
+			const auto& classNameToken = classDef->getNameToken();
+			if (classNameToken && classNameToken->value[0] == '_')
 			{
-				cppModule->classes.emplace_back(classDef->toCpp(data, ""), className);
+				cppModule->classes.emplace_back(classDef->toCpp(data, ""), classDef->getName());
 			}
 		}
 

@@ -37,6 +37,11 @@ public:
 	{
 	}
 
+	Token* getNameToken()
+	{
+		return name_;
+	}
+
 	std::string getName() const
 	{
 		std::string className;
