@@ -408,6 +408,7 @@ struct CppClassData
 				const auto typeClass = data->classData.find(parentTypeName)->second;
 
 				if (typeClass->functionPrototypeDefinitions.contains(name)) return true;
+				if (typeClass->variableDefinitions.contains(name)) return true;
 			}
 
 			if (data->inheritTypes.contains(parentTypeName))

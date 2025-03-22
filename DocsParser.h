@@ -65,6 +65,10 @@ private:
 			{
 				memberFunctionDefinitions = parseMethods(tag[0]);
 			}
+			else if (tagName == "members")
+			{
+				memberVariableDefinitions = parseMembers(tag[0]);
+			}
 		}
 
 		return new ClassDefinitionSyntaxNode(
@@ -138,6 +142,37 @@ private:
 		return new FunctionDefinitionSyntaxNode(
 			prototype,
 			new BodySyntaxNode({})
+		);
+	}
+
+	std::vector<VariableDefinitionSyntaxNode*> parseMembers(const XMLTag* membersTag)
+	{
+		std::vector<VariableDefinitionSyntaxNode*> members;
+
+		for (const auto& [tagName, tags] : membersTag->children)
+		{
+			for (const auto* tag : tags)
+			{
+				if (tagName == "member")
+				{
+					auto member = parseMember(tag);
+					if (member) members.push_back(member);
+				}
+			}
+		}
+
+		return members;
+	}
+
+	VariableDefinitionSyntaxNode* parseMember(const XMLTag* memberTag)
+	{
+		return new VariableDefinitionSyntaxNode(
+			memberTag->getProperty("name"),
+			new Type(memberTag->getProperty("type")->value),
+			nullptr,
+			false,
+			true,
+			false
 		);
 	}
 };
