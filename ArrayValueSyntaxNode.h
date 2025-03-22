@@ -9,7 +9,8 @@ public:
 		const std::vector<ValueSyntaxNode*>& expressions
 	) :
 		expressions_(expressions)
-	{}
+	{
+	}
 
 	Type* getType() override
 	{
@@ -47,7 +48,7 @@ public:
 	{
 		std::string expressionsString;
 
-		int lastIndex = expressions_.size() - 1;
+		size_t lastIndex = expressions_.size() - 1;
 
 		for (int i = 0; i < expressions_.size(); i++)
 		{
