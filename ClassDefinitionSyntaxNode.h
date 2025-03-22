@@ -66,6 +66,7 @@ public:
 		data->currentClass = new CppClassData();
 		data->currentClass->currentClassName = getName();
 		data->currentClass->classInheritedType = getInheritedType();
+		data->inheritTypes[getName()] = getInheritedTypeString();
 		for (auto enumDef : enumDefinitions_) enumDef->hoist(data);
 		for (auto v : staticVariableDefinitions_) v->hoist(data);
 		for (auto f : staticFunctionDefinitions_) f->hoist(data);
@@ -352,10 +353,15 @@ private:
 		memberFunctionDefinitions_.push_back(new FunctionDefinitionSyntaxNode(prototype, body));
 	}
 
+	std::string getInheritedTypeString()
+	{
+		if (extends_) return extends_->value;
+		return "RefCounted";
+	}
+
 	Type* getInheritedType()
 	{
-		if (extends_) return new Type(extends_->value);
-		return new Type("RefCounted");
+		return new Type(getInheritedTypeString());
 	}
 
 	void setCurrentClass(CppData* data)

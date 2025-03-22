@@ -296,6 +296,7 @@ struct CppData
 {
 	std::unordered_map<std::string, CppClassData*> classData;
 	CppClassData* currentClass;
+	std::unordered_map<std::string, std::string> inheritTypes = {};
 };
 
 struct CppClassData
