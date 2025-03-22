@@ -191,5 +191,8 @@
     <ClInclude Include="TokenStream.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
+    <ClInclude Include="XMLParser.h">
+      <Filter>Header Files\Parsing\Docs</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

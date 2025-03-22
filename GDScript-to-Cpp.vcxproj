@@ -256,6 +256,7 @@
     <ClInclude Include="WhileSyntaxNode.h" />
     <ClInclude Include="XMLLexer.h" />
     <ClInclude Include="DocsParser.h" />
+    <ClInclude Include="XMLParser.h" />
     <ClInclude Include="XMLTokenStream.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
