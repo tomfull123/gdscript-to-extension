@@ -60,12 +60,15 @@ public:
 		{
 			auto instanceType = instance_->getType();
 
-			if (instanceType && GDTYPE_METHOD_DEFINITIONS.contains(instanceType->name))
+			if (instanceType)
 			{
-				const auto& methods = GDTYPE_METHOD_DEFINITIONS.find(instanceType->name)->second;
-				if (methods.contains(name_->value))
+				auto instanceTypeClass = data->classData[instanceType->name];
+
+				if (instanceTypeClass)
 				{
-					type_ = new Type(methods.find(name_->value)->second);
+					auto prototype = instanceTypeClass->functionPrototypeDefinitions[name_->value];
+
+					if (prototype) type_ = prototype->getReturnType();
 				}
 			}
 		}
