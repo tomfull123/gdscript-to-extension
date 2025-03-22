@@ -101,7 +101,7 @@ public:
 						code += "->";
 					else if (parentType && !data->currentClass->isGodotType(parentType->name))
 						code += ".";
-					else if (data->currentClass->isClassMethod(instance_->getName()))
+					else if (data->currentClass->isClassMethod(instance_->getName(), data))
 						code += "->";
 					else if (!parentType && !varDef && !instance_->hasParent() && !functionDef) // static method call
 					{

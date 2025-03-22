@@ -132,7 +132,7 @@ public:
 		// static call
 		else if (!parentInstance_ && !varDef && GDTYPES_TO_CPPTYPES.contains(name_->value))
 			code += data->currentClass->toCppType(new Type(name_->value));
-		else if (data->currentClass->isClassMethod(name_->value))
+		else if (data->currentClass->isClassMethod(name_->value, data))
 			code += data->currentClass->toCppFunction(name_->value, data->currentClass->classInheritedType->name) + "()";
 		else
 		{

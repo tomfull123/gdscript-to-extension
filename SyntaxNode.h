@@ -216,14 +216,6 @@ const std::unordered_map<std::string, const std::unordered_map<std::string, std:
 	},
 };
 
-const std::unordered_map<std::string, std::string> GDTYPE_INHERIT_TYPES = {
-	{ "MeshInstance3D", "GeometryInstance3D" },
-	{ "GeometryInstance3D", "VisualInstance3D" },
-	{ "VisualInstance3D", "Node3D" },
-	{ "Node3D", "Node" },
-	{ "Node", "Object" }
-};
-
 struct Type
 {
 	Type(
@@ -425,12 +417,12 @@ struct CppClassData
 		return GODOTTYPES_TO_INCLUDE_PATH.contains(type);
 	}
 
-	bool isClassMethod(const std::string& name) const
+	bool isClassMethod(const std::string& name, const CppData* data) const
 	{
-		return isGodotTypeMethod(classInheritedType, name);
+		return isGodotTypeMethod(classInheritedType, name, data);
 	}
 
-	static bool isGodotTypeMethod(const Type* parentType, const std::string& name)
+	static bool isGodotTypeMethod(const Type* parentType, const std::string& name, const CppData* data)
 	{
 		if (!parentType) return false;
 
@@ -444,8 +436,8 @@ struct CppClassData
 				if (methods.contains(name)) return true;
 			}
 
-			if (GDTYPE_INHERIT_TYPES.contains(parentTypeName))
-				parentTypeName = GDTYPE_INHERIT_TYPES.find(parentTypeName)->second;
+			if (data->inheritTypes.contains(parentTypeName))
+				parentTypeName = data->inheritTypes.find(parentTypeName)->second;
 			else
 				return false;
 		}
