@@ -222,6 +222,7 @@ private:
 		auto properties = parseTagProperties();
 
 		name = properties["name"];
+		extends = properties["inherits"];
 
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
