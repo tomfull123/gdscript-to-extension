@@ -7,7 +7,7 @@
 #include "FileIO.h"
 #include "FileNameTransformer.h"
 
-static AbstractSyntaxTree* ast = new AbstractSyntaxTree();
+static CppData* data = new CppData();
 
 struct TranspileTest : testing::Test
 {
@@ -67,14 +67,25 @@ struct TranspileTest : testing::Test
 	{
 		const auto& docPaths = getFilesWithExtensionInDirectory(".xml", "./../godot_docs");
 
+		AbstractSyntaxTree* ast = new AbstractSyntaxTree();
+
 		for (const auto& filePath : docPaths)
 		{
 			parseDocFile(filePath.generic_string(), ast);
+		}
+
+		for (auto c : ast->classes)
+		{
+			c->hoist(data);
+			c->resolveDefinitions(data);
+			c->resolveTypes(data);
 		}
 	}
 
 	std::string transpile(const std::string& input) const
 	{
+		AbstractSyntaxTree* ast = new AbstractSyntaxTree();
+
 		const Result* result = GDParser::parse(input, ast, "Test");
 
 		const auto& errors = result->errors;
@@ -87,15 +98,9 @@ struct TranspileTest : testing::Test
 
 		auto c = result->ast->classes.back();
 
-		CppData data;
-		c->hoist(&data);
-		c->resolveDefinitions(&data);
-		c->resolveTypes(&data);
-
-		const auto& code = c->toCpp(&data, "");
-
-		ast->classes.pop_back();
-
-		return code;
+		c->hoist(data);
+		c->resolveDefinitions(data);
+		c->resolveTypes(data);
+		return c->toCpp(data, "");
 	}
 };
