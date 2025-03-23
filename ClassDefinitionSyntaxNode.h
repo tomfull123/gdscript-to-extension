@@ -337,7 +337,7 @@ private:
 
 	void addGetter(VariableDefinitionSyntaxNode* variableDefinition, CppData* data)
 	{
-		std::string name = "get_" + variableDefinition->getName();
+		std::string name = variableDefinition->getGetterName()->value;
 		auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(name), {}, variableDefinition->getType(), false);
 
 		auto returnVariableStatement = new ReturnSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, true));
@@ -357,7 +357,7 @@ private:
 	{
 		auto argNameToken = new GDToken("new" + variableDefinition->getName());
 		auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false, nullptr, nullptr);
-		auto prototype = new FunctionPrototypeSyntaxNode(new GDToken("set_" + variableDefinition->getName()), { arg }, new Type("void"), false);
+		auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(variableDefinition->getSetterName()->value), { arg }, new Type("void"), false);
 
 		auto setVariableStatement = new AssignmentSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, false), new VariableSyntaxNode(argNameToken, nullptr, true));
 
