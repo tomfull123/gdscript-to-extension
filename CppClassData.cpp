@@ -160,7 +160,7 @@ bool CppClassData::isProperty(ValueSyntaxNode* parentInstance, const GDToken* na
 		if (typeClass->variableDefinitions.contains(name->value))
 		{
 			const auto* variableDefinition = typeClass->variableDefinitions.find(name->value)->second;
-			return variableDefinition->getGetterName() != nullptr || variableDefinition->getSetterName() != nullptr;
+			return variableDefinition->getGetterName() == nullptr && variableDefinition->getSetterName() == nullptr;
 		}
 	}
 

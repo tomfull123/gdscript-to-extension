@@ -125,7 +125,7 @@ private:
 						new Type(tag->getProperty("type")->value),
 						nullptr,
 						false,
-						true,
+						false,
 						false,
 						nullptr,
 						nullptr

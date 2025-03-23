@@ -14,7 +14,11 @@ struct XMLTag
 	XMLToken* getProperty(const std::string& name) const
 	{
 		if (properties.contains(name))
-			return properties.find(name)->second;
+		{
+			auto* property = properties.find(name)->second;
+			if (property->value == "") return nullptr;
+			return property;
+		}
 		return nullptr;
 	}
 };
