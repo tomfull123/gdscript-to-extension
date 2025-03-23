@@ -201,6 +201,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CppClassData.cpp" />
     <ClCompile Include="FileIO.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -216,6 +217,7 @@
     <ClInclude Include="CastSyntaxNode.h" />
     <ClInclude Include="ClassDefinitionSyntaxNode.h" />
     <ClInclude Include="ContinueSyntaxNode.h" />
+    <ClInclude Include="CppClassData.h" />
     <ClInclude Include="CPPClassFile.h" />
     <ClInclude Include="CPPClassFileWriter.h" />
     <ClInclude Include="CPPModule.h" />
