@@ -220,6 +220,7 @@
     <ClInclude Include="CppClassData.h" />
     <ClInclude Include="CPPClassFile.h" />
     <ClInclude Include="CPPClassFileWriter.h" />
+    <ClInclude Include="CppData.h" />
     <ClInclude Include="CPPModule.h" />
     <ClInclude Include="DictionaryValueSyntaxNode.h" />
     <ClInclude Include="EnumDefinitionSyntaxNode.h" />

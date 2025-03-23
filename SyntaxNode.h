@@ -6,8 +6,7 @@
 #include "Type.h"
 #include "TranspilerDefinitions.h"
 #include "CppClassData.h"
-
-struct CppData;
+#include "CppData.h"
 
 class SyntaxNode
 {
@@ -47,56 +46,4 @@ public:
 	virtual Type* getType() = 0;
 
 	virtual std::string getName() = 0;
-};
-
-class VariableDefinitionSyntaxNode;
-class FunctionPrototypeSyntaxNode;
-class EnumDefinitionSyntaxNode;
-struct CppClassData;
-
-struct CppData
-{
-	std::unordered_map<std::string, CppClassData*> classData;
-	CppClassData* currentClass;
-	std::unordered_map<std::string, std::string> inheritTypes = {};
-
-	/*CppClassData* getClassDefinition(const std::string& className) const
-	{
-		if (classData.contains(className))
-		{
-			return classData.find(className)->second;
-		}
-
-		return nullptr;
-	}
-
-	VariableDefinitionSyntaxNode* getVariableDefinition(const std::string& typeName, const std::string& variableName) const
-	{
-		const auto typeClass = getClassDefinition(typeName);
-
-		if (typeClass)
-		{
-			if (typeClass->variableDefinitions.contains(variableName))
-			{
-				return typeClass->variableDefinitions.find(variableName)->second;
-			}
-		}
-
-		return nullptr;
-	}
-
-	FunctionPrototypeSyntaxNode* getFunctionPrototype(const std::string& typeName, const std::string& functionName) const
-	{
-		const auto typeClass = getClassDefinition(typeName);
-
-		if (typeClass)
-		{
-			if (typeClass->functionPrototypeDefinitions.contains(functionName))
-			{
-				return typeClass->functionPrototypeDefinitions.find(functionName)->second;
-			}
-		}
-
-		return nullptr;
-	}*/
 };
