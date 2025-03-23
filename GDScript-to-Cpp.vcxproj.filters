@@ -194,5 +194,8 @@
     <ClInclude Include="XMLParser.h">
       <Filter>Header Files\Parsing\Docs</Filter>
     </ClInclude>
+    <ClInclude Include="Type.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

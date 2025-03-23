@@ -250,6 +250,7 @@
     <ClInclude Include="TernarySyntaxNode.h" />
     <ClInclude Include="GDTokenStream.h" />
     <ClInclude Include="TokenStream.h" />
+    <ClInclude Include="Type.h" />
     <ClInclude Include="ValueIndexValue.h" />
     <ClInclude Include="VariableDefinitionSyntaxNode.h" />
     <ClInclude Include="VariableSyntaxNode.h" />

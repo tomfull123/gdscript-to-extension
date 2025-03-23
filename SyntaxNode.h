@@ -3,6 +3,7 @@
 #include "GDTokenStream.h"
 #include <unordered_set>
 #include <unordered_map>
+#include "Type.h"
 
 const std::unordered_set<std::string> GODOT_LIFECYCLE_METHODS = {
 	"_ready",
@@ -154,27 +155,6 @@ const std::unordered_map<std::string, const std::unordered_map<std::string, std:
 			{"mesh", "get_mesh"}
 		}
 	},
-};
-
-struct Type
-{
-	Type(
-		const std::string& name,
-		const std::vector<Type*>& subtypes = {}
-	) :
-		name(name),
-		subtypes(subtypes)
-	{
-	}
-
-	Type* subtype(int index)
-	{
-		if (index >= subtypes.size()) return nullptr;
-		return subtypes[index];
-	}
-
-	std::string name;
-	std::vector<Type*> subtypes;
 };
 
 struct CppData;
