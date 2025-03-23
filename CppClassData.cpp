@@ -1,6 +1,7 @@
 #include "CppClassData.h"
 #include "TranspilerDefinitions.h"
 #include "SyntaxNode.h"
+#include "VariableDefinitionSyntaxNode.h"
 
 std::string CppClassData::toCppType(const Type* type)
 {
@@ -156,7 +157,11 @@ bool CppClassData::isProperty(ValueSyntaxNode* parentInstance, const GDToken* na
 	{
 		const auto typeClass = data->classData.find(parentType->name)->second;
 
-		if (typeClass->variableDefinitions.contains(name->value)) return true;
+		if (typeClass->variableDefinitions.contains(name->value))
+		{
+			const auto* variableDefinition = typeClass->variableDefinitions.find(name->value)->second;
+			return variableDefinition->getGetterName() != nullptr || variableDefinition->getSetterName() != nullptr;
+		}
 	}
 
 	return false;
