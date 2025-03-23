@@ -26,7 +26,7 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"Vector4i", "Vector4i"},
 	{"Color", "Color"},
 	{"Dictionary", "std::map"},
-	{"Array", "std::vector"},
+	{"Array", "TypedArray"},
 	{"this", "this"},
 	{"Mesh", "Mesh"},
 	{"RenderingServer", "RenderingServer::get_singleton()"},
