@@ -134,39 +134,6 @@ const std::unordered_map<std::string, const std::unordered_map<std::string, std:
 	},
 };
 
-const std::unordered_map<std::string, std::unordered_map<std::string, std::string>> GDTYPE_PROPERTY_DEFINITIONS = {
-	{
-		"Vector2",
-		{
-			{"x", "float"},
-			{"y", "float"},
-		}
-	},
-	{
-		"Vector2i",
-		{
-			{"x", "int"},
-			{"y", "int"},
-		}
-	},
-	{
-		"Vector3",
-		{
-			{"x", "float"},
-			{"y", "float"},
-			{"z", "float"},
-		}
-	},
-	{
-		"Vector3i",
-		{
-			{"x", "int"},
-			{"y", "int"},
-			{"z", "int"},
-		}
-	},
-};
-
 const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_METHODS_TO_CPP_METHODS = {
 	{
 		"Array",
@@ -242,7 +209,7 @@ public:
 		return nullptr;
 	}
 
-	virtual bool isFunction() const
+	virtual bool isFunction(CppData* data) const
 	{
 		return false;
 	}
@@ -420,15 +387,16 @@ struct CppClassData
 		return false;
 	}
 
-	static bool isProperty(ValueSyntaxNode* parentInstance, const GDToken* name)
+	static bool isProperty(ValueSyntaxNode* parentInstance, const GDToken* name, const CppData* data)
 	{
 		if (!parentInstance) return false;
 
 		auto parentType = parentInstance->getType();
-		if (parentType && GDTYPE_PROPERTY_DEFINITIONS.contains(parentType->name))
+		if (parentType && data->classData.contains(parentType->name))
 		{
-			const auto& properties = GDTYPE_PROPERTY_DEFINITIONS.find(parentType->name)->second;
-			return properties.contains(name->value);
+			const auto typeClass = data->classData.find(parentType->name)->second;
+
+			if (typeClass->variableDefinitions.contains(name->value)) return true;
 		}
 
 		return false;

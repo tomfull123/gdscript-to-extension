@@ -12,7 +12,8 @@ public:
 	) :
 		variable_(variable),
 		assignmentValue_(assignmentValue)
-	{}
+	{
+	}
 
 	Type* getType() override
 	{
@@ -44,7 +45,7 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		if (variable_->isFunction())
+		if (variable_->isFunction(data))
 			return variable_->toCpp(data, indents) + "(" + assignmentValue_->toCpp(data, "") + ")";
 		return variable_->toCpp(data, indents) + " = " + assignmentValue_->toCpp(data, "");
 	}
