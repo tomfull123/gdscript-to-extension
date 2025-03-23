@@ -185,7 +185,7 @@ private:
 			assignmentValue = parseValueExpression();
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, false, false, false);
+		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, false, false, false, nullptr, nullptr);
 	}
 
 	FunctionPrototypeSyntaxNode* parseFunctionProtoype(bool isStatic)
@@ -301,7 +301,16 @@ private:
 			assignmentValue = parseValueExpression();
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->type == GDTokenType::ConstKeyword, isClassMember, isStatic);
+		Token* getterName = nullptr;
+		Token* setterName = nullptr;
+
+		if (isClassMember)
+		{
+			getterName = new Token("get_" + name->value);
+			setterName = new Token("set_" + name->value);
+		}
+
+		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->type == GDTokenType::ConstKeyword, isClassMember, isStatic, getterName, setterName);
 	}
 
 	VariableDefinitionSyntaxNode* parseSignalDefinitions()
@@ -327,7 +336,7 @@ private:
 			next(); // eat )
 		}
 
-		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false, true, false);
+		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false, true, false, nullptr, nullptr);
 	}
 
 	void parseAnnotation()
@@ -1021,7 +1030,7 @@ private:
 
 		auto body = parseBody(forToken->indentDepth, forToken->lineNumber);
 
-		auto variableDefinition = new VariableDefinitionSyntaxNode(variableToken, variableType, nullptr, false, false, false);
+		auto variableDefinition = new VariableDefinitionSyntaxNode(variableToken, variableType, nullptr, false, false, false, nullptr, nullptr);
 
 		return new ForSyntaxNode(variableDefinition, arrayToken, body);
 	}

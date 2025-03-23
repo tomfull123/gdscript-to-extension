@@ -343,7 +343,7 @@ private:
 	void addSetter(VariableDefinitionSyntaxNode* variableDefinition)
 	{
 		auto argNameToken = new GDToken("new" + variableDefinition->getName());
-		auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false);
+		auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false, nullptr, nullptr);
 		auto prototype = new FunctionPrototypeSyntaxNode(new GDToken("set_" + variableDefinition->getName()), { arg }, new Type("void"), false);
 
 		auto setVariableStatement = new AssignmentSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, false), new VariableSyntaxNode(argNameToken, nullptr, true));

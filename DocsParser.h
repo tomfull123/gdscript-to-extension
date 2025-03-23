@@ -126,7 +126,9 @@ private:
 						nullptr,
 						false,
 						true,
-						false
+						false,
+						nullptr,
+						nullptr
 					));
 				}
 			}
@@ -172,7 +174,9 @@ private:
 			nullptr,
 			false,
 			true,
-			false
+			false,
+			memberTag->getProperty("getter"),
+			memberTag->getProperty("setter")
 		);
 	}
 };

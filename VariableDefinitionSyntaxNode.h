@@ -11,14 +11,18 @@ public:
 		ValueSyntaxNode* initialValue,
 		bool isConstant,
 		bool isClassMember,
-		bool isStatic
+		bool isStatic,
+		Token* getterName,
+		Token* setterName
 	) :
 		name_(name),
 		dataType_(dataType),
 		initialValue_(initialValue),
 		isConstant_(isConstant),
 		isClassMember_(isClassMember),
-		isStatic_(isStatic)
+		isStatic_(isStatic),
+		getterName_(getterName),
+		setterName_(setterName)
 	{
 	}
 
@@ -40,6 +44,16 @@ public:
 	bool isConstant() const
 	{
 		return isConstant_;
+	}
+
+	Token* getGetterName() const
+	{
+		return getterName_;
+	}
+
+	Token* getSetterName() const
+	{
+		return setterName_;
 	}
 
 	bool isTypeDef() const
@@ -129,6 +143,8 @@ private:
 	bool isConstant_;
 	bool isClassMember_;
 	bool isStatic_;
+	Token* getterName_;
+	Token* setterName_;
 
 	std::string assignInitialValueCpp(CppData* data, const std::string& indents)
 	{
