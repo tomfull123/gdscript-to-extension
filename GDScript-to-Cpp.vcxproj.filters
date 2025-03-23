@@ -36,6 +36,9 @@
     <ClCompile Include="CppClassData.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="CppData.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileIO.h">
