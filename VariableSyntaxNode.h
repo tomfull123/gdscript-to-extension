@@ -52,7 +52,10 @@ public:
 
 	void resolveDefinitions(CppData* data) override
 	{
-		if (!parentInstance_) variableDefinition_ = data->currentClass->variableDefinitions[name_->value];
+		if (!parentInstance_)
+		{
+			variableDefinition_ = data->currentClass->getVariableDefinition(name_->value);
+		}
 		else
 		{
 			parentInstance_->resolveDefinitions(data);
@@ -123,7 +126,7 @@ public:
 			}
 		}
 
-		auto varDef = data->currentClass->variableDefinitions[name_->value];
+		auto varDef = data->currentClass->getVariableDefinition(name_->value);
 
 		if (name_->value == "self")
 		{

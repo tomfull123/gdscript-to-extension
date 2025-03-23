@@ -50,16 +50,20 @@ public:
 	void hoist(CppData* data) override
 	{
 		data->currentClass->functionPrototypeDefinitions[name_->value] = this;
+		data->currentClass->currentFunction = new CppFunctionData();
+		data->currentClass->functionData[name_->value] = data->currentClass->currentFunction;
 		for (auto a : argDefs_) a->hoist(data);
 	}
 
 	void resolveDefinitions(CppData* data) override
 	{
+		setCurrentFunction(data);
 		for (auto a : argDefs_) a->resolveDefinitions(data);
 	}
 
 	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
+		setCurrentFunction(data);
 		if (name_->value == "_init") returnType_ = new Type(data->currentClass->currentClassName);
 		else if (!returnType_) returnType_ = new Type("void");
 
@@ -68,6 +72,7 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
+		setCurrentFunction(data);
 		std::string argsString;
 
 		bool eachArgOnNewLine = argDefs_.size() >= 5;
@@ -106,4 +111,9 @@ private:
 	std::vector<VariableDefinitionSyntaxNode*> argDefs_;
 	Type* returnType_;
 	bool isStatic_;
+
+	void setCurrentFunction(CppData* data) const
+	{
+		data->currentClass->currentFunction = data->currentClass->functionData[name_->value];
+	}
 };

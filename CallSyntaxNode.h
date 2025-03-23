@@ -92,7 +92,7 @@ public:
 				if (!isConstructorCall)
 				{
 					auto parentType = instance_->getType();
-					auto varDef = data->currentClass->variableDefinitions[instanceName];
+					auto varDef = data->currentClass->getVariableDefinition(instanceName);
 					auto functionDef = data->currentClass->functionPrototypeDefinitions[instance_->getName()];
 
 					if (instanceName == "new")

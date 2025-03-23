@@ -212,5 +212,8 @@
     <ClInclude Include="CppData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CppFunctionData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@
 #include <string>
 #include "GDLexer.h"
 #include "Type.h"
+#include "CppFunctionData.h"
 
 class VariableDefinitionSyntaxNode;
 class FunctionPrototypeSyntaxNode;
@@ -22,6 +23,17 @@ struct CppClassData
 	std::unordered_set<std::string> typeDefinitions;
 	std::string currentClassName;
 	Type* classInheritedType;
+	std::unordered_map<std::string, CppFunctionData*> functionData;
+	CppFunctionData* currentFunction;
+
+	VariableDefinitionSyntaxNode* getVariableDefinition(const std::string& variableName)
+	{
+		if (currentFunction && currentFunction->variableDefinitions.contains(variableName))
+			return currentFunction->variableDefinitions[variableName];
+		if (variableDefinitions.contains(variableName))
+			return variableDefinitions[variableName];
+		return nullptr;
+	}
 
 	std::string toCppType(const Type* type);
 

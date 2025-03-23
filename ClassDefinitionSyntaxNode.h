@@ -198,8 +198,8 @@ private:
 				publicMemberVariableDefinitionString += variableDefString;
 				if (!v->isConstant())
 				{
-					addGetter(v);
-					addSetter(v);
+					addGetter(v, data);
+					addSetter(v, data);
 				}
 			}
 		}
@@ -328,7 +328,7 @@ private:
 		return enumCasts;
 	}
 
-	void addGetter(VariableDefinitionSyntaxNode* variableDefinition)
+	void addGetter(VariableDefinitionSyntaxNode* variableDefinition, CppData* data)
 	{
 		std::string name = "get_" + variableDefinition->getName();
 		auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(name), {}, variableDefinition->getType(), false);
@@ -337,10 +337,16 @@ private:
 
 		auto body = new BodySyntaxNode({ returnVariableStatement });
 
-		memberFunctionDefinitions_.push_back(new FunctionDefinitionSyntaxNode(prototype, body));
+		auto getterFunctionDef = new FunctionDefinitionSyntaxNode(prototype, body);
+
+		getterFunctionDef->hoist(data);
+		getterFunctionDef->resolveDefinitions(data);
+		getterFunctionDef->resolveDefinitions(data);
+
+		memberFunctionDefinitions_.push_back(getterFunctionDef);
 	}
 
-	void addSetter(VariableDefinitionSyntaxNode* variableDefinition)
+	void addSetter(VariableDefinitionSyntaxNode* variableDefinition, CppData* data)
 	{
 		auto argNameToken = new GDToken("new" + variableDefinition->getName());
 		auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false, nullptr, nullptr);
@@ -350,7 +356,13 @@ private:
 
 		auto body = new BodySyntaxNode({ setVariableStatement });
 
-		memberFunctionDefinitions_.push_back(new FunctionDefinitionSyntaxNode(prototype, body));
+		auto setterFunctionDef = new FunctionDefinitionSyntaxNode(prototype, body);
+
+		setterFunctionDef->hoist(data);
+		setterFunctionDef->resolveDefinitions(data);
+		setterFunctionDef->resolveDefinitions(data);
+
+		memberFunctionDefinitions_.push_back(setterFunctionDef);
 	}
 
 	Type* getInheritedType()
