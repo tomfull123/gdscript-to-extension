@@ -35,8 +35,6 @@ struct CppClassData
 		return nullptr;
 	}
 
-	std::string toCppType(const Type* type);
-
 	std::string toCppFunction(const std::string& functionName, const std::string& parentType);
 
 	std::string toWrappedCppFunction(ValueSyntaxNode* parentInstance, const GDToken* nameToken) const;

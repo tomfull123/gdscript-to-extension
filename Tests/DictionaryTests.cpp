@@ -61,6 +61,10 @@ TEST_F(TranspileTest, DictionaryWithSubdictionaryEmptyFirstAndLast)
 TEST_F(TranspileTest, IndexDictionaryObjectValue)
 {
 	std::string input = R"(
+		class Stuff:
+			func getStuff() -> int:
+				return 123
+
 		var x := {1: Stuff.new()}
 
 		func doStuff():

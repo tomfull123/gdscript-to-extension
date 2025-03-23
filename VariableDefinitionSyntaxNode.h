@@ -105,11 +105,11 @@ public:
 			if (initialValue_)
 			{
 				auto valueType = initialValue_->getType();
-				code += data->currentClass->toCppType(valueType);
+				code += data->toCppType(valueType);
 			}
 			else code += "Variant";
 		}
-		else code += data->currentClass->toCppType(dataType_);
+		else code += data->toCppType(dataType_);
 		code += " ";
 		if (outsideClass) code += data->currentClass->currentClassName + "::";
 		code += name_->value;
@@ -132,7 +132,7 @@ public:
 		auto parent = initialValue_->getParent();
 		if (parent)
 		{
-			data->currentClass->toCppType(new Type(parent->getName()));
+			data->toCppType(new Type(parent->getName()));
 			data->currentClass->typeDefinitions.emplace(name_->value);
 		}
 	}

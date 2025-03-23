@@ -3,51 +3,6 @@
 #include "SyntaxNode.h"
 #include "VariableDefinitionSyntaxNode.h"
 
-std::string CppClassData::toCppType(const Type* type)
-{
-	if (!type) return "auto";
-
-	auto enumDef = enumDefinitions[type->name];
-	if (enumDef) return type->name;
-
-	auto it = GDTYPES_TO_CPPTYPES.find(type->name);
-
-	if (it != GDTYPES_TO_CPPTYPES.end())
-	{
-		types.emplace(it->second);
-
-		std::string subtypesString;
-
-		if (!type->subtypes.empty())
-		{
-			auto lastIndex = type->subtypes.size() - 1;
-
-			for (int i = 0; i < type->subtypes.size(); i++)
-			{
-				const Type* subtype = type->subtypes[i];
-				subtypesString += toCppType(subtype);
-
-				if (i < lastIndex) subtypesString += ", ";
-			}
-
-			subtypesString = "<" + subtypesString + ">";
-		}
-
-		return it->second + subtypesString;
-	}
-
-	std::string typeName = type->name;
-
-	if (typeName[0] == '_') typeName.erase(0, 1);
-
-	types.emplace(typeName);
-
-	if (typeDefinitions.contains(typeName)) return typeName;
-
-	if (isGodotType(typeName) || GDTYPES_TO_CPPTYPES.contains(typeName)) return "Ref<" + typeName + ">";
-	return "Ref<" + typeName + ">";
-}
-
 std::string CppClassData::toCppFunction(const std::string& functionName, const std::string& parentType)
 {
 	auto it = GDFUNCTIONS_TO_CPPFUNCTIONS.find(functionName);

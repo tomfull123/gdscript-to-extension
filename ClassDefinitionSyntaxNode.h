@@ -22,7 +22,8 @@ public:
 		const std::vector<VariableDefinitionSyntaxNode*>& staticVariableDefinitions,
 		const std::vector<ClassDefinitionSyntaxNode*>& innerClasses,
 		bool isInnerClass,
-		const std::string& fileName
+		const std::string& fileName,
+		bool isDocsClass
 	) :
 		name_(name),
 		extends_(extends),
@@ -33,7 +34,8 @@ public:
 		staticVariableDefinitions_(staticVariableDefinitions),
 		innerClasses_(innerClasses),
 		isInnerClass_(isInnerClass),
-		fileName_(fileName)
+		fileName_(fileName),
+		isDocsClass_(isDocsClass)
 	{
 	}
 
@@ -66,7 +68,7 @@ public:
 		data->currentClass = new CppClassData();
 		data->currentClass->currentClassName = getName();
 		data->currentClass->classInheritedType = getInheritedType();
-		if (extends_) data->inheritTypes[getName()] = extends_->value;
+		if (extends_ || !isDocsClass_) data->inheritTypes[getName()] = getInheritedType()->name;
 		for (auto enumDef : enumDefinitions_) enumDef->hoist(data);
 		for (auto v : staticVariableDefinitions_) v->hoist(data);
 		for (auto f : staticFunctionDefinitions_) f->hoist(data);
@@ -135,6 +137,7 @@ private:
 	std::vector<ClassDefinitionSyntaxNode*> innerClasses_;
 	bool isInnerClass_;
 	std::string fileName_;
+	bool isDocsClass_;
 
 	std::string classBody(CppData* data)
 	{
@@ -222,14 +225,18 @@ private:
 
 		Type* inherits = data->currentClass->classInheritedType;
 
-		data->currentClass->toCppType(inherits);
+		if (inherits) data->toCppType(inherits);
+
+		std::string inheritsName = "";
+
+		if (inherits) inheritsName = inherits->name;
 
 		return ""
 			+ enumDefString
 			+ innerClassesString +
-			"\tclass " + className + " : public " + inherits->name + "\n"
+			"\tclass " + className + " : public " + inheritsName + "\n"
 			"\t{\n"
-			"\t\tGDCLASS(" + className + ", " + inherits->name + ")\n"
+			"\t\tGDCLASS(" + className + ", " + inheritsName + ")\n"
 			"\tpublic:\n"
 			+ publicMemberFunctionDefinitionString
 			+ publicStaticFunctionDefinitionString
@@ -368,6 +375,7 @@ private:
 	Type* getInheritedType()
 	{
 		if (extends_) return new Type(extends_->value);
+		if (isDocsClass_) return nullptr;
 		return new Type("RefCounted");
 	}
 

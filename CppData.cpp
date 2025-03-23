@@ -1,5 +1,6 @@
 #include "CppData.h"
 #include "CppClassData.h"
+#include "TranspilerDefinitions.h"
 
 CppClassData* CppData::getClassDefinition(const std::string& className) const
 {
@@ -39,4 +40,66 @@ FunctionPrototypeSyntaxNode* CppData::getFunctionPrototype(const std::string& ty
 	}
 
 	return nullptr;
+}
+
+std::string CppData::toCppType(const Type* type)
+{
+	if (!type) return "auto";
+
+	auto enumDef = currentClass->enumDefinitions[type->name];
+	if (enumDef) return type->name;
+
+	auto it = GDTYPES_TO_CPPTYPES.find(type->name);
+
+	if (it != GDTYPES_TO_CPPTYPES.end())
+	{
+		currentClass->types.emplace(it->second);
+
+		std::string subtypesString;
+
+		if (!type->subtypes.empty())
+		{
+			auto lastIndex = type->subtypes.size() - 1;
+
+			for (int i = 0; i < type->subtypes.size(); i++)
+			{
+				const Type* subtype = type->subtypes[i];
+				subtypesString += toCppType(subtype);
+
+				if (i < lastIndex) subtypesString += ", ";
+			}
+
+			subtypesString = "<" + subtypesString + ">";
+		}
+
+		return it->second + subtypesString;
+	}
+
+	std::string typeName = type->name;
+
+	if (typeName[0] == '_') typeName.erase(0, 1);
+
+	currentClass->types.emplace(typeName);
+
+	if (currentClass->typeDefinitions.contains(typeName)) return typeName;
+
+	if (isRefType(typeName)) return "Ref<" + typeName + ">";
+	return typeName;
+}
+
+bool CppData::isRefType(const std::string& type) const
+{
+	std::string currentType = type;
+
+	while (true)
+	{
+		if (currentType == "RefCounted") return true;
+
+		if (inheritTypes.contains(currentType))
+			currentType = inheritTypes.find(currentType)->second;
+		else
+			return false;
+	}
+
+	return false;
 }

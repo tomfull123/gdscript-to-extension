@@ -480,7 +480,8 @@ private:
 			staticVariableDefinitions,
 			innerClasses,
 			isInnerClass,
-			fileName
+			fileName,
+			false
 		);
 	}
 

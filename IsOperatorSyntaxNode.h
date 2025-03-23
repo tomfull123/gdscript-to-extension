@@ -47,7 +47,7 @@ public:
 		return "std::is_same<decltype(" +
 			lhs_->toCpp(data, indents) +
 			"), " +
-			data->currentClass->toCppType(rhs_) +
+			data->toCppType(rhs_) +
 			"> == true";
 	}
 

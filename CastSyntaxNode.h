@@ -38,7 +38,7 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return "(" + data->currentClass->toCppType(type_) + ")" + value_->toCpp(data, "");
+		return "(" + data->toCppType(type_) + ")" + value_->toCpp(data, "");
 	}
 
 private:

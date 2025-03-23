@@ -7,6 +7,7 @@
 struct CppClassData;
 class VariableDefinitionSyntaxNode;
 class FunctionPrototypeSyntaxNode;
+struct Type;
 
 struct CppData
 {
@@ -19,4 +20,8 @@ struct CppData
 	VariableDefinitionSyntaxNode* getVariableDefinition(const std::string& typeName, const std::string& variableName) const;
 
 	FunctionPrototypeSyntaxNode* getFunctionPrototype(const std::string& typeName, const std::string& functionName) const;
+
+	std::string toCppType(const Type* type);
+
+	bool isRefType(const std::string& type) const;
 };

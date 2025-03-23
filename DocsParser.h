@@ -81,7 +81,8 @@ private:
 			staticVariableDefinitions,
 			innerClasses,
 			false,
-			fileName
+			fileName,
+			true
 		);
 	}
 

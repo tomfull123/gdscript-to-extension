@@ -35,7 +35,7 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return data->currentClass->toCppType(new Type("ResourceLoader")) + "->load(\"" + path_->value + "\")";
+		return data->toCppType(new Type("ResourceLoader")) + "->load(\"" + path_->value + "\")";
 	}
 
 private:

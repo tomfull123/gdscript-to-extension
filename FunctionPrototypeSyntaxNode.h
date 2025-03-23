@@ -99,7 +99,7 @@ public:
 
 		std::string name = getName();
 
-		auto typeCode = data->currentClass->toCppType(returnType_);
+		auto typeCode = data->toCppType(returnType_);
 
 		if (!CPP_PRIMITIVE_TYPES.contains(typeCode) && !returnType_->subtypes.empty()) typeCode += "&";
 
