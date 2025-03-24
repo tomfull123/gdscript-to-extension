@@ -101,8 +101,6 @@ public:
 
 		auto typeCode = data->toCppType(returnType_);
 
-		if (!CPP_PRIMITIVE_TYPES.contains(typeCode) && !returnType_->subtypes.empty()) typeCode += "&";
-
 		return code + typeCode + " " + name + "(" + argsString + ")";
 	}
 
