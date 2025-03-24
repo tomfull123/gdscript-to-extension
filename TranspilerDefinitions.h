@@ -25,7 +25,7 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"Vector4", "Vector4"},
 	{"Vector4i", "Vector4i"},
 	{"Color", "Color"},
-	{"Dictionary", "std::map"},
+	{"Dictionary", "TypedDictionary"},
 	{"Array", "TypedArray"},
 	{"this", "this"},
 	{"Mesh", "Mesh"},
@@ -115,6 +115,7 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"RayCast3D", "<godot_cpp/classes/ray_cast3d.hpp>"},
 	{"Math::abs", "<godot_cpp/core/math.hpp>"},
 	{"Camera3D", "<godot_cpp/classes/camera3d.hpp>"},
+	{"TypedDictionary", "<godot_cpp/variant/typed_dictionary.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
