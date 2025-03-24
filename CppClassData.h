@@ -38,8 +38,6 @@ struct CppClassData
 
 	std::string toCppFunction(const std::string& functionName, const std::string& parentType);
 
-	std::string toWrappedCppFunction(ValueSyntaxNode* parentInstance, const GDToken* nameToken) const;
-
 	std::string getIncludePath(const std::string& type) const;
 
 	bool isGodotType(const std::string& type) const;

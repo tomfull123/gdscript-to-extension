@@ -31,30 +31,6 @@ std::string CppClassData::toCppFunction(const std::string& functionName, const s
 	return functionName;
 }
 
-std::string CppClassData::toWrappedCppFunction(ValueSyntaxNode* parentInstance, const GDToken* nameToken) const
-{
-	std::string name = nameToken->value;
-
-	if (parentInstance)
-	{
-		auto parentName = parentInstance->getName();
-		auto it = CPPTYPES_TO_FUNCTION.find(parentName);
-
-		if (it != CPPTYPES_TO_FUNCTION.end())
-		{
-			return it->second + "(\"" + name + "\")";
-		}
-
-		if (GDTYPE_PROPERTIES_TO_CPP_PROPERTIES.contains(parentName))
-		{
-			const auto& methods = GDTYPE_PROPERTIES_TO_CPP_PROPERTIES.find(parentName)->second;
-			if (methods.contains(name)) return methods.find(name)->second;
-		}
-	}
-
-	return name;
-}
-
 std::string CppClassData::getIncludePath(const std::string& type) const
 {
 	auto it = CPPTYPES_TO_INCLUDE_PATH.find(type);

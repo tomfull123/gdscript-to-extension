@@ -1,6 +1,7 @@
 #include "CppData.h"
 #include "CppClassData.h"
 #include "TranspilerDefinitions.h"
+#include "SyntaxNode.h"
 
 CppClassData* CppData::getClassDefinition(const std::string& className) const
 {
@@ -40,6 +41,31 @@ FunctionPrototypeSyntaxNode* CppData::getFunctionPrototype(const std::string& ty
 	}
 
 	return nullptr;
+}
+
+std::string CppData::toWrappedCppFunction(ValueSyntaxNode* parentInstance, const Token* nameToken) const
+{
+	std::string name = nameToken->value;
+
+	if (parentInstance)
+	{
+		auto parentName = parentInstance->getName();
+		auto it = CPPTYPES_TO_FUNCTION.find(parentName);
+
+		if (it != CPPTYPES_TO_FUNCTION.end())
+		{
+			return it->second + "(\"" + name + "\")";
+		}
+
+		if (classData.contains(parentName))
+		{
+			const auto& classDef = classData.find(parentName)->second;
+			const auto& constantValueMappings = classDef->constantValueMappings;
+			if (constantValueMappings.contains(name)) return constantValueMappings.find(name)->second;
+		}
+	}
+
+	return name;
 }
 
 std::string CppData::toCppType(const Type* type)

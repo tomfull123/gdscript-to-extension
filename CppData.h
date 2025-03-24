@@ -7,7 +7,9 @@
 struct CppClassData;
 class VariableDefinitionSyntaxNode;
 class FunctionPrototypeSyntaxNode;
+class ValueSyntaxNode;
 struct Type;
+struct Token;
 
 struct CppData
 {
@@ -20,6 +22,8 @@ struct CppData
 	VariableDefinitionSyntaxNode* getVariableDefinition(const std::string& typeName, const std::string& variableName) const;
 
 	FunctionPrototypeSyntaxNode* getFunctionPrototype(const std::string& typeName, const std::string& functionName) const;
+
+	std::string toWrappedCppFunction(ValueSyntaxNode* parentInstance, const Token* nameToken) const;
 
 	std::string toCppType(const Type* type);
 

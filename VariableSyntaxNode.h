@@ -147,7 +147,7 @@ public:
 					|| CppClassData::isProperty(parentInstance_, name_, data) || GDTYPES_TO_CPPTYPES.contains(parentName)
 						|| parentName == "self")
 				{
-					code += data->currentClass->toWrappedCppFunction(parentInstance_, name_);
+					code += data->toWrappedCppFunction(parentInstance_, name_);
 				}
 				else
 				{
@@ -163,7 +163,7 @@ public:
 			}
 			else
 			{
-				code += data->currentClass->toWrappedCppFunction(parentInstance_, name_);
+				code += data->toWrappedCppFunction(parentInstance_, name_);
 			}
 		}
 

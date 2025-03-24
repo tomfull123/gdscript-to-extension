@@ -125,15 +125,6 @@ const std::unordered_set<std::string> FUNCTION_TO_MEMBER_METHOD_CALL = {
 	"abs",
 };
 
-const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_PROPERTIES_TO_CPP_PROPERTIES = {
-	{
-		"Vector3",
-		{
-			{"ZERO", "Vector3(0, 0, 0)"}
-		}
-	},
-};
-
 const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_METHODS_TO_CPP_METHODS = {
 	{
 		"Array",
