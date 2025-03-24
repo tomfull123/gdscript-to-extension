@@ -135,12 +135,6 @@ const std::unordered_map<std::string, const std::unordered_map<std::string, std:
 		}
 	},
 	{
-		"Dictionary",
-		{
-			{"has", "contains"}
-		}
-	},
-	{
 		"MeshInstance3D",
 		{
 			{"mesh", "get_mesh"}
