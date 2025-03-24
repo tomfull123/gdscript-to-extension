@@ -7,6 +7,7 @@
 #include "AbstractSyntaxTree.h"
 #include "SyntaxNode.h"
 #include "FunctionDefinitionSyntaxNode.h"
+#include "ConstantValueMapping.h"
 #include "GDParser.h"
 
 class DocsParser
@@ -57,6 +58,7 @@ private:
 		std::vector<FunctionDefinitionSyntaxNode*> staticFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> staticVariableDefinitions;
 		std::vector<ClassDefinitionSyntaxNode*> innerClasses;
+		std::vector<ConstantValueMapping*> constantValueMappings;
 
 		for (const auto& [tagName, tags] : classTag->children)
 		{
@@ -87,6 +89,10 @@ private:
 									enumValues[enumToken->value] = {};
 								enumValues[enumToken->value].push_back(constantTag->getProperty("name"));
 							}
+							else
+							{
+								constantValueMappings.push_back(new ConstantValueMapping(constantTag->getProperty("name"), constantTag->getProperty("value")));
+							}
 						}
 					}
 				}
@@ -114,6 +120,7 @@ private:
 			staticFunctionDefinitions,
 			staticVariableDefinitions,
 			innerClasses,
+			constantValueMappings,
 			false,
 			fileName,
 			true

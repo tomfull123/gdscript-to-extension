@@ -217,6 +217,7 @@
     <ClInclude Include="CallSyntaxNode.h" />
     <ClInclude Include="CastSyntaxNode.h" />
     <ClInclude Include="ClassDefinitionSyntaxNode.h" />
+    <ClInclude Include="ConstantValueMapping.h" />
     <ClInclude Include="ContinueSyntaxNode.h" />
     <ClInclude Include="CppClassData.h" />
     <ClInclude Include="CPPClassFile.h" />

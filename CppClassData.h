@@ -25,6 +25,7 @@ struct CppClassData
 	Type* classInheritedType;
 	std::unordered_map<std::string, CppFunctionData*> functionData;
 	CppFunctionData* currentFunction;
+	std::unordered_map<std::string, std::string> constantValueMappings = {};
 
 	VariableDefinitionSyntaxNode* getVariableDefinition(const std::string& variableName)
 	{

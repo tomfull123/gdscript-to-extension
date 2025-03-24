@@ -7,6 +7,7 @@
 #include "VariableSyntaxNode.h"
 #include "AssignmentSyntaxNode.h"
 #include "BodySyntaxNode.h"
+#include "ConstantValueMapping.h"
 #include <algorithm>
 
 class ClassDefinitionSyntaxNode : public SyntaxNode
@@ -21,6 +22,7 @@ public:
 		const std::vector<FunctionDefinitionSyntaxNode*>& staticFunctionDefinitions,
 		const std::vector<VariableDefinitionSyntaxNode*>& staticVariableDefinitions,
 		const std::vector<ClassDefinitionSyntaxNode*>& innerClasses,
+		const std::vector<ConstantValueMapping*>& constantValueMappings,
 		bool isInnerClass,
 		const std::string& fileName,
 		bool isDocsClass
@@ -33,6 +35,7 @@ public:
 		staticFunctionDefinitions_(staticFunctionDefinitions),
 		staticVariableDefinitions_(staticVariableDefinitions),
 		innerClasses_(innerClasses),
+		constantValueMappings_(constantValueMappings),
 		isInnerClass_(isInnerClass),
 		fileName_(fileName),
 		isDocsClass_(isDocsClass)
@@ -69,6 +72,7 @@ public:
 		data->currentClass->currentClassName = getName();
 		data->currentClass->classInheritedType = getInheritedType();
 		if (extends_ || !isDocsClass_) data->inheritTypes[getName()] = getInheritedType()->name;
+		for (auto constantValueMapping : constantValueMappings_) constantValueMapping->hoist(data);
 		for (auto enumDef : enumDefinitions_) enumDef->hoist(data);
 		for (auto v : staticVariableDefinitions_) v->hoist(data);
 		for (auto f : staticFunctionDefinitions_) f->hoist(data);
@@ -135,6 +139,7 @@ private:
 	std::vector<FunctionDefinitionSyntaxNode*> staticFunctionDefinitions_;
 	std::vector<VariableDefinitionSyntaxNode*> staticVariableDefinitions_;
 	std::vector<ClassDefinitionSyntaxNode*> innerClasses_;
+	std::vector<ConstantValueMapping*> constantValueMappings_;
 	bool isInnerClass_;
 	std::string fileName_;
 	bool isDocsClass_;

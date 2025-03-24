@@ -479,6 +479,7 @@ private:
 			staticFunctionDefinitions,
 			staticVariableDefinitions,
 			innerClasses,
+			{},
 			isInnerClass,
 			fileName,
 			false

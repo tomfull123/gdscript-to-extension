@@ -215,5 +215,8 @@
     <ClInclude Include="CppFunctionData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ConstantValueMapping.h">
+      <Filter>Header Files\SyntaxNodes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
