@@ -53,22 +53,56 @@ private:
 
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
-		std::vector<EnumDefinitionSyntaxNode*> enumDefinitions;
+		std::unordered_map<std::string, std::vector<XMLToken*>> enumValues;
 		std::vector<FunctionDefinitionSyntaxNode*> staticFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> staticVariableDefinitions;
 		std::vector<ClassDefinitionSyntaxNode*> innerClasses;
 
-		for (const auto& [tagName, tag] : classTag->children)
+		for (const auto& [tagName, tags] : classTag->children)
 		{
-			if (tag.empty()) continue;
+			if (tags.empty()) continue;
 			if (tagName == "methods")
 			{
-				memberFunctionDefinitions = parseMethods(tag[0]);
+				memberFunctionDefinitions = parseMethods(tags[0]);
 			}
 			else if (tagName == "members")
 			{
-				memberVariableDefinitions = parseMembers(tag[0]);
+				memberVariableDefinitions = parseMembers(tags[0]);
 			}
+			else if (tagName == "constants")
+			{
+				const auto constantsTag = tags[0];
+
+				for (const auto& [constantsChildTagName, constantsChildTags] : constantsTag->children)
+				{
+					if (constantsChildTagName == "constant")
+					{
+						for (const auto constantTag : constantsChildTags)
+						{
+							auto enumToken = constantTag->getProperty("enum");
+
+							if (enumToken != nullptr)
+							{
+								if (!enumValues.contains(enumToken->value))
+									enumValues[enumToken->value] = {};
+								enumValues[enumToken->value].push_back(constantTag->getProperty("name"));
+							}
+						}
+					}
+				}
+			}
+		}
+
+		std::vector<EnumDefinitionSyntaxNode*> enumDefinitions;
+
+		for (const auto& [enumName, values] : enumValues)
+		{
+			std::vector<EnumValueSyntaxNode*> enumValueNodes;
+			for (const auto& value : values)
+			{
+				enumValueNodes.push_back(new EnumValueSyntaxNode(value));
+			}
+			enumDefinitions.push_back(new EnumDefinitionSyntaxNode(new Token(enumName), enumValueNodes));
 		}
 
 		return new ClassDefinitionSyntaxNode(

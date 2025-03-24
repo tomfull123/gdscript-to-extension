@@ -5,7 +5,7 @@
 class EnumValueSyntaxNode : public SyntaxNode
 {
 public:
-	explicit EnumValueSyntaxNode(GDToken* name) :
+	explicit EnumValueSyntaxNode(Token* name) :
 		name_(name)
 	{
 	}
@@ -28,5 +28,5 @@ public:
 	}
 
 private:
-	GDToken* name_;
+	Token* name_;
 };
