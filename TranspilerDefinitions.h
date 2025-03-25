@@ -128,12 +128,6 @@ const std::unordered_set<std::string> FUNCTION_TO_MEMBER_METHOD_CALL = {
 
 const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_METHODS_TO_CPP_METHODS = {
 	{
-		"Array",
-		{
-			{"append", "push_back"},
-		}
-	},
-	{
 		"MeshInstance3D",
 		{
 			{"mesh", "get_mesh"}
