@@ -116,6 +116,7 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"Math::abs", "<godot_cpp/core/math.hpp>"},
 	{"Camera3D", "<godot_cpp/classes/camera3d.hpp>"},
 	{"TypedDictionary", "<godot_cpp/variant/typed_dictionary.hpp>"},
+	{"Object", "<godot_cpp/core/object.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
