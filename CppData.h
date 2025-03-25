@@ -28,4 +28,6 @@ struct CppData
 	std::string toCppType(const Type* type, bool isSubtype = false);
 
 	bool isRefType(const std::string& type) const;
+
+	bool isObjectType(const std::string& type) const;
 };

@@ -109,7 +109,11 @@ std::string CppData::toCppType(const Type* type, bool isSubtype)
 
 	if (currentClass->typeDefinitions.contains(typeName)) return typeName;
 
-	if (isRefType(typeName) && !isSubtype) return "Ref<" + typeName + ">";
+	if (!isSubtype)
+	{
+		if (isRefType(typeName)) return "Ref<" + typeName + ">";
+		if (isObjectType(typeName)) return typeName + "*";
+	}
 	return typeName;
 }
 
@@ -120,6 +124,23 @@ bool CppData::isRefType(const std::string& type) const
 	while (true)
 	{
 		if (currentType == "RefCounted") return true;
+
+		if (inheritTypes.contains(currentType))
+			currentType = inheritTypes.find(currentType)->second;
+		else
+			return false;
+	}
+
+	return false;
+}
+
+bool CppData::isObjectType(const std::string& type) const
+{
+	std::string currentType = type;
+
+	while (true)
+	{
+		if (currentType == "Object") return true;
 
 		if (inheritTypes.contains(currentType))
 			currentType = inheritTypes.find(currentType)->second;
