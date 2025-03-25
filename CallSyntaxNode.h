@@ -114,14 +114,7 @@ public:
 			}
 		}
 
-		std::string argsString;
-
-		for (int a = 0; a < args_.size(); a++)
-		{
-			auto arg = args_[a];
-			argsString += arg->toCpp(data, "");
-			if (a < args_.size() - 1) argsString += ", ";
-		}
+		std::string argsString = getArgsString(data);
 
 		if (FUNCTION_TO_MEMBER_METHOD_CALL.contains(name_->value))
 		{
@@ -153,4 +146,16 @@ private:
 	std::vector<ValueSyntaxNode*> args_;
 	Type* type_ = nullptr;
 	FunctionPrototypeSyntaxNode* prototype_ = nullptr;
+
+	std::string getArgsString(CppData* data)
+	{
+		std::string argsString;
+		for (int a = 0; a < args_.size(); a++)
+		{
+			auto arg = args_[a];
+			argsString += arg->toCpp(data, "");
+			if (a < args_.size() - 1) argsString += ", ";
+		}
+		return argsString;
+	}
 };
