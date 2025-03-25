@@ -94,10 +94,21 @@ public:
 					auto parentType = instance_->getType();
 					auto varDef = data->currentClass->getVariableDefinition(instanceName);
 					auto functionDef = data->currentClass->functionPrototypeDefinitions[instance_->getName()];
+					bool isParentRef = false;
+					bool isParentObject = false;
+					std::string parentTypeName = "";
+
+					if (parentType)
+					{
+						parentTypeName = parentType->name;
+						if (parentTypeName[0] == '_') parentTypeName.erase(0, 1);
+						isParentRef = data->isRefType(parentTypeName);
+						isParentObject = data->isObjectType(parentTypeName);
+					}
 
 					if (instanceName == "new")
 						code += "->";
-					else if ((parentType && data->currentClass->isGodotType(parentType->name)) || (data->currentClass->isGodotType(instanceName) || GDTYPES_TO_CPPTYPES.contains(instanceName)))
+					else if ((isParentRef || isParentObject) || (data->currentClass->isGodotType(instanceName) || GDTYPES_TO_CPPTYPES.contains(instanceName)))
 						code += "->";
 					else if (parentType && !data->currentClass->isGodotType(parentType->name))
 						code += ".";
