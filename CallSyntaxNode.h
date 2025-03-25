@@ -110,7 +110,7 @@ public:
 						code += "->";
 					else if ((isParentRef || isParentObject) || (data->currentClass->isGodotType(instanceName) || GDTYPES_TO_CPPTYPES.contains(instanceName)))
 						code += "->";
-					else if (parentType && !data->currentClass->isGodotType(parentType->name))
+					else if (parentType && !isParentRef && !isParentObject)
 						code += ".";
 					else if (data->currentClass->isClassMethod(instance_->getName(), data))
 						code += "->";
