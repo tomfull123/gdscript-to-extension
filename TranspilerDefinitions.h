@@ -131,7 +131,6 @@ const std::unordered_map<std::string, const std::unordered_map<std::string, std:
 		"Array",
 		{
 			{"append", "push_back"},
-			{"is_empty", "empty"}
 		}
 	},
 	{
