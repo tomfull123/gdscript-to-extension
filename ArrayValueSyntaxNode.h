@@ -86,7 +86,7 @@ private:
 		return elementType;
 	}
 
-	std::string getExpressionsString(CppData* data, const std::string& indents)
+	std::string getExpressionsString(CppData* data, const std::string& indents) const
 	{
 		std::string expressionsString;
 		size_t lastIndex = expressions_.size() - 1;

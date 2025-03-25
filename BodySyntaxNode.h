@@ -10,7 +10,8 @@ public:
 		const std::vector<SyntaxNode*>& nodes
 	) :
 		nodes_(nodes)
-	{}
+	{
+	}
 
 	void hoist(CppData* data) override
 	{
@@ -29,13 +30,7 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		std::string nodesString;
-
-		for (auto node : nodes_)
-		{
-			nodesString += indents + "\t" + node->toCpp(data, indents + "\t");
-			if (node->needsSemiColon()) nodesString += ";\n";
-		}
+		std::string nodesString = getNodesString(data, indents);
 
 		return ""
 			+ indents + "{\n"
@@ -45,4 +40,16 @@ public:
 
 private:
 	std::vector<SyntaxNode*> nodes_;
+
+	std::string getNodesString(CppData* data, const std::string& indents) const
+	{
+		std::string nodesString;
+
+		for (auto node : nodes_)
+		{
+			nodesString += indents + "\t" + node->toCpp(data, indents + "\t");
+			if (node->needsSemiColon()) nodesString += ";\n";
+		}
+		return nodesString;
+	}
 };
