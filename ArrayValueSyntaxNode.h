@@ -46,19 +46,7 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		std::string expressionsString;
-
-		size_t lastIndex = expressions_.size() - 1;
-
-		for (int i = 0; i < expressions_.size(); i++)
-		{
-			auto e = expressions_[i];
-			auto expressionString = e->toCpp(data, indents + "\t");
-
-			if (i == 0) expressionsString += indents + "\t";
-			expressionsString += expressionString + ",";
-			if (i == lastIndex) expressionsString += "\n";
-		}
+		std::string expressionsString = getExpressionsString(data, indents);
 
 		std::string code = "{";
 
@@ -96,5 +84,22 @@ private:
 		}
 
 		return elementType;
+	}
+
+	std::string getExpressionsString(CppData* data, const std::string& indents)
+	{
+		std::string expressionsString;
+		size_t lastIndex = expressions_.size() - 1;
+
+		for (int i = 0; i < expressions_.size(); i++)
+		{
+			auto e = expressions_[i];
+			auto expressionString = e->toCpp(data, indents + "\t");
+
+			if (i == 0) expressionsString += indents + "\t";
+			expressionsString += expressionString + ",";
+			if (i == lastIndex) expressionsString += "\n";
+		}
+		return expressionsString;
 	}
 };
