@@ -80,7 +80,16 @@ public:
 			else code += varName + "++";
 		}
 		else
-			code += "const auto& " + varName + " : " + array_->toCpp(data, "");
+		{
+			std::string elementType = "auto&";
+			/*const Type* subtype = nullptr;
+			if (arrayType)
+			{
+				subtype = arrayType->subtype(0);
+				if (subtype) elementType = data->toCppType(subtype);
+			}*/
+			code += "const " + elementType + " " + varName + " : " + array_->toCpp(data, "");
+		}
 
 		code += ")\n";
 
