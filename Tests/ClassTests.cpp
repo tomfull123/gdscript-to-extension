@@ -22,6 +22,17 @@ TEST_F(TranspileTest, ClassNameWithUnderscore)
 	EXPECT_EQ(expected, actual);
 }
 
+TEST_F(TranspileTest, ClassNameUnicode)
+{
+	std::string input = R"(
+		class_name ExamplePrzykład
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass ExamplePrzyk\xC5\x82" "ad : public RefCounted\n\t{\n\t\tGDCLASS(ExamplePrzyk\xC5\x82" "ad, RefCounted)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
 TEST_F(TranspileTest, ExtendsNode3D)
 {
 	std::string input = R"(

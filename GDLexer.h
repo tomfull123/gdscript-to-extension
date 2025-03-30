@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <locale>
+#include <cwctype>
 #include "Lexer.h"
 
 enum class GDTokenType
@@ -159,12 +159,12 @@ private:
 
 	static bool isIdentifierStart(const char& ch)
 	{
-		return std::isalpha(ch, std::locale("en_US.UTF8")) || ch == '_';
+		return std::iswalpha(ch) || ch == '_';
 	}
 
 	static bool isIdentifier(const char& ch)
 	{
-		return std::isalpha(ch, std::locale("en_US.UTF8")) || ch == '_' || isdigit(ch);
+		return std::iswalpha(ch) || ch == '_' || isdigit(ch);
 	}
 
 	GDToken* readIdentifierOrKeyword()
