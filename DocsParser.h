@@ -25,7 +25,7 @@ public:
 
 	static Result* parse(const std::string& input, AbstractSyntaxTree* ast, const std::string& fileName)
 	{
-		XMLLexer lexer(input);
+		XMLLexer lexer(input, fileName);
 
 		std::vector<XMLToken*> tokens = lexer.readAllTokens();
 

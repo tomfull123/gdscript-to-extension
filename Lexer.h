@@ -19,8 +19,9 @@ struct Token
 class Lexer
 {
 public:
-	explicit Lexer(const std::string& input) :
-		inputStream_(input)
+	Lexer(const std::string& input, const std::string& filename) :
+		inputStream_(input),
+		filename_(filename)
 	{
 	}
 
@@ -31,4 +32,5 @@ public:
 
 protected:
 	InputStream inputStream_;
+	std::string filename_;
 };

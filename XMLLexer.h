@@ -27,8 +27,8 @@ struct XMLToken : public Token
 class XMLLexer : public Lexer
 {
 public:
-	explicit XMLLexer(const std::string& input) :
-		Lexer(input)
+	explicit XMLLexer(const std::string& input, const std::string& filename) :
+		Lexer(input, filename)
 	{
 	}
 
@@ -118,6 +118,7 @@ private:
 
 		token->lineNumber = inputStream_.getLineNumber();
 		token->columnNumber = inputStream_.getColumnNumber();
+		token->filename = filename_;
 
 		token->value = inputStream_.next();
 		const auto& value = token->value;
@@ -174,6 +175,7 @@ private:
 
 		token->lineNumber = inputStream_.getLineNumber();
 		token->columnNumber = inputStream_.getColumnNumber();
+		token->filename = filename_;
 
 		inputStream_.next(); // eat "
 
@@ -194,6 +196,7 @@ private:
 
 		token->value = inputStream_.readUntil(isWhitespace, false);
 		token->type = XMLTokenType::Error;
+		token->filename = filename_;
 
 		return token;
 	}
@@ -208,6 +211,7 @@ private:
 
 		token->value = inputStream_.readWhile(function);
 		token->type = type;
+		token->filename = filename_;
 
 		return token;
 	}
