@@ -668,7 +668,7 @@ private:
 			if (value == "true" || value == "false") return parseBooleanLiteral();
 			else if (value == "preload") return parsePreload();
 			else if (value == "null") return parseNullValue();
-			else if (value == "range") return parseRange();
+			else if (value == "range" && isNextTokenType(GDTokenType::OpenBracketSeparator, 1)) return parseRange();
 			else if (value == "not") return parseNotOperator();
 
 			return parseVariableOrFunctionCall(true);
