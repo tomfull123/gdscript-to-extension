@@ -60,7 +60,7 @@ struct TranspileTest : testing::Test
 
 		std::string cppFileName = FileNameTransformer::toCppFileName(fileName);
 
-		DocsParser::parse(allLines, ast, cppFileName);
+		DocsParser::parse(allLines, ast, cppFileName, "");
 	}
 
 	static void SetUpTestCase()
@@ -86,7 +86,7 @@ struct TranspileTest : testing::Test
 	{
 		AbstractSyntaxTree* ast = new AbstractSyntaxTree();
 
-		const Result* result = GDParser::parse(input, ast, "Test");
+		const Result* result = GDParser::parse(input, ast, "Test", "");
 
 		const auto& errors = result->errors;
 

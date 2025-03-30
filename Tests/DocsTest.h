@@ -9,7 +9,7 @@ struct DocsTest : testing::Test
 	{
 		AbstractSyntaxTree* ast = new AbstractSyntaxTree();
 
-		const Result* result = DocsParser::parse(input, ast, "Test");
+		const Result* result = DocsParser::parse(input, ast, "Test", "");
 
 		const auto& errors = result->errors;
 

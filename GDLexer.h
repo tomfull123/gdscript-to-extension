@@ -6,34 +6,8 @@
 
 enum class GDTokenType
 {
-	Identifier,
+	IdentifierOrKeyword,
 	Error,
-
-	FuncKeyword,
-	VarKeyword,
-	ConstKeyword,
-	ClassNameKeyword,
-	ExtendsKeyword,
-	ReturnKeyword,
-	ForKeyword,
-	IfKeyword,
-	ElseKeyword,
-	TrueKeyword,
-	FalseKeyword,
-	ClassKeyword,
-	NullKeyword,
-	WhileKeyword,
-	EnumKeyword,
-	StaticKeyword,
-	BreakKeyword,
-	ContinueKeyword,
-	PassKeyword,
-	SignalKeyword,
-	PreloadKeyword,
-	InKeyword,
-	IsKeyword,
-	RangeKeyword,
-	AsKeyword,
 
 	FloatLiteral,
 	IntLiteral,
@@ -169,46 +143,11 @@ private:
 
 	GDToken* readIdentifierOrKeyword()
 	{
-		GDToken* token = readToken(isIdentifier, GDTokenType::Identifier);
+		GDToken* token = readToken(isIdentifier, GDTokenType::IdentifierOrKeyword);
 
-		token->type = getKeywordTokenType(token->value);
 		token->indentDepth = currentIndent_;
 
 		return token;
-	}
-
-	GDTokenType getKeywordTokenType(const std::string& value) const
-	{
-		if (value == "func") return GDTokenType::FuncKeyword;
-		if (value == "var") return GDTokenType::VarKeyword;
-		if (value == "const") return GDTokenType::ConstKeyword;
-		if (value == "class_name") return GDTokenType::ClassNameKeyword;
-		if (value == "extends") return GDTokenType::ExtendsKeyword;
-		if (value == "return") return GDTokenType::ReturnKeyword;
-		if (value == "for") return GDTokenType::ForKeyword;
-		if (value == "if") return GDTokenType::IfKeyword;
-		if (value == "else") return GDTokenType::ElseKeyword;
-		if (value == "true") return GDTokenType::TrueKeyword;
-		if (value == "false") return GDTokenType::FalseKeyword;
-		if (value == "class") return GDTokenType::ClassKeyword;
-		if (value == "null") return GDTokenType::NullKeyword;
-		//if (value == "get") return TokenType::GetKeyword;
-		if (value == "while") return GDTokenType::WhileKeyword;
-		if (value == "enum") return GDTokenType::EnumKeyword;
-		if (value == "static") return GDTokenType::StaticKeyword;
-		if (value == "break") return GDTokenType::BreakKeyword;
-		if (value == "continue") return GDTokenType::ContinueKeyword;
-		if (value == "pass") return GDTokenType::PassKeyword;
-		if (value == "signal") return GDTokenType::SignalKeyword;
-		if (value == "preload") return GDTokenType::PreloadKeyword;
-		if (value == "in") return GDTokenType::InKeyword;
-		if (value == "is") return GDTokenType::IsKeyword;
-		if (value == "or") return GDTokenType::OrOperator;
-		if (value == "not") return GDTokenType::NotOperator;
-		if (value == "range") return GDTokenType::RangeKeyword;
-		if (value == "as") return GDTokenType::AsKeyword;
-
-		return GDTokenType::Identifier;
 	}
 
 	static bool isStringLiteralStart(const char& ch)
