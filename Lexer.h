@@ -8,7 +8,7 @@ struct Token
 	std::string value;
 	int lineNumber = -1;
 	int columnNumber = -1;
-	std::string filename = "";
+	std::string filepath = "";
 	int indentDepth = -1;
 	Token() = default;
 	explicit Token(const std::string& newValue) :
@@ -19,9 +19,9 @@ struct Token
 class Lexer
 {
 public:
-	Lexer(const std::string& input, const std::string& filename) :
+	Lexer(const std::string& input, const std::string& filepath) :
 		inputStream_(input),
-		filename_(filename)
+		filepath_(filepath)
 	{
 	}
 
@@ -32,5 +32,5 @@ public:
 
 protected:
 	InputStream inputStream_;
-	std::string filename_;
+	std::string filepath_;
 };

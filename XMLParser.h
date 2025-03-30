@@ -81,7 +81,7 @@ private:
 	XMLToken* addError(const std::string& error, const XMLToken* token)
 	{
 		if (token)
-			errors_.emplace_back(error, token->lineNumber, token->columnNumber, token->filename);
+			errors_.emplace_back(error, token->lineNumber, token->columnNumber, token->filepath);
 		else
 			errors_.emplace_back(error, stream_.getLastTokenLineNumber(), stream_.getLastTokenColumnNumber(), "");
 

@@ -14,7 +14,7 @@ static void printErrors(const std::vector<ParserError>& errors)
 	for (const auto& e : errors)
 	{
 		std::cout << e.message << " at " << e.lineNumber << ":" << e.columnNumber;
-		if (e.filename != "") std::cout << " in file " << e.filename;
+		if (e.filepath != "") std::cout << " in file " << e.filepath;
 		std::cout << std::endl;
 	}
 }
@@ -38,19 +38,19 @@ static std::string readFile(const std::string& filePath)
 	return allLines;
 }
 
-static void buildClassAST(const std::string& filePath, AbstractSyntaxTree* ast)
+static void buildClassAST(const std::string& filepath, AbstractSyntaxTree* ast)
 {
-	std::string allLines = readFile(filePath);
+	std::string allLines = readFile(filepath);
 
-	auto fileNameExtensionStart = filePath.find_last_of(".");
-	auto filePathLength = filePath.length();
-	std::string filePathWithoutExtension = filePath.substr(0, filePathLength - (filePathLength - fileNameExtensionStart));
-	auto fileNameStart = filePathWithoutExtension.find_last_of("/") + 1;
-	std::string fileName = filePathWithoutExtension.substr(fileNameStart);
+	auto filenameExtensionStart = filepath.find_last_of(".");
+	auto filepathLength = filepath.length();
+	std::string filePathWithoutExtension = filepath.substr(0, filepathLength - (filepathLength - filenameExtensionStart));
+	auto filenameStart = filePathWithoutExtension.find_last_of("/") + 1;
+	std::string filename = filePathWithoutExtension.substr(filenameStart);
 
-	std::string cppFileName = FileNameTransformer::toCppFileName(fileName);
+	std::string cppFilename = FileNameTransformer::toCppFileName(filename);
 
-	const Result* result = GDParser::parse(allLines, ast, cppFileName);
+	const Result* result = GDParser::parse(allLines, ast, cppFilename, filepath);
 
 	const auto& errors = result->errors;
 
@@ -62,19 +62,19 @@ static void buildClassAST(const std::string& filePath, AbstractSyntaxTree* ast)
 	}
 }
 
-static bool parseDocFile(const std::string& filePath, AbstractSyntaxTree* ast)
+static bool parseDocFile(const std::string& filepath, AbstractSyntaxTree* ast)
 {
-	std::string allLines = readFile(filePath);
+	std::string allLines = readFile(filepath);
 
-	auto fileNameExtensionStart = filePath.find_last_of(".");
-	auto filePathLength = filePath.length();
-	std::string filePathWithoutExtension = filePath.substr(0, filePathLength - (filePathLength - fileNameExtensionStart));
-	auto fileNameStart = filePathWithoutExtension.find_last_of("/") + 1;
-	std::string fileName = filePathWithoutExtension.substr(fileNameStart);
+	auto filenameExtensionStart = filepath.find_last_of(".");
+	auto filepathLength = filepath.length();
+	std::string filepathWithoutExtension = filepath.substr(0, filepathLength - (filepathLength - filenameExtensionStart));
+	auto filenameStart = filepathWithoutExtension.find_last_of("/") + 1;
+	std::string filename = filepathWithoutExtension.substr(filenameStart);
 
-	std::string cppFileName = FileNameTransformer::toCppFileName(fileName);
+	std::string cppFilename = FileNameTransformer::toCppFileName(filename);
 
-	const Result* result = DocsParser::parse(allLines, ast, cppFileName);
+	const Result* result = DocsParser::parse(allLines, ast, cppFilename, filepath);
 
 	const auto& errors = result->errors;
 

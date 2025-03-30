@@ -8,16 +8,17 @@ struct ParserError
 		const std::string& Message,
 		int LineNumber,
 		int ColumnNumber,
-		const std::string& Filename
+		const std::string& Filepath
 	) :
 		message(Message),
 		lineNumber(LineNumber),
 		columnNumber(ColumnNumber),
-		filename(Filename)
-	{}
+		filepath(Filepath)
+	{
+	}
 
 	std::string message;
 	int lineNumber;
 	int columnNumber;
-	std::string filename;
+	std::string filepath;
 };

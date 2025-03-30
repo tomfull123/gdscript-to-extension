@@ -13,19 +13,19 @@
 class DocsParser
 {
 public:
-	void buildAST(const XMLTag* rootTag, AbstractSyntaxTree* ast, const std::string& fileName)
+	void buildAST(const XMLTag* rootTag, AbstractSyntaxTree* ast, const std::string& filename)
 	{
 		const auto& classTags = rootTag->children.find("class")->second;
 
 		for (const auto classTag : classTags)
 		{
-			ast->classes.push_back(parseClass(classTag, fileName));
+			ast->classes.push_back(parseClass(classTag, filename));
 		}
 	}
 
-	static Result* parse(const std::string& input, AbstractSyntaxTree* ast, const std::string& fileName)
+	static Result* parse(const std::string& input, AbstractSyntaxTree* ast, const std::string& filename, const std::string& filepath)
 	{
-		XMLLexer lexer(input, fileName);
+		XMLLexer lexer(input, filepath);
 
 		std::vector<XMLToken*> tokens = lexer.readAllTokens();
 
@@ -35,7 +35,7 @@ public:
 
 		DocsParser parser;
 
-		parser.buildAST(rootTag, ast, fileName);
+		parser.buildAST(rootTag, ast, filename);
 
 		const auto& errors = xmlParser.getErrors();
 

@@ -118,7 +118,7 @@ private:
 
 		token->lineNumber = inputStream_.getLineNumber();
 		token->columnNumber = inputStream_.getColumnNumber();
-		token->filename = filename_;
+		token->filepath = filepath_;
 
 		token->value = inputStream_.next();
 		const auto& value = token->value;
@@ -175,7 +175,7 @@ private:
 
 		token->lineNumber = inputStream_.getLineNumber();
 		token->columnNumber = inputStream_.getColumnNumber();
-		token->filename = filename_;
+		token->filepath = filepath_;
 
 		inputStream_.next(); // eat "
 
@@ -196,7 +196,7 @@ private:
 
 		token->value = inputStream_.readUntil(isWhitespace, false);
 		token->type = XMLTokenType::Error;
-		token->filename = filename_;
+		token->filepath = filepath_;
 
 		return token;
 	}
@@ -211,7 +211,7 @@ private:
 
 		token->value = inputStream_.readWhile(function);
 		token->type = type;
-		token->filename = filename_;
+		token->filepath = filepath_;
 
 		return token;
 	}

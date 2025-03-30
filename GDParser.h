@@ -57,22 +57,22 @@ public:
 	{
 	}
 
-	ClassDefinitionSyntaxNode* buildAST(AbstractSyntaxTree* ast, const std::string& fileName)
+	ClassDefinitionSyntaxNode* buildAST(AbstractSyntaxTree* ast, const std::string& cppFilename)
 	{
-		return parseScriptBody(0, fileName);
+		return parseScriptBody(0, cppFilename);
 	}
 
 	const std::vector<ParserError>& getErrors() const { return errors_; }
 
-	static Result* parse(const std::string& input, AbstractSyntaxTree* ast, const std::string& fileName)
+	static Result* parse(const std::string& input, AbstractSyntaxTree* ast, const std::string& cppFilename, const std::string& filepath)
 	{
-		GDLexer lexer(input, fileName);
+		GDLexer lexer(input, filepath);
 
 		std::vector<GDToken*> tokens = lexer.readAllTokens();
 
 		GDParser parser(tokens);
 
-		auto classDef = parser.buildAST(ast, fileName);
+		auto classDef = parser.buildAST(ast, cppFilename);
 
 		const auto& errors = parser.getErrors();
 
@@ -94,7 +94,7 @@ private:
 	SyntaxNode* addError(const std::string& error, const GDToken* token)
 	{
 		if (token)
-			errors_.emplace_back(error, token->lineNumber, token->columnNumber, token->filename);
+			errors_.emplace_back(error, token->lineNumber, token->columnNumber, token->filepath);
 		else
 			errors_.emplace_back(error, stream_.getLastTokenLineNumber(), stream_.getLastTokenColumnNumber(), "");
 

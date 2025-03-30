@@ -81,8 +81,8 @@ struct GDToken : public Token
 class GDLexer : public Lexer
 {
 public:
-	explicit GDLexer(const std::string& input, const std::string& filename) :
-		Lexer(input, filename)
+	explicit GDLexer(const std::string& input, const std::string& filepath) :
+		Lexer(input, filepath)
 	{
 	}
 
@@ -269,7 +269,7 @@ private:
 			token->type = GDTokenType::IntLiteral;
 
 		token->indentDepth = currentIndent_;
-		token->filename = filename_;
+		token->filepath = filepath_;
 
 		return token;
 	}
@@ -292,7 +292,7 @@ private:
 		token->columnNumber = inputStream_.getColumnNumber();
 
 		token->indentDepth = currentIndent_;
-		token->filename = filename_;
+		token->filepath = filepath_;
 
 		token->value = inputStream_.next();
 		const auto& value = token->value;
@@ -421,7 +421,7 @@ private:
 		token->type = GDTokenType::Error;
 
 		token->indentDepth = currentIndent_;
-		token->filename = filename_;
+		token->filepath = filepath_;
 
 		return token;
 	}
@@ -438,7 +438,7 @@ private:
 		token->type = type;
 
 		token->indentDepth = currentIndent_;
-		token->filename = filename_;
+		token->filepath = filepath_;
 
 		return token;
 	}
@@ -464,7 +464,7 @@ private:
 
 		token->lineNumber = inputStream_.getLineNumber();
 		token->columnNumber = inputStream_.getColumnNumber();
-		token->filename = filename_;
+		token->filepath = filepath_;
 
 		inputStream_.next(); // eat "
 
