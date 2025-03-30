@@ -57,9 +57,9 @@ public:
 	{
 	}
 
-	void buildAST(AbstractSyntaxTree* ast, const std::string& fileName)
+	ClassDefinitionSyntaxNode* buildAST(AbstractSyntaxTree* ast, const std::string& fileName)
 	{
-		ast->classes.push_back(parseScriptBody(0, fileName));
+		return parseScriptBody(0, fileName);
 	}
 
 	const std::vector<ParserError>& getErrors() const { return errors_; }
@@ -72,9 +72,11 @@ public:
 
 		GDParser parser(tokens);
 
-		parser.buildAST(ast, fileName);
+		auto classDef = parser.buildAST(ast, fileName);
 
 		const auto& errors = parser.getErrors();
+
+		if (errors.empty()) ast->classes.push_back(classDef);
 
 		return new Result(ast, errors);
 	}

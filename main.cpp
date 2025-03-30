@@ -38,7 +38,7 @@ static std::string readFile(const std::string& filePath)
 	return allLines;
 }
 
-static bool buildClassAST(const std::string& filePath, AbstractSyntaxTree* ast)
+static void buildClassAST(const std::string& filePath, AbstractSyntaxTree* ast)
 {
 	std::string allLines = readFile(filePath);
 
@@ -57,10 +57,9 @@ static bool buildClassAST(const std::string& filePath, AbstractSyntaxTree* ast)
 	if (!errors.empty())
 	{
 		printErrors(errors);
-		return false;
-	}
 
-	return true;
+		std::cout << "Parser errors, but continuing..." << std::endl;
+	}
 }
 
 static bool parseDocFile(const std::string& filePath, AbstractSyntaxTree* ast)
@@ -164,7 +163,7 @@ int main(int argc, char* argv[])
 
 	for (const auto& filePath : getGDFilePaths(projectPath))
 	{
-		if (!buildClassAST(filePath.generic_string(), &ast)) return 1;
+		buildClassAST(filePath.generic_string(), &ast);
 	}
 
 	Generator generator;
