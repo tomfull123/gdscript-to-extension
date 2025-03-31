@@ -250,7 +250,6 @@ private:
 			"\tprivate:\n"
 			+ privateMemberVariableDefinitionString +
 			"\n"
-			+ buildDefaultConstructor(className)
 			+ privateMemberFunctionDefinitionString
 			+ privateStaticFunctionDefinitionString +
 			"\tprotected:\n"
@@ -339,11 +338,6 @@ private:
 		}
 
 		return enumCasts;
-	}
-
-	std::string buildDefaultConstructor(const std::string& className) const
-	{
-		return "\t\t" + className + "() = default;\n\n";
 	}
 
 	void addGetter(VariableDefinitionSyntaxNode* variableDefinition, CppData* data)

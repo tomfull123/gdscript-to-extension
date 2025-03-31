@@ -10,7 +10,7 @@ TEST_F(TranspileTest, MeshInstance3DMeshMethod)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/mesh_instance3d.hpp>\n\nnamespace godot\n{\n\tclass Test : public MeshInstance3D\n\t{\n\t\tGDCLASS(Test, MeshInstance3D)\n\tpublic:\n\t\tvoid _ready()\n\t\t{\n\t\t\tauto surfaceCount = get_mesh()->get_surface_count();\n\t\t}\n\n\tprivate:\n\n\t\tTest() = default;\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"_ready\"), &Test::_ready);\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/mesh_instance3d.hpp>\n\nnamespace godot\n{\n\tclass Test : public MeshInstance3D\n\t{\n\t\tGDCLASS(Test, MeshInstance3D)\n\tpublic:\n\t\tvoid _ready()\n\t\t{\n\t\t\tauto surfaceCount = get_mesh()->get_surface_count();\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"_ready\"), &Test::_ready);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
 
@@ -25,6 +25,6 @@ TEST_F(TranspileTest, MeshInstance3DGetChildMethod)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/mesh_instance3d.hpp>\n\nnamespace godot\n{\n\tclass Test : public MeshInstance3D\n\t{\n\t\tGDCLASS(Test, MeshInstance3D)\n\tpublic:\n\t\tvoid _ready()\n\t\t{\n\t\t\tif ((get_child_count() > 0))\n\t\t\t{\n\t\t\t\tget_child(0)->queue_free();\n\t\t\t}\n\t\t}\n\n\tprivate:\n\n\t\tTest() = default;\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"_ready\"), &Test::_ready);\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/mesh_instance3d.hpp>\n\nnamespace godot\n{\n\tclass Test : public MeshInstance3D\n\t{\n\t\tGDCLASS(Test, MeshInstance3D)\n\tpublic:\n\t\tvoid _ready()\n\t\t{\n\t\t\tif ((get_child_count() > 0))\n\t\t\t{\n\t\t\t\tget_child(0)->queue_free();\n\t\t\t}\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"_ready\"), &Test::_ready);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
