@@ -96,8 +96,8 @@ public:
 				if (!isConstructorCall)
 				{
 					auto parentType = instance_->getType();
-					auto varDef = data->currentClass->getVariableDefinition(instanceName);
-					auto functionDef = data->currentClass->getFunctionProtoytype(instance_->getName());
+					auto instanceVarDef = data->currentClass->getVariableDefinition(instanceName);
+					auto instanceFunctionDef = data->currentClass->getFunctionProtoytype(instance_->getName());
 					bool isParentRefOrObject = false;
 					std::string parentTypeName = "";
 
@@ -116,7 +116,7 @@ public:
 						code += ".";
 					else if (data->currentClass->isClassMethod(instance_->getName(), data))
 						code += "->";
-					else if (!parentType && !varDef && !instance_->hasParent() && !functionDef) // static method call
+					else if (!parentType && !instanceVarDef && !instance_->hasParent() && !instanceFunctionDef) // static method call
 					{
 						data->currentClass->types.emplace(instanceName);
 						code += "::";
