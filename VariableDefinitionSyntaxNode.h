@@ -63,7 +63,7 @@ public:
 
 	void hoist(CppData* data) override
 	{
-		if (isClassMember_ || isStatic_) data->currentClass->variableDefinitions[name_->value] = this;
+		if (isClassMember_ || isStatic_) data->currentClass->memberVariableDefinitions[name_->value] = this;
 		else data->currentClass->currentFunction->variableDefinitions[name_->value] = this;
 		if (initialValue_) initialValue_->hoist(data);
 	}

@@ -54,24 +54,29 @@ bool CppClassData::isClassMethod(const std::string& name, const CppData* data) c
 	return isGodotTypeMethod(classInheritedType, name, data);
 }
 
-bool CppClassData::isGodotTypeMethod(const Type* parentType, const std::string& name, const CppData* data)
+bool CppClassData::isGodotTypeMethod(const Type* classType, const std::string& name, const CppData* data)
 {
-	if (!parentType) return false;
+	if (!classType) return false;
 
-	std::string parentTypeName = parentType->name;
+	std::string classTypeName = classType->name;
 
 	while (true)
 	{
-		if (data->classData.contains(parentTypeName))
+		if (data->classData.contains(classTypeName))
 		{
-			const auto typeClass = data->classData.find(parentTypeName)->second;
+			const auto typeClass = data->classData.find(classTypeName)->second;
 
 			if (typeClass->functionPrototypeDefinitions.contains(name)) return true;
-			if (typeClass->variableDefinitions.contains(name)) return true;
+			if (typeClass->memberVariableDefinitions.contains(name))
+			{
+				auto variableDefinition = typeClass->memberVariableDefinitions[name];
+				if (variableDefinition->getGetterName() != nullptr || variableDefinition->getSetterName() != nullptr)
+					return true;
+			}
 		}
 
-		if (data->inheritTypes.contains(parentTypeName))
-			parentTypeName = data->inheritTypes.find(parentTypeName)->second;
+		if (data->inheritTypes.contains(classTypeName))
+			classTypeName = data->inheritTypes.find(classTypeName)->second;
 		else
 			return false;
 	}
@@ -92,9 +97,9 @@ bool CppClassData::isProperty(ValueSyntaxNode* parentInstance, const GDToken* na
 		{
 			const auto typeClass = data->classData.find(parentTypeName)->second;
 
-			if (typeClass->variableDefinitions.contains(name->value))
+			if (typeClass->memberVariableDefinitions.contains(name->value))
 			{
-				const auto* variableDefinition = typeClass->variableDefinitions.find(name->value)->second;
+				const auto* variableDefinition = typeClass->memberVariableDefinitions.find(name->value)->second;
 				return variableDefinition->getGetterName() == nullptr && variableDefinition->getSetterName() == nullptr;
 			}
 		}

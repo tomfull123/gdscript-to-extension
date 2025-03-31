@@ -59,7 +59,7 @@ public:
 		else
 		{
 			parentInstance_->resolveDefinitions(data);
-			if (!variableDefinition_) enumDefinition_ = data->currentClass->enumDefinitions[parentInstance_->getName()];
+			if (!variableDefinition_) enumDefinition_ = data->currentClass->getEnumDefinition(parentInstance_->getName());
 		}
 
 		if (variableDefinition_) variableDefinition_->resolveDefinitions(data);
@@ -112,7 +112,7 @@ public:
 			code += parentInstance_->toCpp(data, indents);
 
 			auto parentName = parentInstance_->getName();
-			if (data->currentClass->enumDefinitions[parentName] || GDTYPES_TO_CPPTYPES.contains(parentName))
+			if (data->currentClass->enumDefinitions.contains(parentName) || GDTYPES_TO_CPPTYPES.contains(parentName))
 				code += "::";
 			else if (!CPPTYPES_TO_FUNCTION.contains(parentName))
 			{
@@ -143,9 +143,9 @@ public:
 			{
 				auto parentName = parentInstance_->getName();
 
-				if (CPPTYPES_TO_FUNCTION.contains(parentName) || data->currentClass->enumDefinitions[parentName]
+				if (CPPTYPES_TO_FUNCTION.contains(parentName) || data->currentClass->enumDefinitions.contains(parentName)
 					|| CppClassData::isProperty(parentInstance_, name_, data) || GDTYPES_TO_CPPTYPES.contains(parentName)
-						|| parentName == "self")
+					|| parentName == "self")
 				{
 					code += data->toWrappedCppFunction(parentInstance_, name_);
 				}

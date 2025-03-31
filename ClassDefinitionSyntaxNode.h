@@ -70,6 +70,7 @@ public:
 	{
 		data->currentClass = new CppClassData();
 		data->currentClass->currentClassName = getName();
+		data->currentClass->currentClassType = new Type(data->currentClass->currentClassName);
 		data->currentClass->classInheritedType = getInheritedType();
 		if (extends_ || !isDocsClass_) data->inheritTypes[getName()] = getInheritedType()->name;
 		for (auto constantValueMapping : constantValueMappings_) constantValueMapping->hoist(data);

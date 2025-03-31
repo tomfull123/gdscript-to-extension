@@ -19,9 +19,9 @@ VariableDefinitionSyntaxNode* CppData::getVariableDefinition(const std::string& 
 
 	if (typeClass)
 	{
-		if (typeClass->variableDefinitions.contains(variableName))
+		if (typeClass->memberVariableDefinitions.contains(variableName))
 		{
-			return typeClass->variableDefinitions.find(variableName)->second;
+			return typeClass->memberVariableDefinitions.find(variableName)->second;
 		}
 	}
 
@@ -72,7 +72,7 @@ std::string CppData::toCppType(const Type* type, bool isSubtype)
 {
 	if (!type) return "auto";
 
-	auto enumDef = currentClass->enumDefinitions[type->name];
+	auto enumDef = currentClass->getEnumDefinition(type->name);
 	if (enumDef) return type->name;
 
 	auto it = GDTYPES_TO_CPPTYPES.find(type->name);

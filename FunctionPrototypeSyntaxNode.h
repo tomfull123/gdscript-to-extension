@@ -10,13 +10,18 @@ public:
 		Token* name,
 		const std::vector<VariableDefinitionSyntaxNode*>& argDefs,
 		Type* returnType,
-		bool isStatic
+		bool _isStatic
 	) :
 		name_(name),
 		argDefs_(argDefs),
 		returnType_(returnType),
-		isStatic_(isStatic)
+		isStatic_(_isStatic)
 	{
+	}
+
+	bool isStatic() const
+	{
+		return isStatic_;
 	}
 
 	Token* getToken() const

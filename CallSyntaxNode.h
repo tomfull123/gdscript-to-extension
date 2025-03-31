@@ -35,7 +35,7 @@ public:
 
 	void resolveDefinitions(CppData* data) override
 	{
-		prototype_ = data->currentClass->functionPrototypeDefinitions[getName()];
+		prototype_ = data->currentClass->getFunctionProtoytype(getName());
 
 		if (instance_) instance_->resolveDefinitions(data);
 		for (auto a : args_) a->resolveDefinitions(data);
@@ -66,7 +66,7 @@ public:
 
 				if (instanceTypeClass)
 				{
-					auto prototype = instanceTypeClass->functionPrototypeDefinitions[name_->value];
+					auto prototype = instanceTypeClass->getFunctionProtoytype(name_->value);
 
 					if (prototype) type_ = prototype->getReturnType();
 				}
@@ -97,7 +97,7 @@ public:
 				{
 					auto parentType = instance_->getType();
 					auto varDef = data->currentClass->getVariableDefinition(instanceName);
-					auto functionDef = data->currentClass->functionPrototypeDefinitions[instance_->getName()];
+					auto functionDef = data->currentClass->getFunctionProtoytype(instance_->getName());
 					bool isParentRefOrObject = false;
 					std::string parentTypeName = "";
 

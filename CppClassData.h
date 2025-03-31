@@ -17,11 +17,12 @@ struct CppClassData
 {
 	std::unordered_set<std::string> types;
 	std::unordered_set<std::string> externalFunctions;
-	std::unordered_map<std::string, VariableDefinitionSyntaxNode*> variableDefinitions;
+	std::unordered_map<std::string, VariableDefinitionSyntaxNode*> memberVariableDefinitions;
 	std::unordered_map<std::string, FunctionPrototypeSyntaxNode*> functionPrototypeDefinitions;
 	std::unordered_map<std::string, EnumDefinitionSyntaxNode*> enumDefinitions;
 	std::unordered_set<std::string> typeDefinitions;
 	std::string currentClassName;
+	Type* currentClassType;
 	Type* classInheritedType;
 	std::unordered_map<std::string, CppFunctionData*> functionData;
 	CppFunctionData* currentFunction;
@@ -31,8 +32,22 @@ struct CppClassData
 	{
 		if (currentFunction && currentFunction->variableDefinitions.contains(variableName))
 			return currentFunction->variableDefinitions[variableName];
-		if (variableDefinitions.contains(variableName))
-			return variableDefinitions[variableName];
+		if (memberVariableDefinitions.contains(variableName))
+			return memberVariableDefinitions[variableName];
+		return nullptr;
+	}
+
+	FunctionPrototypeSyntaxNode* getFunctionProtoytype(const std::string& name)
+	{
+		if (functionPrototypeDefinitions.contains(name))
+			return functionPrototypeDefinitions[name];
+		return nullptr;
+	}
+
+	EnumDefinitionSyntaxNode* getEnumDefinition(const std::string& name)
+	{
+		if (enumDefinitions.contains(name))
+			return enumDefinitions[name];
 		return nullptr;
 	}
 
