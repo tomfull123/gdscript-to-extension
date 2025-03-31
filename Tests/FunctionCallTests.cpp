@@ -171,3 +171,14 @@ TEST_F(TranspileTest, FunctionCallInitWithArgs)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Abc : public RefCounted\n\t{\n\t\tGDCLASS(Abc, RefCounted)\n\tpublic:\n\t\tRef<Abc> init(int x, int y)\n\t\t{\n\t\t\tthis->x = x;\n\t\t\tthis->y = y;\n\t\t\treturn this;\n\t\t}\n\n\t\tint get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid set_x(int newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\t\tint get_y()\n\t\t{\n\t\t\treturn y;\n\t\t}\n\n\t\tvoid set_y(int newy)\n\t\t{\n\t\t\ty = newy;\n\t\t}\n\n\t\tint x;\n\t\tint y;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"init\", \"x\", \"y\"), &Abc::init);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Abc::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newx\"), &Abc::set_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_y\"), &Abc::get_y);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_y\", \"newy\"), &Abc::set_y);\n\t\t}\n\t};\n\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid x()\n\t\t{\n\t\t\tmemnew(Abc())->init(1, 2);\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"x\"), &Test::x);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, FunctionCallStaticGodotMethod)
+{
+	std::string input = R"(
+		var color := Color.from_rgba8(114.0, 162.0, 104.0)
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/color.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tauto get_color()\n\t\t{\n\t\t\treturn color;\n\t\t}\n\n\t\tvoid set_color(Variant newcolor)\n\t\t{\n\t\t\tcolor = newcolor;\n\t\t}\n\n\t\tauto color = Color::from_rgba8(114.0f, 162.0f, 104.0f);\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_color\"), &Test::get_color);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_color\", \"newcolor\"), &Test::set_color);\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}

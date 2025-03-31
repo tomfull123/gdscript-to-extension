@@ -111,7 +111,7 @@ public:
 
 					if (instanceName == "new")
 						code += "->";
-					else if (isParentRefOrObject || (data->currentClass->isGodotType(instanceName) || GDTYPES_TO_CPPTYPES.contains(instanceName)))
+					else if (isParentRefOrObject)
 						code += "->";
 					else if (parentType && !isParentRefOrObject)
 						code += ".";
