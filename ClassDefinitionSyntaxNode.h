@@ -224,7 +224,7 @@ private:
 			else
 			{
 				publicMemberFunctionDefinitionString += functionDefString;
-				bindMethodsString += bindMethod(className, f, "\t\t\t", false);
+				bindMethodsString += bindMethod(className, f, "\t\t\t", f->isStatic());
 			}
 		}
 

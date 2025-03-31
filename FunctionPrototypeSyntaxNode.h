@@ -19,6 +19,16 @@ public:
 	{
 	}
 
+	bool isConstructor() const
+	{
+		return name_->value == "_init";
+	}
+
+	bool isStatic() const
+	{
+		return isStatic_ || isConstructor();
+	}
+
 	Token* getToken() const
 	{
 		return name_;
@@ -26,7 +36,7 @@ public:
 
 	std::string getName() const
 	{
-		if (name_->value == "_init") return "init";
+		if (isConstructor()) return "create";
 		return name_->value;
 	}
 
@@ -50,7 +60,7 @@ public:
 	void hoist(CppData* data) override
 	{
 		data->currentClass->functionPrototypeDefinitions[name_->value] = this;
-		data->currentClass->currentFunction = new CppFunctionData();
+		data->currentClass->currentFunction = new CppFunctionData(name_->value);
 		data->currentClass->functionData[name_->value] = data->currentClass->currentFunction;
 		for (auto a : argDefs_) a->hoist(data);
 	}
@@ -95,7 +105,7 @@ public:
 
 		std::string code = indents;
 
-		if (isStatic_) code += "static ";
+		if (isStatic_ || isConstructor()) code += "static ";
 
 		std::string name = getName();
 

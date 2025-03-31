@@ -12,7 +12,13 @@ public:
 	) :
 		prototype_(prototype),
 		body_(body)
-	{}
+	{
+	}
+
+	bool isStatic() const
+	{
+		return prototype_->isStatic();
+	}
 
 	std::string getName() const
 	{

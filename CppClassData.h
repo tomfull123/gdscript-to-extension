@@ -36,6 +36,15 @@ struct CppClassData
 		return nullptr;
 	}
 
+	const FunctionPrototypeSyntaxNode* getCurrentFunctionPrototype()
+	{
+		if (currentFunction == nullptr) return nullptr;
+		const std::string& functionName = currentFunction->name;
+		if (functionPrototypeDefinitions.contains(functionName))
+			return functionPrototypeDefinitions[functionName];
+		return nullptr;
+	}
+
 	std::string toCppFunction(const std::string& functionName, const std::string& parentType);
 
 	std::string getIncludePath(const std::string& type) const;
