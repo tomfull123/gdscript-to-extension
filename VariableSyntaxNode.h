@@ -2,7 +2,6 @@
 
 #include "SyntaxNode.h"
 #include "EnumDefinitionSyntaxNode.h"
-#include "FunctionPrototypeSyntaxNode.h"
 
 class VariableSyntaxNode : public ValueSyntaxNode
 {
@@ -128,13 +127,10 @@ public:
 		}
 
 		auto varDef = data->currentClass->getVariableDefinition(name_->value);
-		auto functionPrototype = data->currentClass->getCurrentFunctionPrototype();
-		bool isConstructor = functionPrototype && functionPrototype->isConstructor();
 
 		if (name_->value == "self")
 		{
-			if (isConstructor) code += "object";
-			else code += "this";
+			code += "this";
 		}
 		// static call
 		else if (!parentInstance_ && !varDef && GDTYPES_TO_CPPTYPES.contains(name_->value))
@@ -167,7 +163,6 @@ public:
 			}
 			else
 			{
-				if (isConstructor && !asValue_) code += "object->";
 				code += data->toWrappedCppFunction(parentInstance_, name_);
 			}
 		}

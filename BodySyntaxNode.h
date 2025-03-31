@@ -2,7 +2,6 @@
 
 #include <vector>
 #include "SyntaxNode.h"
-#include "CppClassData.h"
 
 class BodySyntaxNode : public SyntaxNode
 {
@@ -44,26 +43,13 @@ private:
 
 	std::string getNodesString(CppData* data, const std::string& indents) const
 	{
-		auto functionPrototype = data->currentClass->getCurrentFunctionPrototype();
-		auto isConstructor = functionPrototype && functionPrototype->isConstructor();
 		std::string nodesString;
-
-		if (isConstructor)
-		{
-			nodesString += indents + "\tauto object = memnew(" + data->currentClass->currentClassName + ");\n";
-		}
 
 		for (auto node : nodes_)
 		{
 			nodesString += indents + "\t" + node->toCpp(data, indents + "\t");
 			if (node->needsSemiColon()) nodesString += ";\n";
 		}
-
-		if (isConstructor)
-		{
-			nodesString += indents + "\treturn object;\n";
-		}
-
 		return nodesString;
 	}
 };
