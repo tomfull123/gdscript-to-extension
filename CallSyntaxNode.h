@@ -84,7 +84,11 @@ public:
 		{
 			auto instanceName = instance_->getName();
 			if (instanceName[0] == '_') instanceName.erase(0, 1);
-			if (isConstructorCall) code += "memnew(" + instanceName;
+			if (isConstructorCall)
+			{
+				code += "memnew(" + instanceName;
+				if (!args_.empty()) code += "())->init";
+			}
 			else
 			{
 				code += instance_->toCpp(data, indents);
@@ -145,7 +149,7 @@ public:
 			code += "(" + argsString + ")";
 		}
 
-		if (isConstructorCall) code += ")";
+		if (isConstructorCall && args_.empty()) code += ")";
 
 		return code;
 	}
