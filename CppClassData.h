@@ -37,7 +37,7 @@ struct CppClassData
 		return nullptr;
 	}
 
-	FunctionPrototypeSyntaxNode* getFunctionProtoytype(const std::string& name)
+	FunctionPrototypeSyntaxNode* getFunctionPrototype(const std::string& name)
 	{
 		if (functionPrototypeDefinitions.contains(name))
 			return functionPrototypeDefinitions[name];

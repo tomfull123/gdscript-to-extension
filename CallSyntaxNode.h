@@ -35,7 +35,7 @@ public:
 
 	void resolveDefinitions(CppData* data) override
 	{
-		prototype_ = data->currentClass->getFunctionProtoytype(getName());
+		prototype_ = data->currentClass->getFunctionPrototype(getName());
 
 		if (instance_) instance_->resolveDefinitions(data);
 		for (auto a : args_) a->resolveDefinitions(data);
@@ -66,7 +66,7 @@ public:
 
 				if (instanceTypeClass)
 				{
-					auto prototype = instanceTypeClass->getFunctionProtoytype(name_->value);
+					auto prototype = instanceTypeClass->getFunctionPrototype(name_->value);
 
 					if (prototype) type_ = prototype->getReturnType();
 				}
@@ -97,9 +97,10 @@ public:
 				{
 					auto parentType = instance_->getType();
 					auto instanceVarDef = data->currentClass->getVariableDefinition(instanceName);
-					auto instanceFunctionDef = data->currentClass->getFunctionProtoytype(instance_->getName());
+					auto instanceFunctionDef = data->currentClass->getFunctionPrototype(instanceName);
 					bool isParentRefOrObject = false;
 					std::string parentTypeName = "";
+					FunctionPrototypeSyntaxNode* staticFunctionDef = data->getFunctionPrototype(instanceName, name_->value);
 
 					if (parentType)
 					{
@@ -116,7 +117,7 @@ public:
 						code += ".";
 					else if (data->currentClass->isClassMethod(instance_->getName(), data))
 						code += "->";
-					else if (!parentType && !instanceVarDef && !instance_->hasParent() && !instanceFunctionDef) // static method call
+					else if (staticFunctionDef && staticFunctionDef->isStatic()) // static method call
 					{
 						data->currentClass->types.emplace(instanceName);
 						code += "::";
