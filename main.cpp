@@ -58,7 +58,7 @@ static void buildClassAST(const std::string& filepath, AbstractSyntaxTree* ast)
 	{
 		printErrors(errors);
 
-		std::cout << "Parser errors, but continuing..." << std::endl;
+		std::cout << "Parser errors, but continuing...\n" << std::endl;
 	}
 }
 
