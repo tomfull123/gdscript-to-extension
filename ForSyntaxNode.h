@@ -82,12 +82,10 @@ public:
 		else
 		{
 			std::string elementType = "auto&";
-			/*const Type* subtype = nullptr;
-			if (arrayType)
+			if (varType)
 			{
-				subtype = arrayType->subtype(0);
-				if (subtype) elementType = data->toCppType(subtype);
-			}*/
+				elementType = data->toCppType(varType) + "&";
+			}
 			code += "const " + elementType + " " + varName + " : " + array_->toCpp(data, "");
 		}
 
