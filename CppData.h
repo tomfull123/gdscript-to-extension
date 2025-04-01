@@ -30,4 +30,6 @@ struct CppData
 	bool isRefType(const std::string& type) const;
 
 	bool isObjectType(const std::string& type) const;
+
+	bool isSingletonType(const std::string& type) const;
 };

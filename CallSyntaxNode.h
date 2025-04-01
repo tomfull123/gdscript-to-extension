@@ -111,7 +111,7 @@ public:
 
 					if (instanceName == "new")
 						code += "->";
-					else if (isParentRefOrObject)
+					else if (isParentRefOrObject || data->isSingletonType(instanceName))
 						code += "->";
 					else if (parentType && !isParentRefOrObject)
 						code += ".";

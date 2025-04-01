@@ -34,6 +34,12 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"Viewport", "Viewport"}
 };
 
+const std::unordered_set<std::string> GDSINGLETON_TYPES = {
+	"InputMap",
+	"RenderingServer",
+	"ResourceLoader",
+};
+
 // Global methods
 const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS = {
 	{"absf", "Math::abs"},

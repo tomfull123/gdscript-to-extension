@@ -150,3 +150,8 @@ bool CppData::isObjectType(const std::string& type) const
 
 	return false;
 }
+
+bool CppData::isSingletonType(const std::string& type) const
+{
+	return GDSINGLETON_TYPES.contains(type);
+}
