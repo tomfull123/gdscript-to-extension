@@ -12,12 +12,13 @@ public:
 	) :
 		variable_(variable),
 		index_(index)
-	{}
+	{
+	}
 
 	Type* getType() override
 	{
 		auto varType = variable_->getType();
-		if (varType) return varType->subtype(0);
+		if (varType) return varType->subtype(varType->subtypes.size() - 1);
 		return nullptr;
 	}
 
