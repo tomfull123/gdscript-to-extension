@@ -88,14 +88,14 @@ bool CppClassData::isProperty(ValueSyntaxNode* instance, const GDToken* name, co
 {
 	if (!instance) return false;
 
-	auto parentType = instance->getType();
-	if (parentType)
+	auto type = instance->getType();
+	if (type)
 	{
-		std::string parentTypeName = parentType->name;
-		if (parentTypeName[0] == '_') parentTypeName.erase(0, 1);
-		if (data->classData.contains(parentTypeName))
+		std::string typeName = type->name;
+		if (typeName[0] == '_') typeName.erase(0, 1);
+		if (data->classData.contains(typeName))
 		{
-			const auto typeClass = data->classData.find(parentTypeName)->second;
+			const auto typeClass = data->classData.find(typeName)->second;
 
 			if (typeClass->memberVariableDefinitions.contains(name->value))
 			{
