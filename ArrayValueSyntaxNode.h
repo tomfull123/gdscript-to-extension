@@ -92,7 +92,7 @@ private:
 			auto e = expressions_[i];
 			auto expressionString = e->toCpp(data, indents + "\t");
 
-			if (i == 0) expressionsString += indents + "\t";
+			if (i == 0 && putOnNewLine) expressionsString += indents + "\t";
 			expressionString += ",";
 			if (i == lastIndex) expressionString += "\n";
 			expressionsString += expressionString;
