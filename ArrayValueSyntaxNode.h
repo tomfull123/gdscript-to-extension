@@ -46,17 +46,9 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		std::string expressionsString = getExpressionsString(data, indents);
-
 		std::string code = "{";
 
-		bool putOnNewLine = expressions_.size() > 2;
-
-		if (putOnNewLine) code += "\n";
-
-		code += expressionsString;
-
-		if (putOnNewLine) code += indents;
+		code += getExpressionsString(data, indents);
 
 		return code + "}";
 	}
@@ -89,6 +81,10 @@ private:
 	std::string getExpressionsString(CppData* data, const std::string& indents) const
 	{
 		std::string expressionsString;
+		bool putOnNewLine = expressions_.size() > 2;
+
+		if (putOnNewLine) expressionsString += "\n";
+
 		size_t lastIndex = expressions_.size() - 1;
 
 		for (int i = 0; i < expressions_.size(); i++)
@@ -100,6 +96,9 @@ private:
 			expressionsString += expressionString + ",";
 			if (i == lastIndex) expressionsString += "\n";
 		}
+
+		if (putOnNewLine) expressionsString += indents;
+
 		return expressionsString;
 	}
 };
