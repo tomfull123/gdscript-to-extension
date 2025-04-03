@@ -28,10 +28,17 @@ struct CppClassData
 	CppFunctionData* currentFunction;
 	std::unordered_map<std::string, std::string> constantValueMappings = {};
 
-	VariableDefinitionSyntaxNode* getVariableDefinition(const std::string& variableName)
+	VariableDefinitionSyntaxNode* getLocalVariableDefinition(const std::string& variableName)
 	{
 		if (currentFunction && currentFunction->variableDefinitions.contains(variableName))
 			return currentFunction->variableDefinitions[variableName];
+		return nullptr;
+	}
+
+	VariableDefinitionSyntaxNode* getVariableDefinition(const std::string& variableName)
+	{
+		auto localVar = getLocalVariableDefinition(variableName);
+		if (localVar) return localVar;
 		if (memberVariableDefinitions.contains(variableName))
 			return memberVariableDefinitions[variableName];
 		return nullptr;

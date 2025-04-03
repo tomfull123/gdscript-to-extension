@@ -126,7 +126,7 @@ public:
 			}
 		}
 
-		auto varDef = data->currentClass->getVariableDefinition(name_->value);
+		auto varDef = data->getCurrentClassVariableDefinition(name_->value);
 
 		if (name_->value == "self")
 		{
@@ -136,7 +136,21 @@ public:
 		else if (!parentInstance_ && !varDef && GDTYPES_TO_CPPTYPES.contains(name_->value))
 			code += data->toCppType(new Type(name_->value));
 		else if (data->currentClass->isClassMethod(name_->value, data))
-			code += data->currentClass->toCppFunction(name_->value, data->currentClass->classInheritedType->name) + "()";
+			if (varDef)
+			{
+				if (asValue_) // getter
+				{
+					code += varDef->getGetterName()->value + "()";
+				}
+				else // setter
+				{
+					code += varDef->getSetterName()->value;
+				}
+			}
+			else
+			{
+				code += data->currentClass->toCppFunction(name_->value, data->currentClass->classInheritedType->name) + "()";
+			}
 		else
 		{
 			if (parentInstance_)

@@ -19,7 +19,11 @@ struct CppData
 
 	CppClassData* getClassDefinition(const std::string& className) const;
 
-	FunctionPrototypeSyntaxNode* getFunctionPrototype(const std::string& typeName, const std::string& functionName) const;
+	VariableDefinitionSyntaxNode* getCurrentClassVariableDefinition(const std::string& variableName) const;
+
+	VariableDefinitionSyntaxNode* getVariableDefinition(const std::string& className, const std::string& variableName) const;
+
+	FunctionPrototypeSyntaxNode* getFunctionPrototype(const std::string& className, const std::string& functionName) const;
 
 	std::string toWrappedCppFunction(ValueSyntaxNode* parentInstance, const Token* nameToken) const;
 

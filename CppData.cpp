@@ -13,16 +13,67 @@ CppClassData* CppData::getClassDefinition(const std::string& className) const
 	return nullptr;
 }
 
-FunctionPrototypeSyntaxNode* CppData::getFunctionPrototype(const std::string& typeName, const std::string& functionName) const
+VariableDefinitionSyntaxNode* CppData::getCurrentClassVariableDefinition(const std::string& variableName) const
 {
-	const auto typeClass = getClassDefinition(typeName);
+	if (!currentClass) return nullptr;
 
-	if (typeClass)
+	const std::string& className = currentClass->currentClassName;
+
+	auto classDef = getClassDefinition(className);
+
+	auto localVar = classDef->getLocalVariableDefinition(variableName);
+	if (localVar) return localVar;
+
+	return getVariableDefinition(className, variableName);
+}
+
+VariableDefinitionSyntaxNode* CppData::getVariableDefinition(const std::string& className, const std::string& variableName) const
+{
+	std::string classTypeName = className;
+
+	while (true)
 	{
-		if (typeClass->functionPrototypeDefinitions.contains(functionName))
+		if (classTypeName[0] == '_') classTypeName.erase(0, 1);
+		if (classData.contains(classTypeName))
 		{
-			return typeClass->functionPrototypeDefinitions.find(functionName)->second;
+			const auto typeClass = classData.find(classTypeName)->second;
+
+			if (typeClass->memberVariableDefinitions.contains(variableName))
+			{
+				return typeClass->memberVariableDefinitions.find(variableName)->second;
+			}
 		}
+
+		if (inheritTypes.contains(classTypeName))
+			classTypeName = inheritTypes.find(classTypeName)->second;
+		else
+			return nullptr;
+	}
+
+	return nullptr;
+}
+
+FunctionPrototypeSyntaxNode* CppData::getFunctionPrototype(const std::string& className, const std::string& functionName) const
+{
+	std::string classTypeName = className;
+
+	while (true)
+	{
+		if (classTypeName[0] == '_') classTypeName.erase(0, 1);
+		if (classData.contains(classTypeName))
+		{
+			const auto typeClass = classData.find(classTypeName)->second;
+
+			if (typeClass->functionPrototypeDefinitions.contains(functionName))
+			{
+				return typeClass->functionPrototypeDefinitions.find(functionName)->second;
+			}
+		}
+
+		if (inheritTypes.contains(classTypeName))
+			classTypeName = inheritTypes.find(classTypeName)->second;
+		else
+			return nullptr;
 	}
 
 	return nullptr;
