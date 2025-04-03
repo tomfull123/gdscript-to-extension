@@ -13,21 +13,6 @@ CppClassData* CppData::getClassDefinition(const std::string& className) const
 	return nullptr;
 }
 
-VariableDefinitionSyntaxNode* CppData::getVariableDefinition(const std::string& typeName, const std::string& variableName) const
-{
-	const auto typeClass = getClassDefinition(typeName);
-
-	if (typeClass)
-	{
-		if (typeClass->memberVariableDefinitions.contains(variableName))
-		{
-			return typeClass->memberVariableDefinitions.find(variableName)->second;
-		}
-	}
-
-	return nullptr;
-}
-
 FunctionPrototypeSyntaxNode* CppData::getFunctionPrototype(const std::string& typeName, const std::string& functionName) const
 {
 	const auto typeClass = getClassDefinition(typeName);

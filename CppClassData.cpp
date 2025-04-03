@@ -84,11 +84,11 @@ bool CppClassData::isGodotTypeMethod(const Type* classType, const std::string& n
 	return false;
 }
 
-bool CppClassData::isProperty(ValueSyntaxNode* parentInstance, const GDToken* name, const CppData* data)
+bool CppClassData::isProperty(ValueSyntaxNode* instance, const GDToken* name, const CppData* data)
 {
-	if (!parentInstance) return false;
+	if (!instance) return false;
 
-	auto parentType = parentInstance->getType();
+	auto parentType = instance->getType();
 	if (parentType)
 	{
 		std::string parentTypeName = parentType->name;

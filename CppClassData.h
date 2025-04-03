@@ -61,5 +61,5 @@ struct CppClassData
 
 	static bool isGodotTypeMethod(const Type* parentType, const std::string& name, const CppData* data);
 
-	static bool isProperty(ValueSyntaxNode* parentInstance, const GDToken* name, const CppData* data);
+	static bool isProperty(ValueSyntaxNode* instance, const GDToken* name, const CppData* data);
 };
