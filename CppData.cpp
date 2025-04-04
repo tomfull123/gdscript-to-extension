@@ -84,6 +84,13 @@ std::string CppData::toWrappedCppFunction(ValueSyntaxNode* parentInstance, const
 {
 	std::string name = nameToken->value;
 
+	if (name[0] == '_')
+	{
+		name.erase(0, 1);
+		if (!classData.contains(name))
+			name = "_" + name;
+	}
+
 	if (parentInstance)
 	{
 		auto parentName = parentInstance->getName();

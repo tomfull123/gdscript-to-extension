@@ -36,6 +36,11 @@ public:
 		return name_->value;
 	}
 
+	bool isStatic() const
+	{
+		return isStatic_;
+	}
+
 	bool isPrivate() const
 	{
 		return name_->value[0] == '_';
