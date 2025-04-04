@@ -133,11 +133,4 @@ const std::unordered_set<std::string> FUNCTION_TO_MEMBER_METHOD_CALL = {
 	"abs",
 };
 
-const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_METHODS_TO_CPP_METHODS = {
-	{
-		"MeshInstance3D",
-		{
-			{"mesh", "get_mesh"}
-		}
-	},
-};
+const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_METHODS_TO_CPP_METHODS = {};
