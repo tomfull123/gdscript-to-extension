@@ -149,7 +149,18 @@ private:
 
 	std::string assignInitialValueCpp(CppData* data, const std::string& indents)
 	{
-		if (initialValue_) return " = " + initialValue_->toCpp(data, indents);
+		if (initialValue_)
+		{
+			std::string code;
+
+			code += " = ";
+
+			code += data->castValue(dataType_, initialValue_->getType());
+
+			code += initialValue_->toCpp(data, indents);
+
+			return code;
+		}
 		return "";
 	}
 };

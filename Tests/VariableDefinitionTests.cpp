@@ -340,3 +340,15 @@ TEST_F(TranspileTest, Node3DMemberVariableSetter)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/node3d.hpp>\n#include <godot_cpp/classes/ray_cast3d.hpp>\n\nnamespace godot\n{\n\tclass Test : public Node3D\n\t{\n\t\tGDCLASS(Test, Node3D)\n\tpublic:\n\t\tvoid doStuff()\n\t\t{\n\t\t\tRayCast3D* raycast = (RayCast3D*)find_child(\"RayCast3D\");\n\t\t\traycast->set_global_position(Vector3(0, 0, 0));\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, CastVariableMismatchObjectType)
+{
+	std::string input = R"(
+		var resource := load("")
+		var node: Node3D = resource.instantiate()
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/node3d.hpp>\n#include <godot_cpp/classes/packed_scene.hpp>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tRef<PackedScene> get_resource()\n\t\t{\n\t\t\treturn resource;\n\t\t}\n\n\t\tvoid set_resource(Ref<PackedScene> newresource)\n\t\t{\n\t\t\tresource = newresource;\n\t\t}\n\n\t\tNode3D* get_node()\n\t\t{\n\t\t\treturn node;\n\t\t}\n\n\t\tvoid set_node(Node3D* newnode)\n\t\t{\n\t\t\tnode = newnode;\n\t\t}\n\n\t\tRef<PackedScene> resource = ResourceLoader::get_singleton()->load(\"\");\n\t\tNode3D* node = (Node3D*)resource->instantiate();\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_resource\"), &Test::get_resource);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_resource\", \"newresource\"), &Test::set_resource);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_node\"), &Test::get_node);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_node\", \"newnode\"), &Test::set_node);\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}

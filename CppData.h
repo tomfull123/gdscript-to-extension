@@ -3,6 +3,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <string>
+#include "Type.h"
 
 struct CppClassData;
 class VariableDefinitionSyntaxNode;
@@ -34,4 +35,21 @@ struct CppData
 	bool isObjectType(const std::string& type) const;
 
 	bool isSingletonType(const std::string& type) const;
+
+	std::string castValue(Type* targetType, Type* sourceType)
+	{
+		bool shouldCast = false;
+
+		if (targetType && sourceType)
+		{
+			if (isObjectType(targetType->name))
+				shouldCast = targetType->toString() != sourceType->toString();
+		}
+
+		if (shouldCast)
+		{
+			return "(" + toCppType(targetType) + ")";
+		}
+		return "";
+	}
 };
