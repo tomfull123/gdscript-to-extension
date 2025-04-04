@@ -326,8 +326,46 @@ private:
 
 		if (isClassMember)
 		{
-			getterName = new Token("get_" + name->value);
-			setterName = new Token("set_" + name->value);
+			if (isNextTokenType(GDTokenType::ColonSeparator))
+			{
+				next(); // eat :
+
+				while (true)
+				{
+					if (isNextTokenKeyword("set"))
+					{
+						next(); // eat set
+
+						consume(GDTokenType::AssignmentOperator);
+
+						setterName = consume(GDTokenType::IdentifierOrKeyword);
+
+						if (isNextTokenType(GDTokenType::CommaSeparator))
+							next(); // eat ,
+						else
+							break;
+					}
+					else if (isNextTokenKeyword("get"))
+					{
+						next(); // eat get
+
+						consume(GDTokenType::AssignmentOperator);
+
+						getterName = consume(GDTokenType::IdentifierOrKeyword);
+
+						if (isNextTokenType(GDTokenType::CommaSeparator))
+							next(); // eat ,
+						else
+							break;
+					}
+					else break;
+				}
+			}
+			else
+			{
+				getterName = new Token("get_" + name->value);
+				setterName = new Token("set_" + name->value);
+			}
 		}
 
 		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->value == "const", isClassMember, isStatic, getterName, setterName);

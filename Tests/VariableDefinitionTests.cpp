@@ -352,3 +352,59 @@ TEST_F(TranspileTest, CastVariableMismatchObjectType)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/node3d.hpp>\n#include <godot_cpp/classes/packed_scene.hpp>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tRef<PackedScene> get_resource()\n\t\t{\n\t\t\treturn resource;\n\t\t}\n\n\t\tvoid set_resource(Ref<PackedScene> newresource)\n\t\t{\n\t\t\tresource = newresource;\n\t\t}\n\n\t\tNode3D* get_node()\n\t\t{\n\t\t\treturn node;\n\t\t}\n\n\t\tvoid set_node(Node3D* newnode)\n\t\t{\n\t\t\tnode = newnode;\n\t\t}\n\n\t\tRef<PackedScene> resource = ResourceLoader::get_singleton()->load(\"\");\n\t\tNode3D* node = (Node3D*)resource->instantiate();\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_resource\"), &Test::get_resource);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_resource\", \"newresource\"), &Test::set_resource);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_node\"), &Test::get_node);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_node\", \"newnode\"), &Test::set_node);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, MemberVariableVarGetter)
+{
+	std::string input = R"(
+		var x: Vector3 : get = _getX
+		func _getX() -> Vector3:
+			return x
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/vector3.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tVector3 x;\n\tprivate:\n\n\t\tVector3 _getX()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tVector3 _getX()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, MemberVariableVarSetter)
+{
+	std::string input = R"(
+		var x: Vector3 : set = _setX
+		func _setX(newX: Vector3) -> void:
+			x = newX
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/vector3.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tVector3 x;\n\tprivate:\n\n\t\tvoid _setX(Vector3 newX)\n\t\t{\n\t\t\tx = newX;\n\t\t}\n\n\t\tvoid _setX(Vector3 newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, MemberVariableVarGetterSetter)
+{
+	std::string input = R"(
+		var x: Vector3 : get = _getX, set = _setX
+		func _getX() -> Vector3:
+			return x
+		func _setX(newX: Vector3) -> void:
+			x = newX
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/vector3.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tVector3 x;\n\tprivate:\n\n\t\tVector3 _getX()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid _setX(Vector3 newX)\n\t\t{\n\t\t\tx = newX;\n\t\t}\n\n\t\tVector3 _getX()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid _setX(Vector3 newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, MemberVariableVarSetterGetter)
+{
+	std::string input = R"(
+		var x: Vector3 : set = _setX, get = _getX
+		func _setX(newX: Vector3) -> void:
+			x = newX
+		func _getX() -> Vector3:
+			return x
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/vector3.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tVector3 x;\n\tprivate:\n\n\t\tvoid _setX(Vector3 newX)\n\t\t{\n\t\t\tx = newX;\n\t\t}\n\n\t\tVector3 _getX()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tVector3 _getX()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid _setX(Vector3 newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
