@@ -2,6 +2,7 @@
 #include "CppClassData.h"
 #include "TranspilerDefinitions.h"
 #include "SyntaxNode.h"
+#include "EnumDefinitionSyntaxNode.h"
 
 CppClassData* CppData::getClassDefinition(const std::string& className) const
 {
@@ -108,7 +109,7 @@ std::string CppData::toCppType(const Type* type, bool isSubtype)
 {
 	if (!type) return "auto";
 
-	auto enumDef = currentClass->getEnumDefinition(type->name);
+	auto enumDef = getEnumDefinition(type->name);
 	if (enumDef) return type->name;
 
 	auto it = GDTYPES_TO_CPPTYPES.find(type->name);

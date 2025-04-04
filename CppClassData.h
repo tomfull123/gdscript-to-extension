@@ -9,7 +9,6 @@
 
 class VariableDefinitionSyntaxNode;
 class FunctionPrototypeSyntaxNode;
-class EnumDefinitionSyntaxNode;
 class ValueSyntaxNode;
 struct CppData;
 
@@ -19,7 +18,6 @@ struct CppClassData
 	std::unordered_set<std::string> externalFunctions;
 	std::unordered_map<std::string, VariableDefinitionSyntaxNode*> memberVariableDefinitions;
 	std::unordered_map<std::string, FunctionPrototypeSyntaxNode*> functionPrototypeDefinitions;
-	std::unordered_map<std::string, EnumDefinitionSyntaxNode*> enumDefinitions;
 	std::unordered_set<std::string> typeDefinitions;
 	std::string currentClassName;
 	Type* currentClassType;
@@ -48,13 +46,6 @@ struct CppClassData
 	{
 		if (functionPrototypeDefinitions.contains(name))
 			return functionPrototypeDefinitions[name];
-		return nullptr;
-	}
-
-	EnumDefinitionSyntaxNode* getEnumDefinition(const std::string& name)
-	{
-		if (enumDefinitions.contains(name))
-			return enumDefinitions[name];
 		return nullptr;
 	}
 

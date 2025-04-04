@@ -8,6 +8,7 @@
 struct CppClassData;
 class VariableDefinitionSyntaxNode;
 class FunctionPrototypeSyntaxNode;
+class EnumDefinitionSyntaxNode;
 class ValueSyntaxNode;
 struct Type;
 struct Token;
@@ -16,7 +17,8 @@ struct CppData
 {
 	std::unordered_map<std::string, CppClassData*> classData;
 	CppClassData* currentClass;
-	std::unordered_map<std::string, std::string> inheritTypes = {};
+	std::unordered_map<std::string, std::string> inheritTypes;
+	std::unordered_map<std::string, EnumDefinitionSyntaxNode*> enumDefinitions;
 
 	CppClassData* getClassDefinition(const std::string& className) const;
 
@@ -25,6 +27,13 @@ struct CppData
 	VariableDefinitionSyntaxNode* getVariableDefinition(const std::string& className, const std::string& variableName) const;
 
 	FunctionPrototypeSyntaxNode* getFunctionPrototype(const std::string& className, const std::string& functionName) const;
+
+	EnumDefinitionSyntaxNode* getEnumDefinition(const std::string& name)
+	{
+		if (enumDefinitions.contains(name))
+			return enumDefinitions[name];
+		return nullptr;
+	}
 
 	std::string toWrappedCppFunction(ValueSyntaxNode* parentInstance, const Token* nameToken) const;
 

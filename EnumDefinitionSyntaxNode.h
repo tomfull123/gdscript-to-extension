@@ -22,7 +22,7 @@ public:
 
 	void hoist(CppData* data) override
 	{
-		data->currentClass->enumDefinitions[name_->value] = this;
+		data->enumDefinitions[name_->value] = this;
 		for (auto v : values_) v->hoist(data);
 	}
 
