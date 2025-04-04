@@ -92,7 +92,8 @@ private:
 
 		if (isIdentifierStart(ch)) return readIdentifierOrKeyword();
 
-		if (isStringLiteralStart(ch)) return readStringLiteral();
+		if (isDoubleQuoteStringLiteralStart(ch)) return readDoubleQuoteStringLiteral();
+		if (isSingleQuoteStringLiteralStart(ch)) return readSingleQuoteStringLiteral();
 
 		if (isNumberLiteralStart(ch)) return readNumberLiteral();
 
@@ -150,14 +151,24 @@ private:
 		return token;
 	}
 
-	static bool isStringLiteralStart(const char& ch)
+	static bool isDoubleQuoteStringLiteralStart(const char& ch)
 	{
-		return isStringLiteral(ch);
+		return isDoubleQuoteStringLiteral(ch);
 	}
 
-	static bool isStringLiteral(const char& ch)
+	static bool isDoubleQuoteStringLiteral(const char& ch)
 	{
 		return ch == '"';
+	}
+
+	static bool isSingleQuoteStringLiteralStart(const char& ch)
+	{
+		return isSingleQuoteStringLiteral(ch);
+	}
+
+	static bool isSingleQuoteStringLiteral(const char& ch)
+	{
+		return ch == '\'';
 	}
 
 	static bool isNumberLiteralStart(const char& ch)
@@ -397,7 +408,7 @@ private:
 		currentIndent_ = indent;
 	}
 
-	GDToken* readStringLiteral()
+	GDToken* readDoubleQuoteStringLiteral()
 	{
 		GDToken* token = new GDToken();
 
@@ -407,11 +418,30 @@ private:
 
 		inputStream_.next(); // eat "
 
-		token->value = inputStream_.readUntil(isStringLiteral, false);
+		token->value = inputStream_.readUntil(isDoubleQuoteStringLiteral, false);
 		unescape(token->value);
 		token->type = GDTokenType::StringLiteral;
 
 		inputStream_.next(); // eat "
+
+		return token;
+	}
+
+	GDToken* readSingleQuoteStringLiteral()
+	{
+		GDToken* token = new GDToken();
+
+		token->lineNumber = inputStream_.getLineNumber();
+		token->columnNumber = inputStream_.getColumnNumber();
+		token->filepath = filepath_;
+
+		inputStream_.next(); // eat '
+
+		token->value = inputStream_.readUntil(isSingleQuoteStringLiteral, false);
+		unescape(token->value);
+		token->type = GDTokenType::StringLiteral;
+
+		inputStream_.next(); // eat '
 
 		return token;
 	}
