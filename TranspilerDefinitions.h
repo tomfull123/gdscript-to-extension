@@ -137,7 +137,8 @@ const std::unordered_map<std::string, const std::unordered_map<std::string, std:
 	{
 		"Dictionary",
 		{
-			{"has", "contains"}
+			{"has", "contains"},
+			{"find_key", "at"},
 		}
 	}
 };
