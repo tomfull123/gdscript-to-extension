@@ -102,7 +102,7 @@ TEST_F(TranspileTest, StaticVariableDefinitionDictionaryFunction)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/color.hpp>\n#include <godot_cpp/variant/typed_dictionary.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstatic Color color8(float r, float g, float b, float a = 255.0f)\n\t\t{\n\t\t\treturn Color((r / 255.0f), (g / 255.0f), (b / 255.0f), (a / 255.0f));\n\t\t}\n\n\t\tstatic TypedDictionary<int, Color> x;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_static_method(\"Test\", D_METHOD(\"color8\", \"r\", \"g\", \"b\", \"a\"), &Test::color8);\n\t\t}\n\t};\n\tTypedDictionary<int, Color> Test::x = {\n\t\t{1,color8(1.0f, 2.0f, 4.0f)},\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/color.hpp>\n#include <map>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstatic Color color8(float r, float g, float b, float a = 255.0f)\n\t\t{\n\t\t\treturn Color((r / 255.0f), (g / 255.0f), (b / 255.0f), (a / 255.0f));\n\t\t}\n\n\t\tstatic std::map<int, Color> x;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_static_method(\"Test\", D_METHOD(\"color8\", \"r\", \"g\", \"b\", \"a\"), &Test::color8);\n\t\t}\n\t};\n\tstd::map<int, Color> Test::x = {\n\t\t{1,color8(1.0f, 2.0f, 4.0f)},\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
 

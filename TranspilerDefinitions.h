@@ -25,7 +25,7 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"Vector4", "Vector4"},
 	{"Vector4i", "Vector4i"},
 	{"Color", "Color"},
-	{"Dictionary", "TypedDictionary"},
+	{"Dictionary", "std::map"},
 	{"Array", "TypedArray"},
 	{"this", "this"},
 	{"Mesh", "Mesh"},
@@ -133,4 +133,11 @@ const std::unordered_set<std::string> FUNCTION_TO_MEMBER_METHOD_CALL = {
 	"abs",
 };
 
-const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_METHODS_TO_CPP_METHODS = {};
+const std::unordered_map<std::string, const std::unordered_map<std::string, std::string>> GDTYPE_METHODS_TO_CPP_METHODS = {
+	{
+		"Dictionary",
+		{
+			{"has", "contains"}
+		}
+	}
+};
