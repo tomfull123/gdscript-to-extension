@@ -71,6 +71,12 @@ public:
 	{
 		if (parentInstance_) parentInstance_->resolveTypes(data);
 
+		if (parentInstance_ && !variableDefinition_ && !enumDefinition_)
+		{
+			Type* parentType = parentInstance_->getType();
+			if (parentType)	variableDefinition_ = data->getVariableDefinition(parentType->name, name_->value);
+		}
+
 		if (variableDefinition_)
 		{
 			variableDefinition_->resolveTypes(data);
