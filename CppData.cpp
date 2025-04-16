@@ -153,11 +153,13 @@ std::string CppData::toCppType(const Type* type, bool isSubtype)
 
 	if (currentClass->typeDefinitions.contains(typeName)) return typeName;
 
+	if (isRefType(typeName)) return "Ref<" + typeName + ">";
+
 	if (!isSubtype)
 	{
-		if (isRefType(typeName)) return "Ref<" + typeName + ">";
 		if (isObjectType(typeName)) return typeName + "*";
 	}
+
 	return typeName;
 }
 
