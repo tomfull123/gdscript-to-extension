@@ -31,12 +31,14 @@ public:
 		return cppFileName;
 	}
 
-	static std::string getOutputFilePath(const std::string& cppFileName, const std::string& overridePath)
+	static std::string getOutputFilePath(const std::string& cppFileName, const std::string& overridePath, bool header = true)
 	{
 		std::string outputCppPath = std::filesystem::absolute(overridePath).generic_string();
 		if (!std::filesystem::path(overridePath).has_extension())
 		{
-			outputCppPath += "/" + cppFileName + ".h";
+			outputCppPath += "/" + cppFileName;
+			if (header) outputCppPath += ".h";
+			else outputCppPath += ".cpp";
 		}
 		std::filesystem::create_directories(std::filesystem::path(outputCppPath).remove_filename());
 		return outputCppPath;

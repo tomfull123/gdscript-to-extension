@@ -12,11 +12,21 @@ public:
 	{
 		for (const auto& classFile : cppModule->classes)
 		{
-			std::string outputCppPath = FileNameTransformer::getOutputFilePath(classFile.className, outputPath);
-			std::ofstream headerFile(outputCppPath);
-			headerFile << classFile.code;
-			headerFile.close();
-			std::cout << "Transpiled " << outputCppPath << std::endl;
+			writeClassToFile(classFile, outputPath);
 		}
+
+		writeClassToFile(cppModule->registerTypeHeader, outputPath);
+		writeClassToFile(cppModule->registerTypeSource, outputPath, false);
+	}
+
+private:
+
+	static void writeClassToFile(const CPPClassFile& classFile, const std::string& outputPath, bool header = true)
+	{
+		std::string outputCppPath = FileNameTransformer::getOutputFilePath(classFile.className, outputPath, header);
+		std::ofstream file(outputCppPath);
+		file << classFile.code;
+		file.close();
+		std::cout << "Wrote file: " << outputCppPath << std::endl;
 	}
 };

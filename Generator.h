@@ -4,24 +4,21 @@
 #include "SyntaxNode.h"
 #include "ClassDefinitionSyntaxNode.h"
 #include "CPPModule.h"
+#include "RegisterTypesGenerator.h"
 
 class Generator
 {
 public:
 
-	CPPModule* generateCode(AbstractSyntaxTree* ast)
+	CPPModule* generateCode(const AbstractSyntaxTree* ast)
 	{
-		CppData* data = new CppData();
+		CppData data;
 
-		hoist(ast, data);
+		hoist(ast, &data);
 
-		resolve(ast, data);
+		resolve(ast, &data);
 
-		auto cppModule = generate(ast, data);
-
-		delete data;
-
-		return cppModule;
+		return generate(ast, &data);
 	}
 
 private:
@@ -48,6 +45,11 @@ private:
 				cppModule->classes.emplace_back(classDef->toCpp(data, ""), classDef->getName());
 			}
 		}
+
+		cppModule->registerTypeHeader.className = RegisterTypesGenerator::filename;
+		cppModule->registerTypeHeader.code = RegisterTypesGenerator::generateHeader();
+		cppModule->registerTypeSource.className = RegisterTypesGenerator::filename;
+		cppModule->registerTypeSource.code = RegisterTypesGenerator::generateSource(*cppModule);
 
 		return cppModule;
 	}

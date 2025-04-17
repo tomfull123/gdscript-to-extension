@@ -218,5 +218,8 @@
     <ClInclude Include="ConstantValueMapping.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
+    <ClInclude Include="RegisterTypesGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

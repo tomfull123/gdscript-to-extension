@@ -247,6 +247,7 @@
     <ClInclude Include="PrefixOperator.h" />
     <ClInclude Include="PreloadSyntaxNode.h" />
     <ClInclude Include="RangeSyntaxNode.h" />
+    <ClInclude Include="RegisterTypesGenerator.h" />
     <ClInclude Include="ReturnSyntaxNode.h" />
     <ClInclude Include="InputStream.h" />
     <ClInclude Include="GDLexer.h" />

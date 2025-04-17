@@ -6,4 +6,6 @@
 struct CPPModule
 {
 	std::vector<CPPClassFile> classes;
+	CPPClassFile registerTypeHeader;
+	CPPClassFile registerTypeSource;
 };
