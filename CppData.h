@@ -10,7 +10,7 @@ class VariableDefinitionSyntaxNode;
 class FunctionPrototypeSyntaxNode;
 class EnumDefinitionSyntaxNode;
 class ValueSyntaxNode;
-struct Type;
+class Type;
 struct Token;
 
 struct CppData
@@ -51,7 +51,7 @@ struct CppData
 
 		if (targetType && sourceType)
 		{
-			if (isObjectType(targetType->name))
+			if (isObjectType(targetType->getName()))
 				shouldCast = targetType->toString() != sourceType->toString();
 		}
 

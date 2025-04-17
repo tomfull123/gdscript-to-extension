@@ -74,7 +74,7 @@ public:
 		if (parentInstance_ && !variableDefinition_ && !enumDefinition_)
 		{
 			Type* parentType = parentInstance_->getType();
-			if (parentType)	variableDefinition_ = data->getVariableDefinition(parentType->name, name_->value);
+			if (parentType)	variableDefinition_ = data->getVariableDefinition(parentType->getName(), name_->value);
 		}
 
 		if (variableDefinition_)
@@ -127,7 +127,7 @@ public:
 				auto parentType = parentInstance_->getType();
 				if (CPPFUNCTION_RETURN_TYPES.contains(parentName))
 					code += "->";
-				else if (parentType && GDTYPES_TO_CPPTYPES.contains(parentType->name))
+				else if (parentType && GDTYPES_TO_CPPTYPES.contains(parentType->getName()))
 					code += ".";
 				else
 					code += "->";
@@ -146,7 +146,7 @@ public:
 		}
 		// static call
 		else if (!parentInstance_ && !varDef && GDTYPES_TO_CPPTYPES.contains(name_->value))
-			code += data->toCppType(new Type(name_->value));
+			code += data->toCppType(new Type(name_));
 		else if (data->currentClass->isClassMethod(name_->value, data))
 			if (varDef)
 			{
@@ -161,7 +161,7 @@ public:
 			}
 			else
 			{
-				code += data->currentClass->toCppFunction(name_->value, data->currentClass->classInheritedType->name) + "()";
+				code += data->currentClass->toCppFunction(name_->value, data->currentClass->classInheritedType->getName()) + "()";
 			}
 		else
 		{

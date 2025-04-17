@@ -46,7 +46,7 @@ public:
 		Type* variableType = nullptr;
 		if (arrayType)
 		{
-			if (arrayType->name == "int") variableType = arrayType;
+			if (arrayType->getName() == "int") variableType = arrayType;
 			else if (!arrayType->subtypes.empty())
 			{
 				variableType = arrayType->subtypes[0];
@@ -65,7 +65,7 @@ public:
 		std::string varName = variableDefinition_->getName();
 		Type* varType = variableDefinition_->getType();
 
-		if (arrayType && arrayType->name == "int")
+		if (arrayType && arrayType->getName() == "int")
 			code += "int " + varName + " = 0; " + varName + " < " + array_->toCpp(data, "") + "; " + varName + "++";
 		else if (typeid(*array_) == typeid(RangeSyntaxNode))
 		{

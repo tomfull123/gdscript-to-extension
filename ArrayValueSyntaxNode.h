@@ -66,7 +66,7 @@ private:
 			auto type = e->getType();
 			if (type)
 			{
-				if (type->name == "Array")
+				if (type->getName() == "Array")
 				{
 					if (!type->subtypes.empty()) return type;
 					elementType = type;

@@ -62,7 +62,7 @@ public:
 
 			if (instanceType)
 			{
-				auto instanceTypeClass = data->classData[instanceType->name];
+				auto instanceTypeClass = data->classData[instanceType->getName()];
 
 				if (instanceTypeClass)
 				{
@@ -104,7 +104,7 @@ public:
 
 					if (parentType)
 					{
-						parentTypeName = parentType->name;
+						parentTypeName = parentType->getName();
 						if (parentTypeName[0] == '_') parentTypeName.erase(0, 1);
 						isParentRefOrObject = data->isRefType(parentTypeName) || data->isObjectType(parentTypeName);
 					}
@@ -142,7 +142,7 @@ public:
 				if (instance_)
 				{
 					const auto* instanceType = instance_->getType();
-					if (instanceType) instanceTypeString = instanceType->name;
+					if (instanceType) instanceTypeString = instanceType->getName();
 				}
 				code += data->currentClass->toCppFunction(name_->value, instanceTypeString);
 			}

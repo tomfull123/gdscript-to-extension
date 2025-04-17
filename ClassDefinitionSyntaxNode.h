@@ -72,7 +72,7 @@ public:
 		data->currentClass->currentClassName = getName();
 		data->currentClass->currentClassType = new Type(data->currentClass->currentClassName);
 		data->currentClass->classInheritedType = getInheritedType();
-		if (extends_ || !isDocsClass_) data->inheritTypes[getName()] = getInheritedType()->name;
+		if (extends_ || !isDocsClass_) data->inheritTypes[getName()] = getInheritedType()->getName();
 		for (auto constantValueMapping : constantValueMappings_) constantValueMapping->hoist(data);
 		for (auto enumDef : enumDefinitions_) enumDef->hoist(data);
 		for (auto v : staticVariableDefinitions_) v->hoist(data);
@@ -235,7 +235,7 @@ private:
 
 		std::string inheritsName = "";
 
-		if (inherits) inheritsName = inherits->name;
+		if (inherits) inheritsName = inherits->getName();
 
 		return ""
 			+ enumDefString

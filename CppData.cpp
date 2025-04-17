@@ -116,10 +116,11 @@ std::string CppData::toCppType(const Type* type, bool isSubtype)
 {
 	if (!type) return "auto";
 
-	auto enumDef = getEnumDefinition(type->name);
-	if (enumDef) return type->name;
+	std::string typeName = type->getName();
+	auto enumDef = getEnumDefinition(typeName);
+	if (enumDef) return typeName;
 
-	auto it = GDTYPES_TO_CPPTYPES.find(type->name);
+	auto it = GDTYPES_TO_CPPTYPES.find(typeName);
 
 	if (it != GDTYPES_TO_CPPTYPES.end())
 	{
@@ -144,8 +145,6 @@ std::string CppData::toCppType(const Type* type, bool isSubtype)
 
 		return it->second + subtypesString;
 	}
-
-	std::string typeName = type->name;
 
 	if (typeName[0] == '_') typeName.erase(0, 1);
 

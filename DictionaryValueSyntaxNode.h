@@ -100,7 +100,7 @@ private:
 
 			if (type)
 			{
-				if (type->name == "Dictionary")
+				if (type->getName() == "Dictionary")
 				{
 					if (!type->subtypes.empty()) return type;
 					elementType = type;

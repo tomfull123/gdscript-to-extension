@@ -2,16 +2,36 @@
 
 #include <string>
 #include <vector>
+#include "Lexer.h"
 
-struct Type
+class Type
 {
+public:
 	Type(
 		const std::string& name,
 		const std::vector<Type*>& subtypes = {}
 	) :
-		name(name),
-		subtypes(subtypes)
+		Type(
+			new Token(name),
+			subtypes
+		)
 	{
+	}
+
+	Type(
+		const Token* nameToken,
+		const std::vector<Type*>& subtypes = {},
+		const Token* namespaceToken = nullptr
+	) :
+		nameToken(nameToken),
+		subtypes(subtypes),
+		namespaceToken(namespaceToken)
+	{
+	}
+
+	const std::string& getName() const
+	{
+		return nameToken->value;
 	}
 
 	Type* subtype(int index)
@@ -19,9 +39,6 @@ struct Type
 		if (index >= subtypes.size()) return nullptr;
 		return subtypes[index];
 	}
-
-	std::string name;
-	std::vector<Type*> subtypes;
 
 	std::string toString()
 	{
@@ -36,6 +53,12 @@ struct Type
 			if (i != lastIndex) subtypeString += ", ";
 		}
 
-		return name + "<" + subtypeString + ">";
+		return getName() + "<" + subtypeString + ">";
 	}
+
+	const std::vector<Type*> subtypes;
+
+private:
+	const Token* nameToken;
+	const Token* namespaceToken;
 };

@@ -58,7 +58,7 @@ bool CppClassData::isGodotTypeMethod(const Type* classType, const std::string& n
 {
 	if (!classType) return false;
 
-	std::string classTypeName = classType->name;
+	std::string classTypeName = classType->getName();
 
 	while (true)
 	{
@@ -91,7 +91,7 @@ bool CppClassData::isProperty(ValueSyntaxNode* instance, const GDToken* name, co
 	auto type = instance->getType();
 	if (type)
 	{
-		std::string typeName = type->name;
+		std::string typeName = type->getName();
 		if (typeName[0] == '_') typeName.erase(0, 1);
 		if (data->classData.contains(typeName))
 		{
