@@ -226,6 +226,8 @@
     <ClInclude Include="CppFunctionData.h" />
     <ClInclude Include="CPPModule.h" />
     <ClInclude Include="DictionaryValueSyntaxNode.h" />
+    <ClInclude Include="ElseIfSyntaxNode.h" />
+    <ClInclude Include="ElseSyntaxNode.h" />
     <ClInclude Include="EnumDefinitionSyntaxNode.h" />
     <ClInclude Include="EnumValueSyntaxNode.h" />
     <ClInclude Include="EqualityOperatorSyntaxNode.h" />

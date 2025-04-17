@@ -10,12 +10,13 @@ public:
 	IfSyntaxNode(
 		SyntaxNode* condition,
 		BodySyntaxNode* thenBody,
-		BodySyntaxNode* elseBody
+		SyntaxNode* elseBody
 	) :
 		condition_(condition),
 		thenBody_(thenBody),
 		elseBody_(elseBody)
-	{}
+	{
+	}
 
 	bool needsSemiColon() override
 	{
@@ -51,8 +52,7 @@ public:
 
 		if (elseBody_)
 		{
-			elseString = indents + "else\n"
-				+ elseBody_->toCpp(data, indents);
+			elseString = elseBody_->toCpp(data, indents);
 		}
 
 		return "if (" + condition_->toCpp(data, "") + ")\n"
@@ -63,5 +63,5 @@ public:
 private:
 	SyntaxNode* condition_;
 	BodySyntaxNode* thenBody_;
-	BodySyntaxNode* elseBody_;
+	SyntaxNode* elseBody_;
 };

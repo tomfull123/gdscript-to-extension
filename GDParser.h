@@ -32,6 +32,8 @@
 #include "RangeSyntaxNode.h"
 #include "TernarySyntaxNode.h"
 #include "CastSyntaxNode.h"
+#include "ElseSyntaxNode.h"
+#include "ElseIfSyntaxNode.h"
 
 struct Result
 {
@@ -1003,7 +1005,12 @@ private:
 
 	IfSyntaxNode* parseIfStatement()
 	{
-		auto ifToken = consumeKeyword("if"); // eat if
+		const GDToken* ifToken;
+
+		if (isNextTokenKeyword("if"))
+			ifToken = consumeKeyword("if"); // eat if
+		else
+			ifToken = consumeKeyword("elif"); // eat elif
 
 		if (!ifToken) return nullptr;
 
@@ -1015,15 +1022,19 @@ private:
 
 		BodySyntaxNode* thenBody = parseBody(ifToken->indentDepth, ifToken->lineNumber);
 
-		BodySyntaxNode* elseBody = nullptr;
+		SyntaxNode* elseBody = nullptr;
 
-		if (isNextTokenKeyword("else"))
+		if (isNextTokenKeyword("elif"))
+		{
+			elseBody = new ElseIfSyntaxNode(parseIfStatement());
+		}
+		else if (isNextTokenKeyword("else"))
 		{
 			auto elseToken = next(); // eat else
 
 			if (!consume(GDTokenType::ColonSeparator)) return nullptr;
 
-			elseBody = parseBody(elseToken->indentDepth, elseToken->lineNumber);
+			elseBody = new ElseSyntaxNode(parseBody(elseToken->indentDepth, elseToken->lineNumber));
 		}
 
 		return new IfSyntaxNode(condition, thenBody, elseBody);
