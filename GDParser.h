@@ -709,13 +709,9 @@ private:
 		case GDTokenType::OpenCurlyBracketSeparator: return parseDictionaryValue();
 		case GDTokenType::Operator:
 		{
-			if (token->value == "-")
-			{
-				auto operatorToken = next(); // eat -
+			auto operatorToken = next(); // eat operator
 
-				return new PrefixOperator(operatorToken, parseSingleValueObject());
-			}
-			break;
+			return new PrefixOperator(operatorToken, parseSingleValueObject());
 		}
 		}
 
