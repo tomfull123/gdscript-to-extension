@@ -8,7 +8,7 @@ class IfSyntaxNode : public SyntaxNode
 {
 public:
 	IfSyntaxNode(
-		SyntaxNode* condition,
+		ValueSyntaxNode* condition,
 		BodySyntaxNode* thenBody,
 		SyntaxNode* elseBody
 	) :
@@ -61,7 +61,7 @@ public:
 	}
 
 private:
-	SyntaxNode* condition_;
+	ValueSyntaxNode* condition_;
 	BodySyntaxNode* thenBody_;
 	SyntaxNode* elseBody_;
 };
