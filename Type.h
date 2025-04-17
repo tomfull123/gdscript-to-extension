@@ -21,11 +21,11 @@ public:
 	Type(
 		const Token* nameToken,
 		const std::vector<Type*>& subtypes = {},
-		const Token* namespaceToken = nullptr
+		const Type* namespaceType = nullptr
 	) :
 		nameToken(nameToken),
 		subtypes(subtypes),
-		namespaceToken(namespaceToken)
+		namespaceType(namespaceType)
 	{
 	}
 
@@ -60,5 +60,5 @@ public:
 
 private:
 	const Token* nameToken;
-	const Token* namespaceToken;
+	const Type* namespaceType;
 };

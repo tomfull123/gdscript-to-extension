@@ -161,7 +161,7 @@ private:
 		return nullptr;
 	}
 
-	Type* parseType(const Token* namespaceToken = nullptr)
+	Type* parseType(const Type* namespaceType = nullptr)
 	{
 		const GDToken* typeToken = next();
 		std::vector<Type*> subtypes = {};
@@ -183,10 +183,10 @@ private:
 		{
 			consume(GDTokenType::DotSeparator);
 
-			return parseType(typeToken);
+			return parseType(new Type(typeToken, {}, namespaceType));
 		}
 
-		return new Type(typeToken, subtypes, namespaceToken);
+		return new Type(typeToken, subtypes, namespaceType);
 	}
 
 	VariableDefinitionSyntaxNode* parseArgDefinition()
