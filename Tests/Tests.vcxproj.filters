@@ -91,6 +91,9 @@
     <ClCompile Include="DocsMethodTests.cpp">
       <Filter>Source Files\Docs</Filter>
     </ClCompile>
+    <ClCompile Include="MatchTests.cpp">
+      <Filter>Source Files\Transpile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TranspileTest.h">

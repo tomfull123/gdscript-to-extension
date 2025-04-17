@@ -13,6 +13,12 @@ public:
 	{
 	}
 
+	bool returnsValue() override
+	{
+		if (nodes_.empty()) return false;
+		return nodes_[nodes_.size() - 1]->returnsValue();
+	}
+
 	void hoist(CppData* data) override
 	{
 		for (auto n : nodes_) n->hoist(data);

@@ -221,6 +221,7 @@
     <ClCompile Include="GodotTypeTests.cpp" />
     <ClCompile Include="IfTests.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MatchTests.cpp" />
     <ClCompile Include="MathOperatorTests.cpp" />
     <ClCompile Include="MeshInstance3DTests.cpp" />
     <ClCompile Include="NodePathTests.cpp" />

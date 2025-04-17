@@ -34,6 +34,8 @@
 #include "CastSyntaxNode.h"
 #include "ElseSyntaxNode.h"
 #include "ElseIfSyntaxNode.h"
+#include "MatchSyntaxNode.h"
+#include "MatchCaseSyntaxNode.h"
 
 struct Result
 {
@@ -1091,6 +1093,51 @@ private:
 		return new ForSyntaxNode(variableDefinition, arrayToken, body);
 	}
 
+	MatchCaseSyntaxNode* parseMatchCase()
+	{
+		std::vector<ValueSyntaxNode*> values;
+
+		auto p = peek();
+
+		while (!isNextTokenType(GDTokenType::ColonSeparator))
+		{
+			ValueSyntaxNode* value = parseValueExpression();
+
+			if (!value) return nullptr;
+
+			values.push_back(value);
+
+			if (isNextTokenType(GDTokenType::CommaSeparator)) consume(GDTokenType::CommaSeparator);
+			else break;
+		}
+
+		if (!consume(GDTokenType::ColonSeparator)) return nullptr;
+
+		BodySyntaxNode* body = parseBody(p->indentDepth, p->lineNumber);
+
+		return new MatchCaseSyntaxNode(values, body);
+	}
+
+	MatchSyntaxNode* parseMatch()
+	{
+		auto matchToken = consumeKeyword("match");
+
+		ValueSyntaxNode* condition = parseValueExpression();
+
+		if (!condition) return nullptr;
+
+		if (!consume(GDTokenType::ColonSeparator)) return nullptr;
+
+		std::vector<MatchCaseSyntaxNode*> cases;
+
+		while (!end() && peek()->indentDepth > matchToken->indentDepth)
+		{
+			cases.push_back(parseMatchCase());
+		}
+
+		return new MatchSyntaxNode(condition, cases);
+	}
+
 	SyntaxNode* parseExpression()
 	{
 		const GDToken* t = stream_.peek();
@@ -1109,6 +1156,7 @@ private:
 			}
 			else if (value == "while") return parseWhileLoop();
 			else if (value == "for") return parseForLoop();
+			else if (value == "match") return parseMatch();
 			else return parseVariableOrFunctionCall(false);
 		}
 

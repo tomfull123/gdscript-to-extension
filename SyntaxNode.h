@@ -16,6 +16,11 @@ public:
 		return true;
 	}
 
+	virtual bool returnsValue()
+	{
+		return false;
+	}
+
 	virtual void hoist(CppData* data) = 0;
 
 	virtual void resolveDefinitions(CppData* data) = 0;

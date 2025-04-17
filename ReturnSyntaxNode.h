@@ -7,7 +7,13 @@ class ReturnSyntaxNode : public SyntaxNode
 public:
 	explicit ReturnSyntaxNode(ValueSyntaxNode* value) :
 		value_(value)
-	{}
+	{
+	}
+
+	bool returnsValue() override
+	{
+		return true;
+	}
 
 	void hoist(CppData* data) override
 	{

@@ -242,6 +242,8 @@
     <ClInclude Include="IsOperatorSyntaxNode.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="LiteralValueSyntaxNode.h" />
+    <ClInclude Include="MatchSyntaxNode.h" />
+    <ClInclude Include="MatchCaseSyntaxNode.h" />
     <ClInclude Include="MathOperatorSyntaxNode.h" />
     <ClInclude Include="NotOperatorSyntaxNode.h" />
     <ClInclude Include="NullSyntaxNode.h" />
