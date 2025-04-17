@@ -39,8 +39,6 @@ enum class GDTokenType
 	SingleLineComment,
 	MultiLineComment,
 	Annotation,
-
-	NodePath,
 };
 
 struct GDToken : public Token
@@ -305,7 +303,11 @@ private:
 	{
 		inputStream_.next(); // eat $
 
-		return readToken(isIdentifier, GDTokenType::NodePath);
+		auto token = readToken(isIdentifier, GDTokenType::IdentifierOrKeyword);
+
+		token->value = "$" + token->value;
+
+		return token;
 	}
 
 	static bool isAnnotation(const char& ch)

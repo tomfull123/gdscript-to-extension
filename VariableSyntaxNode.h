@@ -140,6 +140,10 @@ public:
 		{
 			code += "this";
 		}
+		else if (name_->value[0] == '$')
+		{
+			return "find_child(\"" + name_->value.substr(1) + "\")";
+		}
 		// static call
 		else if (!parentInstance_ && !varDef && GDTYPES_TO_CPPTYPES.contains(name_->value))
 			code += data->toCppType(new Type(name_->value));

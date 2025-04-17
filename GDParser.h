@@ -31,7 +31,6 @@
 #include "IsOperatorSyntaxNode.h"
 #include "RangeSyntaxNode.h"
 #include "TernarySyntaxNode.h"
-#include "NodePathSyntaxNode.h"
 #include "CastSyntaxNode.h"
 
 struct Result
@@ -667,12 +666,6 @@ private:
 		return new RangeSyntaxNode(startValue, endValue, incrementValue);
 	}
 
-	NodePathSyntaxNode* parseNodePath()
-	{
-		auto nodePathToken = consume(GDTokenType::NodePath);
-		return new NodePathSyntaxNode(nodePathToken);
-	}
-
 	CastSyntaxNode* parseCast(ValueSyntaxNode* value)
 	{
 		if (!consumeKeyword("as")) return nullptr;
@@ -724,8 +717,6 @@ private:
 			}
 			break;
 		}
-		case GDTokenType::NodePath:
-			return parseNodePath();
 		}
 
 		return (ValueSyntaxNode*)addUnexpectedNextTokenError();
