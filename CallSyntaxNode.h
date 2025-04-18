@@ -35,10 +35,13 @@ public:
 
 	void resolveDefinitions(CppData* data) override
 	{
-		prototype_ = data->currentClass->getFunctionPrototype(getName());
-
 		if (instance_) instance_->resolveDefinitions(data);
 		for (auto a : args_) a->resolveDefinitions(data);
+
+		if (instance_)
+			prototype_ = data->getFunctionPrototype(instance_->getName(), getName());
+		else
+			prototype_ = data->currentClass->getFunctionPrototype(getName());
 	}
 
 	void resolveTypes(CppData* data, Type* otherType = nullptr) override

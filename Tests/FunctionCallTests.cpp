@@ -179,6 +179,6 @@ TEST_F(TranspileTest, FunctionCallStaticGodotMethod)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/color.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tauto get_color()\n\t\t{\n\t\t\treturn color;\n\t\t}\n\n\t\tvoid set_color(Variant newcolor)\n\t\t{\n\t\t\tcolor = newcolor;\n\t\t}\n\n\t\tauto color = Color::from_rgba8(114.0f, 162.0f, 104.0f);\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_color\"), &Test::get_color);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_color\", \"newcolor\"), &Test::set_color);\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/color.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tColor get_color()\n\t\t{\n\t\t\treturn color;\n\t\t}\n\n\t\tvoid set_color(Color newcolor)\n\t\t{\n\t\t\tcolor = newcolor;\n\t\t}\n\n\t\tColor color = Color::from_rgba8(114.0f, 162.0f, 104.0f);\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_color\"), &Test::get_color);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_color\", \"newcolor\"), &Test::set_color);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
