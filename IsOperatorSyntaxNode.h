@@ -44,7 +44,7 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return "std::is_same<decltype(" +
+		return "std::is_same_v<decltype(" +
 			lhs_->toCpp(data, indents) +
 			"), " +
 			data->toCppType(rhs_) +
