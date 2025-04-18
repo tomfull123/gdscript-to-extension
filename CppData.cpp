@@ -112,7 +112,7 @@ std::string CppData::toWrappedCppFunction(ValueSyntaxNode* parentInstance, const
 	return name;
 }
 
-std::string CppData::toCppType(const Type* type, bool isSubtype)
+std::string CppData::toCppType(const Type* type, const Type* parentType)
 {
 	if (!type) return "auto";
 
@@ -135,7 +135,7 @@ std::string CppData::toCppType(const Type* type, bool isSubtype)
 			for (int i = 0; i < type->subtypes.size(); i++)
 			{
 				const Type* subtype = type->subtypes[i];
-				subtypesString += toCppType(subtype, true);
+				subtypesString += toCppType(subtype, type);
 
 				if (i < lastIndex) subtypesString += ", ";
 			}
@@ -154,7 +154,11 @@ std::string CppData::toCppType(const Type* type, bool isSubtype)
 
 	if (isRefType(typeName)) return "Ref<" + typeName + ">";
 
-	if (!isSubtype)
+	std::string parentTypeName;
+
+	if (parentType) parentTypeName = parentType->getName();
+
+	if (parentTypeName != "Array") // currently not supported
 	{
 		if (isObjectType(typeName)) return typeName + "*";
 	}

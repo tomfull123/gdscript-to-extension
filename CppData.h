@@ -37,7 +37,7 @@ struct CppData
 
 	std::string toWrappedCppFunction(ValueSyntaxNode* parentInstance, const Token* nameToken) const;
 
-	std::string toCppType(const Type* type, bool isSubtype = false);
+	std::string toCppType(const Type* type, const Type* parentType = nullptr);
 
 	bool isRefType(const std::string& type) const;
 
