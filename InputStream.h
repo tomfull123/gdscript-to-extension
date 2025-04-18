@@ -19,7 +19,10 @@ public:
 	{
 		char front = input_[currentIndex_];
 		currentIndex_++;
-		columnNumber_++;
+
+		if (front == '\t') columnNumber_ += 4;
+		else columnNumber_++;
+
 		if (isNewLine(front))
 		{
 			columnNumber_ = 1;
