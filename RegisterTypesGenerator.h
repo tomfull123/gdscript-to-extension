@@ -58,7 +58,7 @@ public:
 			+ "\t\tinit_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);\n\n"
 			+ "\t\treturn init_obj.init();\n"
 			+ "\t}\n"
-			+ "}\n";
+			+ "}";
 	}
 };
 
