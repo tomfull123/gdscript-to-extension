@@ -820,6 +820,17 @@ private:
 				continue;
 			}
 
+			if (isNextTokenType(GDTokenType::DotSeparator))
+			{
+				next(); // eat .
+
+				if (isNextTokenType(GDTokenType::IdentifierOrKeyword))
+				{
+					lhs = parseVariableOrFunctionCall(true, lhs);
+					continue;
+				}
+			}
+
 			break;
 		}
 

@@ -431,3 +431,17 @@ TEST_F(TranspileTest, MemberVariableVarSingleQuoteString)
 	std::string expected = "#pragma once\n\n#include \"string.h\"\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstring get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid set_x(string newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\t\tstring x = \"test string\";\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Test::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newx\"), &Test::set_x);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, VariableDefVariableFunctionCall)
+{
+	std::string input = R"(
+		static func is_point_in_segment_range(point: Vector2, segment_start: Vector2, segment_end: Vector2) -> bool:
+			var vec := segment_end - segment_start
+			var dot := (point - segment_start).dot(vec)
+			return dot >= 0 && dot <= vec.length_squared()
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/vector2.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstatic bool is_point_in_segment_range(Vector2 point, Vector2 segment_start, Vector2 segment_end)\n\t\t{\n\t\t\tVector2 vec = (segment_end - segment_start);\n\t\t\tfloat dot = (point - segment_start).dot(vec);\n\t\t\treturn (dot >= 0 && (dot <= vec.length_squared()));\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_static_method(\"Test\", D_METHOD(\"is_point_in_segment_range\", \"point\", \"segment_start\", \"segment_end\"), &Test::is_point_in_segment_range);\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
