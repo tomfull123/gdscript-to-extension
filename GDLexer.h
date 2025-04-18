@@ -79,9 +79,17 @@ private:
 	{
 		inputStream_.readWhile(isWhitespace);
 
-		if (isNewLine(inputStream_.peek())) readIndents();
+		if (isNewLine(inputStream_.peek()))
+		{
+			readIndents();
+			return nullptr;
+		}
 
-		inputStream_.readWhile(isWhitespace);
+		if (inputStream_.peek() == ';')
+		{
+			inputStream_.next();
+			return nullptr;
+		}
 
 		if (end()) return nullptr;
 
