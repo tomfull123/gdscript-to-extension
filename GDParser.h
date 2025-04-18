@@ -458,10 +458,10 @@ private:
 		return consume(GDTokenType::IdentifierOrKeyword);
 	}
 
-	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, const std::string& fileName, GDToken* nameToken = nullptr, bool isInnerClass = false)
+	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, const std::string& fileName, GDToken* nameToken = nullptr, bool isInnerClass = false, GDToken* overrideExtends = nullptr)
 	{
 		GDToken* name = nameToken;
-		GDToken* extends = nullptr;
+		GDToken* extends = overrideExtends;
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
 		std::vector<EnumDefinitionSyntaxNode*> enumDefinitions;
@@ -515,9 +515,15 @@ private:
 				{
 					next(); // eat class
 					auto subclassName = consume(GDTokenType::IdentifierOrKeyword);
+					GDToken* subclassExtends = nullptr;
+					if (isNextTokenKeyword("extends")) subclassExtends = parseExtends();
 					consume(GDTokenType::ColonSeparator);
-					auto internalClass = parseScriptBody(t->indentDepth + 1, "", subclassName, true);
+					auto internalClass = parseScriptBody(t->indentDepth + 1, "", subclassName, true, subclassExtends);
 					if (internalClass) innerClasses.push_back(internalClass);
+				}
+				else if (value == "pass")
+				{
+					next(); // eat pass
 				}
 				else
 				{

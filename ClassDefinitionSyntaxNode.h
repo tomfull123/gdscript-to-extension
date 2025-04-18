@@ -68,7 +68,8 @@ public:
 
 	void hoist(CppData* data) override
 	{
-		data->currentClass = new CppClassData();
+		auto currentClass = new CppClassData();
+		data->currentClass = currentClass;
 		data->currentClass->currentClassName = getName();
 		data->currentClass->currentClassType = new Type(data->currentClass->currentClassName);
 		data->currentClass->classInheritedType = getInheritedType();
@@ -80,7 +81,7 @@ public:
 		for (auto v : memberVariableDefinitions_) v->hoist(data);
 		for (auto f : memberFunctionDefinitions_) f->hoist(data);
 		for (auto c : innerClasses_) c->hoist(data);
-		data->classData[getName()] = data->currentClass;
+		data->classData[getName()] = currentClass;
 	}
 
 	void resolveDefinitions(CppData* data) override
@@ -181,13 +182,6 @@ private:
 			enumDefString += "\t" + enumDef->toCpp(data, "\t");
 		}
 
-		std::string innerClassesString;
-
-		for (auto innerClass : innerClasses_)
-		{
-			innerClassesString += innerClass->toCpp(data, "\t") + "\n";
-		}
-
 		std::string privateMemberVariableDefinitionString;
 		std::string publicMemberVariableDefinitionString;
 
@@ -236,6 +230,13 @@ private:
 		std::string inheritsName = "";
 
 		if (inherits) inheritsName = inherits->getName();
+
+		std::string innerClassesString;
+
+		for (auto innerClass : innerClasses_)
+		{
+			innerClassesString += innerClass->toCpp(data, "\t") + "\n";
+		}
 
 		return ""
 			+ enumDefString
