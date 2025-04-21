@@ -89,8 +89,8 @@ public:
 			if (instanceName[0] == '_') instanceName.erase(0, 1);
 			if (isConstructorCall)
 			{
-				code += "memnew(" + instanceName;
-				if (!args_.empty()) code += "())->init";
+				code += "Ref(memnew(" + instanceName;
+				if (!args_.empty()) code += "))->init";
 			}
 			else
 			{
@@ -150,10 +150,10 @@ public:
 				code += data->currentClass->toCppFunction(name_->value, instanceTypeString);
 			}
 
-			code += "(" + argsString + ")";
+			if (!isConstructorCall || !args_.empty()) code += "(" + argsString + ")";
 		}
 
-		if (isConstructorCall && args_.empty()) code += ")";
+		if (isConstructorCall && args_.empty()) code += "))";
 
 		return code;
 	}

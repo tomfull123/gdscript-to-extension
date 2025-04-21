@@ -34,8 +34,6 @@ public:
 			registerClasses += "\tGDREGISTER_CLASS(" + classFile.className + ")\n";
 		}
 
-		std::string code;
-
 		return includes
 			+ "\n"
 			+ "using namespace godot;\n\n"
