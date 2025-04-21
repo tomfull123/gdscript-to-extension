@@ -12,6 +12,7 @@ public:
 		bool isConstant,
 		bool isClassMember,
 		bool isStatic,
+		bool exported,
 		Token* getterName,
 		Token* setterName
 	) :
@@ -21,6 +22,7 @@ public:
 		isConstant_(isConstant),
 		isClassMember_(isClassMember),
 		isStatic_(isStatic),
+		exported_(exported),
 		getterName_(getterName),
 		setterName_(setterName)
 	{
@@ -49,6 +51,11 @@ public:
 	bool isConstant() const
 	{
 		return isConstant_;
+	}
+
+	bool isExported() const
+	{
+		return exported_;
 	}
 
 	Token* getGetterName() const
@@ -149,6 +156,7 @@ private:
 	bool isConstant_;
 	bool isClassMember_;
 	bool isStatic_;
+	bool exported_;
 	Token* getterName_;
 	Token* setterName_;
 

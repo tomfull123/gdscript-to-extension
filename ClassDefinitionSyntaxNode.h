@@ -204,7 +204,7 @@ private:
 				{
 					addGetter(v, data);
 					addSetter(v, data);
-					bindPropertysString += bindProperty(v, data, "\t\t\t");
+					if (v->isExported()) bindPropertysString += bindProperty(v, data, "\t\t\t");
 				}
 			}
 		}
@@ -395,7 +395,7 @@ private:
 		auto setterName = variableDefinition->getSetterName();
 		if (setterName == nullptr) return;
 		auto argNameToken = new GDToken("new" + variableDefinition->getName());
-		auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false, nullptr, nullptr);
+		auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false, false, nullptr, nullptr);
 		auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(setterName->value), { arg }, new Type("void"), false);
 
 		auto setVariableStatement = new AssignmentSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, false), new VariableSyntaxNode(argNameToken, nullptr, true));

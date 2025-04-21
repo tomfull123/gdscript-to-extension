@@ -445,3 +445,47 @@ TEST_F(TranspileTest, VariableDefVariableFunctionCall)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/vector2.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tstatic bool is_point_in_segment_range(Vector2 point, Vector2 segment_start, Vector2 segment_end)\n\t\t{\n\t\t\tVector2 vec = (segment_end - segment_start);\n\t\t\tfloat dot = (point - segment_start).dot(vec);\n\t\t\treturn (dot >= 0 && (dot <= vec.length_squared()));\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_static_method(\"Test\", D_METHOD(\"is_point_in_segment_range\", \"point\", \"segment_start\", \"segment_end\"), &Test::is_point_in_segment_range);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, MemberVariableVarIntExported)
+{
+	std::string input = R"(
+		@export var x: int = 123
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tint get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid set_x(int newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\t\tint x = 123;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Test::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newx\"), &Test::set_x);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"x\"), \"set_x\", \"get_x\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, MemberVariableVarDictionaryExported)
+{
+	std::string input = R"(
+		@export var x: Dictionary[int, string] = {}
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include \"string.h\"\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/typed_dictionary.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tTypedDictionary<int, string> get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid set_x(TypedDictionary<int, string> newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\t\tTypedDictionary<int, string> x = {};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Test::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newx\"), &Test::set_x);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, \"x\"), \"set_x\", \"get_x\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, MemberVariableVarArrayExported)
+{
+	std::string input = R"(
+		@export var x: Array[int] = []
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/typed_array.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tTypedArray<int> get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid set_x(TypedArray<int> newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\t\tTypedArray<int> x = {};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Test::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newx\"), &Test::set_x);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::ARRAY, \"x\"), \"set_x\", \"get_x\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, MemberVariableVarFastNoiseLiteExported)
+{
+	std::string input = R"(
+		@export var noise: FastNoiseLite
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/fast_noise_lite.hpp>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tRef<FastNoiseLite> get_noise()\n\t\t{\n\t\t\treturn noise;\n\t\t}\n\n\t\tvoid set_noise(Ref<FastNoiseLite> newnoise)\n\t\t{\n\t\t\tnoise = newnoise;\n\t\t}\n\n\t\tRef<FastNoiseLite> noise;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_noise\"), &Test::get_noise);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_noise\", \"newnoise\"), &Test::set_noise);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::OBJECT, \"noise\", PROPERTY_HINT_RESOURCE_TYPE, \"FastNoiseLite\"), \"set_noise\", \"get_noise\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}

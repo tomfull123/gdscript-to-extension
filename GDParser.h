@@ -214,7 +214,7 @@ private:
 			assignmentValue = parseValueExpression();
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, false, false, false, nullptr, nullptr);
+		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, false, false, false, false, nullptr, nullptr);
 	}
 
 	FunctionPrototypeSyntaxNode* parseFunctionProtoype(bool isStatic)
@@ -303,7 +303,7 @@ private:
 		return consume(GDTokenType::IdentifierOrKeyword);
 	}
 
-	VariableDefinitionSyntaxNode* parseVariableDefinition(bool isClassMember, bool isStatic)
+	VariableDefinitionSyntaxNode* parseVariableDefinition(bool isClassMember, bool isStatic, bool exported)
 	{
 		auto varOrConst = next();
 
@@ -377,7 +377,7 @@ private:
 			}
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->value == "const", isClassMember, isStatic, getterName, setterName);
+		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->value == "const", isClassMember, isStatic, exported, getterName, setterName);
 	}
 
 	VariableDefinitionSyntaxNode* parseSignalDefinitions()
@@ -403,19 +403,21 @@ private:
 			next(); // eat )
 		}
 
-		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false, true, false, nullptr, nullptr);
+		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false, true, false, false, nullptr, nullptr);
 	}
 
-	void parseAnnotation()
+	Token* parseAnnotation()
 	{
-		next(); // eat warning_ignore or tool
+		Token* token = next(); // eat warning_ignore or tool
 
 		if (isNextTokenType(GDTokenType::OpenBracketSeparator))
 		{
-			if (!consume(GDTokenType::OpenBracketSeparator)) return;
-			if (!consume(GDTokenType::StringLiteral)) return;
-			if (!consume(GDTokenType::CloseBracketSeparator)) return;
+			if (!consume(GDTokenType::OpenBracketSeparator)) return nullptr;
+			if (!consume(GDTokenType::StringLiteral)) return nullptr;
+			if (!consume(GDTokenType::CloseBracketSeparator)) return nullptr;
 		}
+
+		return token;
 	}
 
 	EnumValueSyntaxNode* parseEnumValueDefinition()
@@ -490,7 +492,7 @@ private:
 				if (value == "class_name") name = parseClassName();
 				else if (value == "extends") extends = parseExtends();
 				else if (value == "func") memberFunctionDefinitions.push_back(parseFunction(false));
-				else if (value == "var" || value == "const") memberVariableDefinitions.push_back(parseVariableDefinition(true, false));
+				else if (value == "var" || value == "const") memberVariableDefinitions.push_back(parseVariableDefinition(true, false, false));
 				else if (value == "signal") memberVariableDefinitions.push_back(parseSignalDefinitions());
 				else if (value == "enum") enumDefinitions.push_back(parseEnumDefinition());
 				else if (value == "static")
@@ -500,16 +502,12 @@ private:
 					if (isNextTokenKeyword("func"))
 					{
 						staticFunctionDefinitions.push_back(parseFunction(true));
-						break;
 					}
-
-					if (isNextTokenKeyword("var") || isNextTokenKeyword("const"))
+					else if (isNextTokenKeyword("var") || isNextTokenKeyword("const"))
 					{
-						staticVariableDefinitions.push_back(parseVariableDefinition(false, true));
-						break;
+						staticVariableDefinitions.push_back(parseVariableDefinition(false, true, false));
 					}
-
-					addUnexpectedNextTokenError();
+					else addUnexpectedNextTokenError();
 				}
 				else if (value == "class")
 				{
@@ -521,10 +519,7 @@ private:
 					auto internalClass = parseScriptBody(t->indentDepth + 1, "", subclassName, true, subclassExtends);
 					if (internalClass) innerClasses.push_back(internalClass);
 				}
-				else if (value == "pass")
-				{
-					next(); // eat pass
-				}
+				else if (value == "pass") next(); // eat pass
 				else
 				{
 					return (ClassDefinitionSyntaxNode*)addUnexpectedNextTokenError();
@@ -532,8 +527,15 @@ private:
 			}
 			break;
 			case GDTokenType::Annotation:
-				parseAnnotation();
-				break;
+			{
+				Token* annotationToken = parseAnnotation();
+
+				if (isNextTokenKeyword("var"))
+				{
+					memberVariableDefinitions.push_back(parseVariableDefinition(true, false, annotationToken->value == "export"));
+				}
+			}
+			break;
 			default:
 				return (ClassDefinitionSyntaxNode*)addUnexpectedNextTokenError();
 			}
@@ -1111,7 +1113,7 @@ private:
 
 		auto body = parseBody(forToken->indentDepth, forToken->lineNumber);
 
-		auto variableDefinition = new VariableDefinitionSyntaxNode(variableToken, variableType, nullptr, false, false, false, nullptr, nullptr);
+		auto variableDefinition = new VariableDefinitionSyntaxNode(variableToken, variableType, nullptr, false, false, false, false, nullptr, nullptr);
 
 		return new ForSyntaxNode(variableDefinition, arrayToken, body);
 	}
@@ -1171,7 +1173,7 @@ private:
 			else if (value == "break") return parseBreakStatement();
 			else if (value == "continue") return parseContinueStatement();
 			else if (value == "if") return parseIfStatement();
-			else if (value == "var" || value == "const") return parseVariableDefinition(false, false);
+			else if (value == "var" || value == "const") return parseVariableDefinition(false, false, false);
 			else if (value == "pass")
 			{
 				next(); // eat pass
