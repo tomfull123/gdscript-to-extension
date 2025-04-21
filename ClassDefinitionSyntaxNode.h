@@ -184,6 +184,7 @@ private:
 
 		std::string privateMemberVariableDefinitionString;
 		std::string publicMemberVariableDefinitionString;
+		std::string bindPropertysString;
 
 		for (auto v : memberVariableDefinitions_)
 		{
@@ -203,6 +204,7 @@ private:
 				{
 					addGetter(v, data);
 					addSetter(v, data);
+					bindPropertysString += bindProperty(v, data, "\t\t\t");
 				}
 			}
 		}
@@ -259,7 +261,8 @@ private:
 			"\t\tstatic void _bind_methods()\n"
 			"\t\t{\n"
 			+ bindMethodsString
-			+ bindStaticMethodsString +
+			+ bindStaticMethodsString
+			+ bindPropertysString +
 			"\t\t}\n"
 			"\t};\n"
 			+ staticVariableDeclarationString;
@@ -326,9 +329,33 @@ private:
 			"&" + className + "::" + functionName + ");\n";
 	}
 
-	std::string bindProperty(const std::string& className) const
+	std::string bindProperty(VariableDefinitionSyntaxNode* variableDefinition, CppData* data, const std::string& indents) const
 	{
-		return "ClassDB::add_property(\"" + className + "\", PropertyInfo(Variant::INT, \"type\"), \"\", \"_getType\");\n";
+		Type* type = variableDefinition->getType();
+		std::string typeName;
+		if (type) typeName = type->getName();
+		std::string name = variableDefinition->getName();
+		std::string getterName;
+		Token* getterNameToken = variableDefinition->getGetterName();
+		if (getterNameToken) getterName = getterNameToken->value;
+		std::string setterName;
+		Token* setterNameToken = variableDefinition->getSetterName();
+		if (setterNameToken) setterName = setterNameToken->value;
+
+		std::string code = indents + "ADD_PROPERTY(";
+
+		code += "PropertyInfo(Variant::" + getVariantType(type) + ", \"" + name + "\"";
+
+		if (data->isResourceType(typeName))
+		{
+			code += ", PROPERTY_HINT_RESOURCE_TYPE, \"" + typeName + "\"";
+		}
+
+		code += ")";
+
+		code += ", \"" + setterName + "\", \"" + getterName + "\");\n";
+
+		return code;
 	}
 
 	std::string enumCasts(const std::vector<std::string>& enumNames) const
@@ -394,5 +421,56 @@ private:
 	void setCurrentClass(CppData* data)
 	{
 		data->currentClass = data->classData[getName()];
+	}
+
+	std::string getVariantType(const Type* type) const
+	{
+		std::string typeName;
+		if (type) typeName = type->getName();
+
+		if (typeName == "bool") return "BOOL";
+		if (typeName == "int") return "INT";
+		if (typeName == "float") return "FLOAT";
+		if (typeName == "String") return "STRING";
+
+		if (typeName == "Vector2") return "VECTOR2";
+		if (typeName == "Vector2i") return "VECTOR2I";
+		if (typeName == "Rect2") return "RECT2";
+		if (typeName == "Rect2i") return "RECT2I";
+		if (typeName == "Rect2i") return "RECT2I";
+		if (typeName == "Vector3") return "VECTOR3";
+		if (typeName == "Vector3i") return "VECTOR3I";
+		if (typeName == "Transform2D") return "TRANSFORM2D";
+		if (typeName == "Vector4") return "VECTOR4";
+		if (typeName == "Vector4i") return "VECTOR4I";
+		if (typeName == "Plane") return "PLANE";
+		if (typeName == "Quaternion") return "QUATERNION";
+		if (typeName == "AABB") return "AABB";
+		if (typeName == "Basis") return "BASIS";
+		if (typeName == "Transform3D") return "TRANSFORM3D";
+		if (typeName == "Projection") return "PROJECTION";
+
+		if (typeName == "Color") return "COLOR";
+		if (typeName == "StringName") return "STRING_NAME";
+		if (typeName == "NodePath") return "NODE_PATH";
+		if (typeName == "Rid") return "RID";
+		if (typeName == "Object") return "OBJECT";
+		if (typeName == "Callable") return "CALLABLE";
+		if (typeName == "Signal") return "SIGNAL";
+		if (typeName == "Dictionary") return "DICTIONARY";
+		if (typeName == "Array") return "ARRAY";
+
+		if (typeName == "PackedByteArray") return "PACKED_BYTE_ARRAY";
+		if (typeName == "PackedInt32Array") return "PACKED_INT32_ARRAY";
+		if (typeName == "PackedInt64Array") return "PACKED_INT64_ARRAY";
+		if (typeName == "PackedFloat32Array") return "PACKED_FLOAT32_ARRAY";
+		if (typeName == "PackedFloat64Array") return "PACKED_FLOAT64_ARRAY";
+		if (typeName == "PackedStringArray") return "PACKED_STRING_ARRAY";
+		if (typeName == "PackedVector2Array") return "PACKED_VECTOR2_ARRAY";
+		if (typeName == "PackedVector3Array") return "PACKED_VECTOR3_ARRAY";
+		if (typeName == "PackedColorArray") return "PACKED_COLOR_ARRAY";
+		if (typeName == "PackedVector4Array") return "PACKED_VECTOR4_ARRAY";
+
+		return "OBJECT";
 	}
 };

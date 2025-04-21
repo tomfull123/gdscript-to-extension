@@ -168,39 +168,37 @@ std::string CppData::toCppType(const Type* type, const Type* parentType)
 
 bool CppData::isRefType(const std::string& type) const
 {
-	std::string currentType = type;
-
-	while (true)
-	{
-		if (currentType == "RefCounted") return true;
-
-		if (inheritTypes.contains(currentType))
-			currentType = inheritTypes.find(currentType)->second;
-		else
-			return false;
-	}
-
-	return false;
+	return isSubtypeType(type, "RefCounted");
 }
 
 bool CppData::isObjectType(const std::string& type) const
 {
-	std::string currentType = type;
-
-	while (true)
-	{
-		if (currentType == "Object") return true;
-
-		if (inheritTypes.contains(currentType))
-			currentType = inheritTypes.find(currentType)->second;
-		else
-			return false;
-	}
-
-	return false;
+	return isSubtypeType(type, "Object");
 }
 
 bool CppData::isSingletonType(const std::string& type) const
 {
 	return GDSINGLETON_TYPES.contains(type);
+}
+
+bool CppData::isResourceType(const std::string& type) const
+{
+	return isSubtypeType(type, "Resource");
+}
+
+bool CppData::isSubtypeType(const std::string& type, const std::string& targetType) const
+{
+	std::string currentType = type;
+
+	while (true)
+	{
+		if (currentType == targetType) return true;
+
+		if (inheritTypes.contains(currentType))
+			currentType = inheritTypes.find(currentType)->second;
+		else
+			return false;
+	}
+
+	return false;
 }

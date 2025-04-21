@@ -45,6 +45,8 @@ struct CppData
 
 	bool isSingletonType(const std::string& type) const;
 
+	bool isResourceType(const std::string& type) const;
+
 	std::string castValue(Type* targetType, Type* sourceType)
 	{
 		bool shouldCast = false;
@@ -61,4 +63,7 @@ struct CppData
 		}
 		return "";
 	}
+
+private:
+	bool isSubtypeType(const std::string& type, const std::string& targetType) const;
 };
