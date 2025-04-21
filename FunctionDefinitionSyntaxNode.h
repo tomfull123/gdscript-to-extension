@@ -12,7 +12,8 @@ public:
 	) :
 		prototype_(prototype),
 		body_(body)
-	{}
+	{
+	}
 
 	std::string getName() const
 	{

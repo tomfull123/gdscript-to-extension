@@ -219,7 +219,8 @@ private:
 			else
 			{
 				publicMemberFunctionDefinitionString += functionDefString;
-				bindMethodsString += bindMethod(className, f, "\t\t\t", false);
+				if (!GODOT_LIFECYCLE_METHODS.contains(f->getName()))
+					bindMethodsString += bindMethod(className, f, "\t\t\t", false);
 			}
 		}
 
