@@ -71,6 +71,12 @@ public:
 	{
 		if (parentInstance_) parentInstance_->resolveTypes(data);
 
+		if (otherType)
+		{
+			type_ = otherType;
+			return;
+		}
+
 		if (parentInstance_ && !variableDefinition_ && !enumDefinition_)
 		{
 			Type* parentType = parentInstance_->getType();
@@ -195,6 +201,19 @@ public:
 			else
 			{
 				code += data->toWrappedCppFunction(parentInstance_, name_);
+				if (varDef)
+				{
+					Type* varType = varDef->getType();
+					if (type_ && varType)
+					{
+						std::string typeName = type_->getName();
+						std::string varTypeName = varType->getName();
+						if (typeName == "bool" && data->isRefType(varTypeName))
+						{
+							code += ".is_valid()";
+						}
+					}
+				}
 			}
 		}
 

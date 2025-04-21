@@ -16,6 +16,7 @@ public:
 		thenBody_(thenBody),
 		elseBody_(elseBody)
 	{
+		conditionType_ = new Type("bool");
 	}
 
 	bool needsSemiColon() override
@@ -39,7 +40,7 @@ public:
 
 	void resolveTypes(CppData* data, Type* otherType = nullptr) override
 	{
-		condition_->resolveTypes(data);
+		condition_->resolveTypes(data, conditionType_);
 		thenBody_->resolveTypes(data);
 		if (elseBody_) elseBody_->resolveTypes(data);
 	}
@@ -61,6 +62,7 @@ public:
 	}
 
 private:
+	Type* conditionType_;
 	ValueSyntaxNode* condition_;
 	BodySyntaxNode* thenBody_;
 	SyntaxNode* elseBody_;

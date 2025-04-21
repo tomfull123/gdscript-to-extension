@@ -179,3 +179,16 @@ TEST_F(TranspileTest, IfElIfElseTrue)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff()\n\t\t{\n\t\t\tif (true)\n\t\t\t{\n\t\t\t}\n\t\t\telse if (false)\n\t\t\t{\n\t\t\t}\n\t\t\telse\n\t\t\t{\n\t\t\t}\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, IfThread)
+{
+	std::string input = R"(
+		func doStuff(thread: Thread):
+			if thread:
+				pass
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/classes/thread.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff(Ref<Thread> thread)\n\t\t{\n\t\t\tif (thread.is_valid())\n\t\t\t{\n\t\t\t}\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\", \"thread\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
