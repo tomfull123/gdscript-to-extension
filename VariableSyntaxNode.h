@@ -135,6 +135,7 @@ public:
 		}
 
 		auto varDef = data->getCurrentClassVariableDefinition(name_->value);
+		auto functionDef = data->currentClass->getFunctionPrototype(name_->value);
 
 		if (name_->value == "self")
 		{
@@ -186,6 +187,10 @@ public:
 						code += "set_" + name_->value;
 					}
 				}
+			}
+			else if (functionDef)
+			{
+				code += "callable_mp(this, &" + data->currentClass->currentClassName + "::" + name_->value + ")";
 			}
 			else
 			{

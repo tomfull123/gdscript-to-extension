@@ -106,7 +106,7 @@ TEST_F(TranspileTest, FunctionCallThreaded)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/classes/thread.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid _ready()\n\t\t{\n\t\t\tRef<Thread> thread = Ref(memnew(Thread));\n\t\t\tthread->start(_callMe);\n\t\t}\n\n\tprivate:\n\n\t\tvoid _callMe()\n\t\t{\n\t\t}\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/classes/thread.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid _ready()\n\t\t{\n\t\t\tRef<Thread> thread = Ref(memnew(Thread));\n\t\t\tthread->start(callable_mp(this, &Test::_callMe));\n\t\t}\n\n\tprivate:\n\n\t\tvoid _callMe()\n\t\t{\n\t\t}\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
 
@@ -121,7 +121,7 @@ TEST_F(TranspileTest, FunctionCallThreadedBind)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/classes/thread.hpp>\n#include <godot_cpp/variant/string.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid _ready()\n\t\t{\n\t\t\tRef<Thread> thread = Ref(memnew(Thread));\n\t\t\tthread->start(_callMe.bind(\"batman\"));\n\t\t}\n\n\tprivate:\n\n\t\tvoid _callMe(String name)\n\t\t{\n\t\t}\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/classes/thread.hpp>\n#include <godot_cpp/variant/string.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid _ready()\n\t\t{\n\t\t\tRef<Thread> thread = Ref(memnew(Thread));\n\t\t\tthread->start(callable_mp(this, &Test::_callMe).bind(\"batman\"));\n\t\t}\n\n\tprivate:\n\n\t\tvoid _callMe(String name)\n\t\t{\n\t\t}\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
 
