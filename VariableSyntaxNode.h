@@ -140,8 +140,27 @@ public:
 			}
 		}
 
-		auto varDef = data->getCurrentClassVariableDefinition(name_->value);
+		auto memberVarDef = data->getCurrentClassVariableDefinition(name_->value);
 		auto functionDef = data->currentClass->getFunctionPrototype(name_->value);
+		VariableDefinitionSyntaxNode* varDef = nullptr;
+
+		Type* parentType;
+		std::string parentName = "";
+
+		if (parentInstance_)
+		{
+			parentType = parentInstance_->getType();
+			parentName = parentInstance_->getName();
+		}
+		else
+		{
+			parentType = data->currentClass->currentClassType;
+			parentName = data->currentClass->currentClassName;
+		}
+
+		// static
+		if (parentName != "") varDef = data->getVariableDefinition(parentName, name_->value);
+		if (!varDef && parentType) varDef = data->getVariableDefinition(parentType->getName(), name_->value);
 
 		if (name_->value == "self")
 		{
@@ -152,18 +171,18 @@ public:
 			return "find_child(\"" + name_->value.substr(1) + "\")";
 		}
 		// static call
-		else if (!parentInstance_ && !varDef && GDTYPES_TO_CPPTYPES.contains(name_->value))
+		else if (!parentInstance_ && !memberVarDef && GDTYPES_TO_CPPTYPES.contains(name_->value))
 			code += data->toCppType(new Type(name_));
 		else if (data->currentClass->isClassMethod(name_->value, data))
-			if (varDef)
+			if (memberVarDef)
 			{
 				if (asValue_) // getter
 				{
-					code += varDef->getGetterName()->value + "()";
+					code += memberVarDef->getGetterName()->value + "()";
 				}
 				else // setter
 				{
-					code += varDef->getSetterName()->value;
+					code += memberVarDef->getSetterName()->value;
 				}
 			}
 			else
@@ -201,9 +220,9 @@ public:
 			else
 			{
 				code += data->toWrappedCppFunction(parentInstance_, name_);
-				if (varDef)
+				if (memberVarDef)
 				{
-					Type* varType = varDef->getType();
+					Type* varType = memberVarDef->getType();
 					if (type_ && varType)
 					{
 						std::string typeName = type_->getName();
@@ -215,6 +234,11 @@ public:
 					}
 				}
 			}
+		}
+
+		if (varDef && varDef->isStatic())
+		{
+			code += "()";
 		}
 
 		return code;

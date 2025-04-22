@@ -150,13 +150,11 @@ private:
 	{
 		std::string className = getName();
 
-		std::string staticVariableDefinitionString;
-		std::string staticVariableDeclarationString;
+		std::string staticVariablesString;
 
 		for (auto v : staticVariableDefinitions_)
 		{
-			staticVariableDefinitionString += "\t\t" + v->variableCpp(data) + ";\n";
-			staticVariableDeclarationString += "\t" + v->variableDeclarationCpp(data, "\t") + ";\n";
+			staticVariablesString += v->toCpp(data, "\t\t");
 		}
 
 		std::string publicStaticFunctionDefinitionString;
@@ -250,7 +248,7 @@ private:
 			"\tpublic:\n"
 			+ publicMemberFunctionDefinitionString
 			+ publicStaticFunctionDefinitionString
-			+ staticVariableDefinitionString
+			+ staticVariablesString
 			+ publicMemberVariableDefinitionString +
 			"\tprivate:\n"
 			+ privateMemberVariableDefinitionString +
@@ -264,8 +262,7 @@ private:
 			+ bindStaticMethodsString
 			+ bindPropertysString +
 			"\t\t}\n"
-			"\t};\n"
-			+ staticVariableDeclarationString;
+			"\t};\n";
 	}
 
 	std::string cppIncludes(const CppData* data) const

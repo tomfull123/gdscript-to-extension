@@ -105,37 +105,22 @@ public:
 		if (!dataType_) dataType_ = otherType;
 	}
 
-	std::string variableCpp(CppData* data, bool outsideClass = false)
-	{
-		std::string code;
-
-		if (isStatic_ && !outsideClass) code += "static ";
-		if (isConstant_) code += "const ";
-
-		if (!dataType_)
-		{
-			if (initialValue_)
-			{
-				auto valueType = initialValue_->getType();
-				code += data->toCppType(valueType);
-			}
-			else code += "Variant";
-		}
-		else code += data->toCppType(dataType_);
-		code += " ";
-		if (outsideClass) code += data->currentClass->currentClassName + "::";
-		code += name_->value;
-
-		return code;
-	}
-
 	std::string variableDeclarationCpp(CppData* data, const std::string& indents)
 	{
-		return variableCpp(data, true) + assignInitialValueCpp(data, indents);
+		return variableCpp(data) + assignInitialValueCpp(data, indents);
 	}
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
+		if (isStatic_)
+		{
+			return indents + variableCpp(data, true) + "()\n"
+				+ indents + "{\n"
+				+ indents + "\t" + variableCpp(data) + assignInitialValueCpp(data, indents + "\t") + ";\n"
+				+ indents + "\t" + "return " + name_->value + ";\n"
+				+ indents + "}\n";
+		}
+
 		return variableCpp(data) + assignInitialValueCpp(data, indents);
 	}
 
@@ -159,6 +144,32 @@ private:
 	bool exported_;
 	Token* getterName_;
 	Token* setterName_;
+
+	std::string variableCpp(CppData* data, bool ref = false)
+	{
+		std::string code;
+
+		if (isStatic_) code += "static ";
+		if (isConstant_) code += "const ";
+
+		if (!dataType_)
+		{
+			if (initialValue_)
+			{
+				auto valueType = initialValue_->getType();
+				code += data->toCppType(valueType);
+			}
+			else code += "Variant";
+		}
+		else code += data->toCppType(dataType_);
+
+		if (ref) code += "&";
+
+		code += " ";
+		code += name_->value;
+
+		return code;
+	}
 
 	std::string assignInitialValueCpp(CppData* data, const std::string& indents)
 	{
