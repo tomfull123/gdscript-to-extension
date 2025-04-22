@@ -566,7 +566,7 @@ private:
 		{
 		case GDTokenType::IntLiteral: return new LiteralValueSyntaxNode(value, new Type("int"));
 		case GDTokenType::FloatLiteral: return new LiteralValueSyntaxNode(value, new Type("float"));
-		case GDTokenType::StringLiteral: return new LiteralValueSyntaxNode(value, new Type("string"));
+		case GDTokenType::StringLiteral: return new LiteralValueSyntaxNode(value, new Type("String"));
 		}
 
 		return (LiteralValueSyntaxNode*)addUnexpectedTokenError(value);

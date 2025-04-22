@@ -202,7 +202,7 @@ private:
 				{
 					addGetter(v, data);
 					addSetter(v, data);
-					if (v->isExported()) bindPropertysString += bindProperty(v, data, "\t\t\t");
+					bindPropertysString += bindProperty(v, data, "\t\t\t");
 				}
 			}
 		}
@@ -347,6 +347,9 @@ private:
 		{
 			code += ", PROPERTY_HINT_RESOURCE_TYPE, \"" + typeName + "\"";
 		}
+		else code += ", PROPERTY_HINT_NONE, \"\"";
+
+		if (!variableDefinition->isExported()) code += ", PROPERTY_USAGE_NONE";
 
 		code += ")";
 
