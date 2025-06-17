@@ -75,3 +75,17 @@ TEST_F(TranspileTest, IndexDictionaryObjectValue)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Stuff : public RefCounted\n\t{\n\t\tGDCLASS(Stuff, RefCounted)\n\tpublic:\n\t\tint getStuff()\n\t\t{\n\t\t\treturn 123;\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"getStuff\"), &Stuff::getStuff);\n\t\t}\n\t};\n\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff()\n\t\t{\n\t\t\tint y = x[0]->getStuff();\n\t\t}\n\n\t\tTypedDictionary<int, Ref<Stuff>> get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid set_x(TypedDictionary<int, Ref<Stuff>> newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\t\tTypedDictionary<int, Ref<Stuff>> x = {\n\t\t\t{1,Ref(memnew(Stuff))},\n\t\t};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\"), &Test::doStuff);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Test::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newx\"), &Test::set_x);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, \"x\", PROPERTY_HINT_NONE, \"\", PROPERTY_USAGE_NONE), \"set_x\", \"get_x\");\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, DictionaryEnum)
+{
+	std::string input = R"(
+		enum EnumType {
+			Red
+		}
+		var x: Dictionary[EnumType, String] = {EnumType.Red: "Test"}
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/string.hpp>\n#include <godot_cpp/variant/typed_dictionary.hpp>\n\nnamespace godot\n{\n\tenum EnumType\n\t{\n\t\tRed,\n\t};\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tTypedDictionary<int, String> get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid set_x(TypedDictionary<int, String> newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\t\tTypedDictionary<int, String> x = {\n\t\t\t{EnumType::Red,\"Test\"},\n\t\t};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Test::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newx\"), &Test::set_x);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, \"x\", PROPERTY_HINT_NONE, \"\", PROPERTY_USAGE_NONE), \"set_x\", \"get_x\");\n\t\t}\n\t};\n}\nVARIANT_ENUM_CAST(EnumType);\n";
+	EXPECT_EQ(expected, actual);
+}

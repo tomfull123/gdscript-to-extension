@@ -116,9 +116,18 @@ std::string CppData::toCppType(const Type* type, const Type* parentType)
 {
 	if (!type) return "auto";
 
+	std::string parentTypeName;
+
+	if (parentType) parentTypeName = parentType->getName();
+
 	std::string typeName = type->getName();
 	auto enumDef = getEnumDefinition(typeName);
-	if (enumDef) return typeName;
+	if (enumDef)
+	{
+		if (parentTypeName == "Dictionary")
+			return "int";
+		return typeName;
+	}
 
 	auto it = GDTYPES_TO_CPPTYPES.find(typeName);
 
@@ -153,10 +162,6 @@ std::string CppData::toCppType(const Type* type, const Type* parentType)
 	if (currentClass->typeDefinitions.contains(typeName)) return typeName;
 
 	if (isRefType(typeName)) return "Ref<" + typeName + ">";
-
-	std::string parentTypeName;
-
-	if (parentType) parentTypeName = parentType->getName();
 
 	if (parentTypeName != "Array") // currently not supported
 	{
