@@ -148,11 +148,17 @@ int main(int argc, char* argv[])
 		projectPath = std::filesystem::current_path().string();
 	}
 
-	std::cout << "Loading docs..." << "\n" << std::endl;
+	std::cout << "Loading docs..." << std::endl;
 
 	auto ast = AbstractSyntaxTree();
 
-	const auto& docPaths = getFilesWithExtensionInDirectory(".xml", "./godot_docs");
+	std::string executableDir = ".";
+
+	if (true) executableDir = std::filesystem::weakly_canonical(std::filesystem::path(argv[0])).parent_path().string();
+
+	const auto& docPaths = getFilesWithExtensionInDirectory(".xml", executableDir + "/godot_docs");
+
+	std::cout << docPaths.size() << " doc files found\n" << std::endl;
 
 	for (const auto& filePath : docPaths)
 	{
