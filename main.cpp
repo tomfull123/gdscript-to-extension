@@ -135,7 +135,7 @@ static void readArgValue(int argc, char* argv[], int currentIndex, const std::st
 int main(int argc, char* argv[])
 {
 	std::string projectPath;
-	std::string outputPath;
+	std::string outputPath = "./cpp/src";
 
 	for (int i = 2; i < argc; i++)
 	{
