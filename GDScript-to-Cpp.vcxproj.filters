@@ -27,207 +27,207 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FileIO.cpp">
+    <ClCompile Include="src/FileIO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src/main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CppClassData.cpp">
+    <ClCompile Include="src/CppClassData.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="CppData.cpp">
+    <ClCompile Include="src/CppData.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FileIO.h">
+    <ClInclude Include="src/FileIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AbstractSyntaxTree.h">
+    <ClInclude Include="src/AbstractSyntaxTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ClassDefinitionSyntaxNode.h">
+    <ClInclude Include="src/ClassDefinitionSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="FunctionDefinitionSyntaxNode.h">
+    <ClInclude Include="src/FunctionDefinitionSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="FunctionPrototypeSyntaxNode.h">
+    <ClInclude Include="src/FunctionPrototypeSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="BodySyntaxNode.h">
+    <ClInclude Include="src/BodySyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="SyntaxNode.h">
+    <ClInclude Include="src/SyntaxNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VariableDefinitionSyntaxNode.h">
+    <ClInclude Include="src/VariableDefinitionSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="ReturnSyntaxNode.h">
+    <ClInclude Include="src/ReturnSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="BreakSyntaxNode.h">
+    <ClInclude Include="src/BreakSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="ContinueSyntaxNode.h">
+    <ClInclude Include="src/ContinueSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="IfSyntaxNode.h">
+    <ClInclude Include="src/IfSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="VariableSyntaxNode.h">
+    <ClInclude Include="src/VariableSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="CallSyntaxNode.h">
+    <ClInclude Include="src/CallSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="LiteralValueSyntaxNode.h">
+    <ClInclude Include="src/LiteralValueSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="AssignmentSyntaxNode.h">
+    <ClInclude Include="src/AssignmentSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="EqualityOperatorSyntaxNode.h">
+    <ClInclude Include="src/EqualityOperatorSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="NotOperatorSyntaxNode.h">
+    <ClInclude Include="src/NotOperatorSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="BooleanLiteralSyntaxNode.h">
+    <ClInclude Include="src/BooleanLiteralSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="ArrayValueSyntaxNode.h">
+    <ClInclude Include="src/ArrayValueSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="EnumDefinitionSyntaxNode.h">
+    <ClInclude Include="src/EnumDefinitionSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="EnumValueSyntaxNode.h">
+    <ClInclude Include="src/EnumValueSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="DictionaryValueSyntaxNode.h">
+    <ClInclude Include="src/DictionaryValueSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="MathOperatorSyntaxNode.h">
+    <ClInclude Include="src/MathOperatorSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="PrefixOperator.h">
+    <ClInclude Include="src/PrefixOperator.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="ValueIndexValue.h">
+    <ClInclude Include="src/ValueIndexValue.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="PreloadSyntaxNode.h">
+    <ClInclude Include="src/PreloadSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="BooleanOperatorSyntaxNode.h">
+    <ClInclude Include="src/BooleanOperatorSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="WhileSyntaxNode.h">
+    <ClInclude Include="src/WhileSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="ForSyntaxNode.h">
+    <ClInclude Include="src/ForSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="NullSyntaxNode.h">
+    <ClInclude Include="src/NullSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="BitwiseOperatorSyntaxNode.h">
+    <ClInclude Include="src/BitwiseOperatorSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="IsOperatorSyntaxNode.h">
+    <ClInclude Include="src/IsOperatorSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="FileNameTransformer.h">
+    <ClInclude Include="src/FileNameTransformer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RangeSyntaxNode.h">
+    <ClInclude Include="src/RangeSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="TernarySyntaxNode.h">
+    <ClInclude Include="src/TernarySyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="CastSyntaxNode.h">
+    <ClInclude Include="src/CastSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="Generator.h">
+    <ClInclude Include="src/Generator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CPPModule.h">
+    <ClInclude Include="src/CPPModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CPPClassFileWriter.h">
+    <ClInclude Include="src/CPPClassFileWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CPPClassFile.h">
+    <ClInclude Include="src/CPPClassFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="XMLLexer.h">
+    <ClInclude Include="src/XMLLexer.h">
       <Filter>Header Files\Parsing\Docs</Filter>
     </ClInclude>
-    <ClInclude Include="DocsParser.h">
+    <ClInclude Include="src/DocsParser.h">
       <Filter>Header Files\Parsing\Docs</Filter>
     </ClInclude>
-    <ClInclude Include="XMLTokenStream.h">
+    <ClInclude Include="src/XMLTokenStream.h">
       <Filter>Header Files\Parsing\Docs</Filter>
     </ClInclude>
-    <ClInclude Include="InputStream.h">
+    <ClInclude Include="src/InputStream.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
-    <ClInclude Include="GDLexer.h">
+    <ClInclude Include="src/GDLexer.h">
       <Filter>Header Files\Parsing\GD</Filter>
     </ClInclude>
-    <ClInclude Include="GDParser.h">
+    <ClInclude Include="src/GDParser.h">
       <Filter>Header Files\Parsing\GD</Filter>
     </ClInclude>
-    <ClInclude Include="ParserError.h">
+    <ClInclude Include="src/ParserError.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
-    <ClInclude Include="GDTokenStream.h">
+    <ClInclude Include="src/GDTokenStream.h">
       <Filter>Header Files\Parsing\GD</Filter>
     </ClInclude>
-    <ClInclude Include="Lexer.h">
+    <ClInclude Include="src/Lexer.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
-    <ClInclude Include="TokenStream.h">
+    <ClInclude Include="src/TokenStream.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
-    <ClInclude Include="XMLParser.h">
+    <ClInclude Include="src/XMLParser.h">
       <Filter>Header Files\Parsing\Docs</Filter>
     </ClInclude>
-    <ClInclude Include="Type.h">
+    <ClInclude Include="src/Type.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TranspilerDefinitions.h">
+    <ClInclude Include="src/TranspilerDefinitions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CppClassData.h">
+    <ClInclude Include="src/CppClassData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CppData.h">
+    <ClInclude Include="src/CppData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CppFunctionData.h">
+    <ClInclude Include="src/CppFunctionData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ConstantValueMapping.h">
+    <ClInclude Include="src/ConstantValueMapping.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="RegisterTypesGenerator.h">
+    <ClInclude Include="src/RegisterTypesGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ElseSyntaxNode.h">
+    <ClInclude Include="src/ElseSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="ElseIfSyntaxNode.h">
+    <ClInclude Include="src/ElseIfSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="MatchSyntaxNode.h">
+    <ClInclude Include="src/MatchSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
-    <ClInclude Include="MatchCaseSyntaxNode.h">
+    <ClInclude Include="src/MatchCaseSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
   </ItemGroup>
