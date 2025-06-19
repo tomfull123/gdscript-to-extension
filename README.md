@@ -4,7 +4,7 @@ A tool for transpiling GDScripts into GDExtension files
 
 ## Installing
 
-Download release
+Download release (currently only windows)
 Extract `gdtoex` folder to a tools folder (e.g. c:/dev-tools/)
 Add `gdtoex` folder to `PATH` system variable (e.g. c:/dev-tools/gdtoex)
 
