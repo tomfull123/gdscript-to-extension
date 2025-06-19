@@ -239,10 +239,10 @@
     <ClInclude Include="TranspileTest.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GDScript-to-Cpp.vcxproj">
+    <ProjectReference Include="..\gdscript-to-extension.vcxproj">
       <Project>{ca83f6b3-db11-42b0-84ad-93f3606d6a9e}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\GDScript-to-Cpp\GDScript-to-Cpp.vcxproj">
+    <ProjectReference Include="..\GDScript-to-Cpp\gdscript-to-extension.vcxproj">
       <Project>{ca83f6b3-db11-42b0-84ad-93f3606d6a9e}</Project>
     </ProjectReference>
   </ItemGroup>
