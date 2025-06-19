@@ -133,3 +133,15 @@ TEST_F(TranspileTest, InnerClassInlineExtends)
 	std::string expected = "#pragma once\n\n#include \"Stuff.h\"\n\nnamespace godot\n{\n\tclass Stuff : public RefCounted\n\t{\n\t\tGDCLASS(Stuff, RefCounted)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n\n\tclass MyClass : public Stuff\n\t{\n\t\tGDCLASS(MyClass, Stuff)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, ClassExtendsSelf)
+{
+	std::string input = R"(
+		class_name Hello
+		extends Hello
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n\nnamespace godot\n{\n\tclass Hello : public Hello\n\t{\n\t\tGDCLASS(Hello, Hello)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
