@@ -25,7 +25,7 @@ GDExtension files should be written to output path
 Run `scons` to compile the GDExtension
 Run godot project
 
-## Args
+## Arguments
 
 Project Path `-p c:/dev/godot/project1` Override the project path (defaults to current directory)
 Output Path `-o ./cpp/src` Overrides the output path (defaults to ./cpp/src)
