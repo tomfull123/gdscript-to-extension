@@ -65,13 +65,16 @@ public:
 
 			if (instanceType)
 			{
-				auto instanceTypeClass = data->classData[instanceType->getName()];
-
-				if (instanceTypeClass)
+				if (data->classData.contains(instanceType->getName()))
 				{
-					auto prototype = instanceTypeClass->getFunctionPrototype(name_->value);
+					auto instanceTypeClass = data->classData[instanceType->getName()];
 
-					if (prototype) type_ = prototype->getReturnType();
+					if (instanceTypeClass)
+					{
+						auto prototype = instanceTypeClass->getFunctionPrototype(name_->value);
+
+						if (prototype) type_ = prototype->getReturnType();
+					}
 				}
 			}
 		}
