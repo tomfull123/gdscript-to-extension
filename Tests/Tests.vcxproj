@@ -99,8 +99,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Dev\C++\gdscript-to-cpp\src;C:\Dev\C++\deps\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Dev\C++\deps\lib\Debug;C:\Dev\C++\gdscript-to-cpp\GDScript-to-Cpp\x64\Debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\src;C:\Dev\C++\deps\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Dev\C++\deps\lib\Debug;..\GDScript-to-Cpp\x64\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithDebugInfo|x64'">
     <IncludePath>C:\Dev\C++\deps\include;$(IncludePath)</IncludePath>
