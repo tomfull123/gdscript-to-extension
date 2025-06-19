@@ -4,9 +4,9 @@ A tool for transpiling GDScripts into GDExtension files
 
 ## Installing
 
-Download release (currently only windows)
-Extract `gdtoex` folder to a tools folder (e.g. c:/dev-tools/)
-Add `gdtoex` folder to `PATH` system variable (e.g. c:/dev-tools/gdtoex)
+Download release (currently only windows)<br>
+Extract `gdtoex` folder to a tools folder (e.g. c:/dev-tools/)<br>
+Add `gdtoex` folder to `PATH` system variable (e.g. c:/dev-tools/gdtoex)<br>
 
 ## How to Use
 
@@ -18,19 +18,19 @@ this is to make it a little easier to switch between GDScript and GDExtension ve
 
 ### Running tool
 
-Setup GDExtension
-Open command line at the project path (c:/dev/godot/project1)
-Run `gdtoex` command
-GDExtension files should be written to output path
-Run `scons` to compile the GDExtension
-Run godot project
+Setup GDExtension<br>
+Open command line at the project path (c:/dev/godot/project1)<br>
+Run `gdtoex` command<br>
+GDExtension files should be written to output path<br>
+Run `scons` to compile the GDExtension<br>
+Run godot project<br>
 
 ## Arguments
 
-Project Path `-p c:/dev/godot/project1` Override the project path (defaults to current directory)
-Output Path `-o ./cpp/src` Overrides the output path (defaults to ./cpp/src)
+Project Path `-p c:/dev/godot/project1` Override the project path (defaults to current directory)<br>
+Output Path `-o ./cpp/src` Overrides the output path (defaults to ./cpp/src)<br>
 
 ## Known Issues
 
-Underscoring `node` classes won't replace the GDScript node with a GDExtension node in the scene tree, you will manually have to delete and add them
-There is an issue with nested array initialisers - something that will need to be fixed in Godot
+Underscoring `node` classes won't replace the GDScript node with a GDExtension node in the scene tree, you will manually have to delete and add them<br>
+There is an issue with nested array initialisers - something that will need to be fixed in Godot<br>
