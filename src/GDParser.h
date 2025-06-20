@@ -729,7 +729,7 @@ private:
 		{
 			auto operatorToken = next(); // eat operator
 
-			return new PrefixOperator(operatorToken, parseSingleValueObject());
+			return new PrefixOperator(operatorToken, parseValueExpression());
 		}
 		}
 
