@@ -97,6 +97,7 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"SurfaceTool", "<godot_cpp/classes/surface_tool.hpp>"},
 	{"Curve", "<godot_cpp/classes/curve.hpp>"},
 	{"RenderingServer::get_singleton()", "<godot_cpp/classes/rendering_server.hpp>"},
+	{"Node", "<godot_cpp/classes/node.hpp>"},
 	{"Node3D", "<godot_cpp/classes/node3d.hpp>"},
 	{"get_viewport", "<godot_cpp/classes/viewport.hpp>"},
 	{"ResourceLoader::get_singleton()", "<godot_cpp/classes/resource_loader.hpp>"},
