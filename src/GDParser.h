@@ -217,7 +217,7 @@ private:
 		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, false, false, false, false, nullptr, nullptr);
 	}
 
-	FunctionPrototypeSyntaxNode* parseFunctionProtoype(bool isStatic)
+	FunctionPrototypeSyntaxNode* parseFunctionProtoype(bool isStatic, bool isAbstract)
 	{
 		consumeKeyword("func"); // eat func
 
@@ -256,9 +256,9 @@ private:
 			returnType = parseType();
 		}
 
-		if (!consume(GDTokenType::ColonSeparator)) return nullptr;
+		if (!isAbstract && !consume(GDTokenType::ColonSeparator)) return nullptr;
 
-		return new FunctionPrototypeSyntaxNode(name, argDefs, returnType, isStatic);
+		return new FunctionPrototypeSyntaxNode(name, argDefs, returnType, isStatic, isAbstract);
 	}
 
 	BodySyntaxNode* parseBody(int indentDepth, int lineNumber, bool returnThis = false)
@@ -281,11 +281,11 @@ private:
 		return new BodySyntaxNode(nodes);
 	}
 
-	FunctionDefinitionSyntaxNode* parseFunction(bool isStatic)
+	FunctionDefinitionSyntaxNode* parseFunction(bool isStatic, bool isAbstract)
 	{
 		auto token = peek();
 
-		FunctionPrototypeSyntaxNode* prototype = parseFunctionProtoype(isStatic);
+		FunctionPrototypeSyntaxNode* prototype = parseFunctionProtoype(isStatic, isAbstract);
 
 		if (!prototype) return nullptr;
 
@@ -460,10 +460,11 @@ private:
 		return consume(GDTokenType::IdentifierOrKeyword);
 	}
 
-	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, const std::string& fileName, GDToken* nameToken = nullptr, bool isInnerClass = false, GDToken* overrideExtends = nullptr)
+	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, const std::string& fileName, GDToken* nameToken = nullptr, bool isInnerClass = false, GDToken* overrideExtends = nullptr, bool overrideIsAbstract = false)
 	{
 		GDToken* name = nameToken;
 		GDToken* extends = overrideExtends;
+		bool isClassAbstract = overrideIsAbstract;
 
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
@@ -484,6 +485,14 @@ private:
 				continue;
 			}
 
+			bool isAbstract = false;
+
+			if (t->type == GDTokenType::Annotation && t->value == "abstract")
+			{
+				next(); // eat abstract
+				isAbstract = true;
+			}
+
 			bool isStatic = false;
 
 			if (isNextTokenKeyword("static"))
@@ -500,14 +509,25 @@ private:
 			{
 				const std::string& value = t->value;
 
-				if (value == "class_name") name = parseClassName();
+				if (value == "class_name")
+				{
+					isClassAbstract = isAbstract;
+					name = parseClassName();
+				}
 				else if (value == "extends") extends = parseExtends();
 				else if (value == "func")
 				{
-					auto functionDef = parseFunction(isStatic);
+					if (isAbstract)
+					{
+						parseFunctionProtoype(false, isAbstract); // eat abstract function prototype
+					}
+					else
+					{
+						auto functionDef = parseFunction(isStatic, isAbstract);
 
-					if (isStatic) staticFunctionDefinitions.push_back(functionDef);
-					else memberFunctionDefinitions.push_back(functionDef);
+						if (isStatic) staticFunctionDefinitions.push_back(functionDef);
+						else memberFunctionDefinitions.push_back(functionDef);
+					}
 				}
 				else if (value == "var" || value == "const")
 				{
@@ -525,7 +545,7 @@ private:
 					GDToken* subclassExtends = nullptr;
 					if (isNextTokenKeyword("extends")) subclassExtends = parseExtends();
 					consume(GDTokenType::ColonSeparator);
-					auto internalClass = parseScriptBody(t->indentDepth + 1, "", subclassName, true, subclassExtends);
+					auto internalClass = parseScriptBody(t->indentDepth + 1, "", subclassName, true, subclassExtends, isAbstract);
 					if (internalClass) innerClasses.push_back(internalClass);
 				}
 				else if (value == "pass") next(); // eat pass
@@ -562,7 +582,8 @@ private:
 			{},
 			isInnerClass,
 			fileName,
-			false
+			false,
+			isClassAbstract
 		);
 	}
 

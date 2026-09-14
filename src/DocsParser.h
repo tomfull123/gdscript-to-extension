@@ -137,7 +137,8 @@ private:
 			constantValueMappings,
 			false,
 			fileName,
-			true
+			true,
+			false
 		);
 	}
 
@@ -208,7 +209,8 @@ private:
 			methodTag->getProperty("name"),
 			args,
 			returnType,
-			isStatic
+			isStatic,
+			false
 		);
 
 		return new FunctionDefinitionSyntaxNode(

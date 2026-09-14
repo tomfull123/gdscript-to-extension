@@ -25,7 +25,8 @@ public:
 		const std::vector<ConstantValueMapping*>& constantValueMappings,
 		bool isInnerClass,
 		const std::string& fileName,
-		bool isDocsClass
+		bool isDocsClass,
+		bool isAbstract
 	) :
 		name_(name),
 		extends_(extends),
@@ -38,7 +39,8 @@ public:
 		constantValueMappings_(constantValueMappings),
 		isInnerClass_(isInnerClass),
 		fileName_(fileName),
-		isDocsClass_(isDocsClass)
+		isDocsClass_(isDocsClass),
+		isAbstract_(isAbstract)
 	{
 	}
 
@@ -150,6 +152,7 @@ private:
 	bool isInnerClass_;
 	std::string fileName_;
 	bool isDocsClass_;
+	bool isAbstract_;
 
 	std::string classBody(CppData* data)
 	{
@@ -380,7 +383,7 @@ private:
 		auto getterName = variableDefinition->getGetterName();
 		if (getterName == nullptr) return;
 		std::string name = getterName->value;
-		auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(name), {}, variableDefinition->getType(), false);
+		auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(name), {}, variableDefinition->getType(), false, false);
 
 		auto returnVariableStatement = new ReturnSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, true));
 
@@ -401,7 +404,7 @@ private:
 		if (setterName == nullptr) return;
 		auto argNameToken = new GDToken("new" + variableDefinition->getName());
 		auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false, false, nullptr, nullptr);
-		auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(setterName->value), { arg }, new Type("void"), false);
+		auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(setterName->value), { arg }, new Type("void"), false, false);
 
 		auto setVariableStatement = new AssignmentSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, false), new VariableSyntaxNode(argNameToken, nullptr, true));
 

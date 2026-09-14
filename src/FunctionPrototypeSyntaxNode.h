@@ -10,12 +10,14 @@ public:
 		Token* name,
 		const std::vector<VariableDefinitionSyntaxNode*>& argDefs,
 		Type* returnType,
-		bool _isStatic
+		bool isStatic,
+		bool isAbstract
 	) :
 		name_(name),
 		argDefs_(argDefs),
 		returnType_(returnType),
-		isStatic_(_isStatic)
+		isStatic_(isStatic),
+		isAbstract_(isAbstract)
 	{
 	}
 
@@ -114,6 +116,7 @@ private:
 	std::vector<VariableDefinitionSyntaxNode*> argDefs_;
 	Type* returnType_;
 	bool isStatic_;
+	bool isAbstract_;
 
 	void setCurrentFunction(CppData* data) const
 	{
