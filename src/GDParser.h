@@ -768,17 +768,24 @@ private:
 
 	ValueSyntaxNode* parseValueExpression()
 	{
-		int bracketCount = 0;
-
-		while (isNextTokenType(GDTokenType::OpenBracketSeparator))
-		{
-			next(); // eat (
-			bracketCount++;
-		}
-
 		const GDToken* name = peek();
 
-		ValueSyntaxNode* lhs = parseSingleValueObject();
+		ValueSyntaxNode* lhs = nullptr;
+
+		if (isNextTokenType(GDTokenType::OpenBracketSeparator))
+		{
+			next(); // eat (
+			lhs = parseValueExpression();
+			if (!isNextTokenType(GDTokenType::CloseBracketSeparator))
+			{
+				return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+			}
+			next(); // eat )
+		}
+		else
+		{
+			lhs = parseSingleValueObject();
+		}
 
 		if (!lhs) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
 
@@ -848,13 +855,6 @@ private:
 			if (isNextTokenKeyword("as"))
 			{
 				lhs = parseCast(lhs);
-				continue;
-			}
-
-			if (bracketCount > 0 && isNextTokenType(GDTokenType::CloseBracketSeparator))
-			{
-				next(); // eat )
-				bracketCount--;
 				continue;
 			}
 
