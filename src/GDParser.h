@@ -464,6 +464,7 @@ private:
 	{
 		GDToken* name = nameToken;
 		GDToken* extends = overrideExtends;
+
 		std::vector<FunctionDefinitionSyntaxNode*> memberFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> memberVariableDefinitions;
 		std::vector<EnumDefinitionSyntaxNode*> enumDefinitions;
@@ -483,6 +484,16 @@ private:
 				continue;
 			}
 
+			bool isStatic = false;
+
+			if (isNextTokenKeyword("static"))
+			{
+				next(); // eat static
+				isStatic = true;
+			}
+
+			t = peek();
+
 			switch (t->type)
 			{
 			case GDTokenType::IdentifierOrKeyword:
@@ -491,24 +502,22 @@ private:
 
 				if (value == "class_name") name = parseClassName();
 				else if (value == "extends") extends = parseExtends();
-				else if (value == "func") memberFunctionDefinitions.push_back(parseFunction(false));
-				else if (value == "var" || value == "const") memberVariableDefinitions.push_back(parseVariableDefinition(true, false, false));
+				else if (value == "func")
+				{
+					auto functionDef = parseFunction(isStatic);
+
+					if (isStatic) staticFunctionDefinitions.push_back(functionDef);
+					else memberFunctionDefinitions.push_back(functionDef);
+				}
+				else if (value == "var" || value == "const")
+				{
+					auto variableDef = parseVariableDefinition(!isStatic, isStatic, false);
+
+					if (isStatic) staticVariableDefinitions.push_back(variableDef);
+					else memberVariableDefinitions.push_back(variableDef);
+				}
 				else if (value == "signal") memberVariableDefinitions.push_back(parseSignalDefinitions());
 				else if (value == "enum") enumDefinitions.push_back(parseEnumDefinition());
-				else if (value == "static")
-				{
-					next(); // eat static
-
-					if (isNextTokenKeyword("func"))
-					{
-						staticFunctionDefinitions.push_back(parseFunction(true));
-					}
-					else if (isNextTokenKeyword("var") || isNextTokenKeyword("const"))
-					{
-						staticVariableDefinitions.push_back(parseVariableDefinition(false, true, false));
-					}
-					else addUnexpectedNextTokenError();
-				}
 				else if (value == "class")
 				{
 					next(); // eat class
@@ -532,7 +541,7 @@ private:
 
 				if (isNextTokenKeyword("var"))
 				{
-					memberVariableDefinitions.push_back(parseVariableDefinition(true, false, annotationToken->value == "export"));
+					memberVariableDefinitions.push_back(parseVariableDefinition(!isStatic, isStatic, annotationToken->value == "export"));
 				}
 			}
 			break;
