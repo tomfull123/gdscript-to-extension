@@ -23,6 +23,7 @@ public:
 		if (front == '\t') columnNumber_ += 4;
 		else columnNumber_++;
 
+		if (front == '\r' && !eof() && input_[currentIndex_] == '\n') return next();
 		if (isNewLine(front))
 		{
 			columnNumber_ = 1;
