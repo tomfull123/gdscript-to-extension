@@ -400,6 +400,9 @@ private:
 			{
 				auto arg = parseArgDefinition();
 				if (arg) args.push_back(arg);
+
+				if (isNextTokenType(GDTokenType::CommaSeparator)) next(); // eat ,
+				else if (!isNextTokenType(GDTokenType::CloseBracketSeparator)) return (VariableDefinitionSyntaxNode*)addUnexpectedNextTokenError();
 			}
 
 			next(); // eat )
