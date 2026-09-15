@@ -187,12 +187,12 @@ private:
 
 	static bool isNumberLiteralStart(const char& ch)
 	{
-		return isdigit(ch);
+		return iswdigit(ch);
 	}
 
 	static bool isNumber(const char& ch)
 	{
-		return isdigit(ch);
+		return iswdigit(ch);
 	}
 
 	static bool isDot(const char& ch)
