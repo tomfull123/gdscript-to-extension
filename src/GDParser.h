@@ -888,11 +888,12 @@ private:
 				continue;
 			}
 
-			if (isNextTokenType(GDTokenType::AndOperator) || isNextTokenType(GDTokenType::OrOperator) || isNextTokenKeyword("or"))
+			if (isNextTokenType(GDTokenType::AndOperator) || isNextTokenType(GDTokenType::OrOperator) || isNextTokenKeyword("or") || isNextTokenKeyword("and"))
 			{
 				auto booleanOperator = next(); // eat && or ||
 
 				if (booleanOperator->value == "or") booleanOperator->type = GDTokenType::OrOperator;
+				if (booleanOperator->value == "and") booleanOperator->type = GDTokenType::AndOperator;
 
 				ValueSyntaxNode* rhs = parseValueExpression();
 
