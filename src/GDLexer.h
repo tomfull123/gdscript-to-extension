@@ -28,6 +28,7 @@ enum class GDTokenType
 	GreaterThanEqualSeparator,
 	DotSeparator,
 	NotOperator,
+
 	AssignmentOperator,
 	EqualityOperator,
 	NotEqualityOperator,
@@ -142,6 +143,7 @@ private:
 		'&',
 		'|',
 		'#',
+		'%',
 	};
 
 	static bool isIdentifierStart(const char& ch)
@@ -366,6 +368,7 @@ private:
 		if (value == "++") return GDTokenType::Operator;
 		if (value == "-=") return GDTokenType::Operator;
 		if (value == "--") return GDTokenType::Operator;
+		if (value == "%") return GDTokenType::Operator;
 		if (value == "&&") return GDTokenType::AndOperator;
 		if (value == "||") return GDTokenType::OrOperator;
 		if (value == "|") return GDTokenType::LogicalOrOperator;

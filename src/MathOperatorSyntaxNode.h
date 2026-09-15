@@ -48,7 +48,15 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return "(" + lhs_->toCpp(data, "") + " " + operatorToken_->value + " " + rhs_->toCpp(data, "") + ")";
+		auto operatorValue = operatorToken_->value;
+		auto leftValue = lhs_->toCpp(data, "");
+		auto rightValue = rhs_->toCpp(data, "");
+
+		if (operatorValue == "%" && lhs_->getType()->getName() == "String")
+		{
+			return "godot::String(" + leftValue + ").format(" + rightValue + ")";
+		}
+		return "(" + leftValue + " " + operatorValue + " " + rightValue + ")";
 	}
 
 private:
