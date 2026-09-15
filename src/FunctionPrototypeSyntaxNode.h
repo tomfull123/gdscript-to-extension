@@ -56,6 +56,7 @@ public:
 
 	void hoist(CppData* data) override
 	{
+		if (name_ == nullptr) name_ = new Token("lambda-" + std::to_string(data->currentClass->lambdaFunctionDefinitions.size()));
 		data->currentClass->functionPrototypeDefinitions[name_->value] = this;
 		data->currentClass->currentFunction = new CppFunctionData();
 		data->currentClass->functionData[name_->value] = data->currentClass->currentFunction;

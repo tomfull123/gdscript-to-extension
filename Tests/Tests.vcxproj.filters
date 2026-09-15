@@ -94,6 +94,9 @@
     <ClCompile Include="MatchTests.cpp">
       <Filter>Source Files\Transpile</Filter>
     </ClCompile>
+    <ClCompile Include="LambdaDefinitionTests.cpp">
+      <Filter>Source Files\Transpile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TranspileTest.h">

@@ -230,5 +230,8 @@
     <ClInclude Include="src/MatchCaseSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
+    <ClInclude Include="src\LambdaSyntaxNode.h">
+      <Filter>Header Files\SyntaxNodes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

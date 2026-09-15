@@ -36,6 +36,7 @@
 #include "ElseIfSyntaxNode.h"
 #include "MatchSyntaxNode.h"
 #include "MatchCaseSyntaxNode.h"
+#include "LambdaSyntaxNode.h"
 
 struct Result
 {
@@ -269,6 +270,7 @@ private:
 		{
 			auto ex = parseExpression();
 			if (ex) nodes.push_back(ex);
+			if (isNextTokenType(GDTokenType::CloseBracketSeparator)) break;
 		}
 
 		if (returnThis)
@@ -766,13 +768,65 @@ private:
 		return (ValueSyntaxNode*)addUnexpectedNextTokenError();
 	}
 
+	LambdaSyntaxNode* parseLambdaFunction()
+	{
+		auto token = consumeKeyword("func"); // eat func
+
+		if (!consume(GDTokenType::OpenBracketSeparator)) return nullptr;
+
+		std::vector<VariableDefinitionSyntaxNode*> argDefs;
+
+		while (stream_.peek()->type != GDTokenType::CloseBracketSeparator)
+		{
+			auto* argDef = parseArgDefinition();
+
+			if (argDef)
+			{
+				argDefs.push_back(argDef);
+
+				if (isNextTokenType(GDTokenType::CommaSeparator)) next(); // eat ,
+				else if (!isNextTokenType(GDTokenType::CloseBracketSeparator)) return (LambdaSyntaxNode*)addUnexpectedNextTokenError();
+			}
+			else
+			{
+				return (LambdaSyntaxNode*)addUnexpectedNextTokenError();
+			}
+		}
+
+		next(); // eat )
+
+		Type* returnType = nullptr;
+
+		if (isNextTokenType(GDTokenType::ArrowSeparator))
+		{
+			next(); // eat ->
+			returnType = parseType();
+		}
+
+		if (!consume(GDTokenType::ColonSeparator)) return nullptr;
+
+		auto prototype = new FunctionPrototypeSyntaxNode(nullptr, argDefs, returnType, false, false);
+
+		if (!prototype) return nullptr;
+
+		BodySyntaxNode* body = parseBody(token->indentDepth, token->lineNumber, false);
+
+		if (!body) return nullptr;
+
+		return new LambdaSyntaxNode(token, new FunctionDefinitionSyntaxNode(prototype, body));
+	}
+
 	ValueSyntaxNode* parseValueExpression()
 	{
 		const GDToken* name = peek();
 
 		ValueSyntaxNode* lhs = nullptr;
 
-		if (isNextTokenType(GDTokenType::OpenBracketSeparator))
+		if (isNextTokenKeyword("func"))
+		{
+			lhs = parseLambdaFunction();
+		}
+		else if (isNextTokenType(GDTokenType::OpenBracketSeparator))
 		{
 			next(); // eat (
 			lhs = parseValueExpression();

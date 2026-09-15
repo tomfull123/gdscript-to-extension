@@ -220,6 +220,7 @@
     <ClCompile Include="GodotLifecycleMethodTests.cpp" />
     <ClCompile Include="GodotTypeTests.cpp" />
     <ClCompile Include="IfTests.cpp" />
+    <ClCompile Include="LambdaDefinitionTests.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MatchTests.cpp" />
     <ClCompile Include="MathOperatorTests.cpp" />

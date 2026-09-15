@@ -9,6 +9,7 @@
 
 class VariableDefinitionSyntaxNode;
 class FunctionPrototypeSyntaxNode;
+class FunctionDefinitionSyntaxNode;
 class ValueSyntaxNode;
 struct CppData;
 
@@ -19,6 +20,7 @@ struct CppClassData
 	std::unordered_map<std::string, VariableDefinitionSyntaxNode*> memberVariableDefinitions;
 	std::unordered_map<std::string, FunctionPrototypeSyntaxNode*> functionPrototypeDefinitions;
 	std::unordered_set<std::string> typeDefinitions;
+	std::vector<FunctionDefinitionSyntaxNode*> lambdaFunctionDefinitions;
 	std::string currentClassName;
 	Type* currentClassType;
 	Type* classInheritedType;
