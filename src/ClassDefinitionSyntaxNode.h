@@ -218,6 +218,7 @@ private:
 		std::string publicMemberFunctionDefinitionString;
 		std::string privateMemberFunctionDefinitionString;
 		std::string bindMethodsString;
+		std::string rpcMethodConfigsString;
 
 		for (auto f : memberFunctionDefinitions_)
 		{
@@ -230,6 +231,8 @@ private:
 				if (!GODOT_LIFECYCLE_METHODS.contains(f->getName()))
 					bindMethodsString += bindMethod(className, f, "\t\t\t", false);
 			}
+
+			if (f->hasRpc()) rpcMethodConfigsString += f->buildRpcCpp(data, "\t\t") + "\n";
 		}
 
 		Type* inherits = data->currentClass->classInheritedType;
@@ -268,7 +271,8 @@ private:
 			"\t\t{\n"
 			+ bindMethodsString
 			+ bindStaticMethodsString
-			+ bindPropertysString +
+			+ bindPropertysString
+			+ rpcMethodConfigsString +
 			"\t\t}\n"
 			"\t};\n";
 	}
@@ -389,7 +393,7 @@ private:
 
 		auto body = new BodySyntaxNode({ returnVariableStatement });
 
-		auto getterFunctionDef = new FunctionDefinitionSyntaxNode(prototype, body);
+		auto getterFunctionDef = new FunctionDefinitionSyntaxNode(nullptr, prototype, body);
 
 		getterFunctionDef->hoist(data);
 		getterFunctionDef->resolveDefinitions(data);
@@ -410,7 +414,7 @@ private:
 
 		auto body = new BodySyntaxNode({ setVariableStatement });
 
-		auto setterFunctionDef = new FunctionDefinitionSyntaxNode(prototype, body);
+		auto setterFunctionDef = new FunctionDefinitionSyntaxNode(nullptr, prototype, body);
 
 		setterFunctionDef->hoist(data);
 		setterFunctionDef->resolveDefinitions(data);

@@ -283,7 +283,7 @@ private:
 		return new BodySyntaxNode(nodes);
 	}
 
-	FunctionDefinitionSyntaxNode* parseFunction(bool isStatic, bool isAbstract)
+	FunctionDefinitionSyntaxNode* parseFunction(bool isStatic, bool isAbstract, RpcSyntaxNode* rpc)
 	{
 		auto token = peek();
 
@@ -295,7 +295,7 @@ private:
 
 		if (!body) return nullptr;
 
-		return new FunctionDefinitionSyntaxNode(prototype, body);
+		return new FunctionDefinitionSyntaxNode(rpc, prototype, body);
 	}
 
 	GDToken* parseClassName()
@@ -462,6 +462,30 @@ private:
 		return consume(GDTokenType::IdentifierOrKeyword);
 	}
 
+	RpcSyntaxNode* parseRpc()
+	{
+		if (!consume(GDTokenType::Annotation)) return nullptr;
+
+		std::vector<Token*> args;
+
+		if (isNextTokenType(GDTokenType::OpenBracketSeparator))
+		{
+			next(); // eat (
+
+			while (!isNextTokenType(GDTokenType::CloseBracketSeparator))
+			{
+				args.push_back(next());
+
+				if (isNextTokenType(GDTokenType::CommaSeparator)) next(); // eat ,
+				else if (!isNextTokenType(GDTokenType::CloseBracketSeparator)) return (RpcSyntaxNode*)addUnexpectedNextTokenError();
+			}
+
+			next(); // eat )
+		}
+
+		return new RpcSyntaxNode(args);
+	}
+
 	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, const std::string& fileName, GDToken* nameToken = nullptr, bool isInnerClass = false, GDToken* overrideExtends = nullptr, bool overrideIsAbstract = false)
 	{
 		GDToken* name = nameToken;
@@ -489,12 +513,20 @@ private:
 
 			bool isAbstract = false;
 			bool isExported = false;
+			RpcSyntaxNode* rpc = nullptr;
 
 			if (t->type == GDTokenType::Annotation)
 			{
-				parseAnnotation();
-				if (t->value == "abstract") isAbstract = true;
-				if (t->value == "export") isExported = true;
+				if (t->value == "rpc")
+				{
+					rpc = parseRpc();
+				}
+				else
+				{
+					parseAnnotation();
+					if (t->value == "abstract") isAbstract = true;
+					if (t->value == "export") isExported = true;
+				}
 			}
 
 			bool isStatic = false;
@@ -527,7 +559,7 @@ private:
 					}
 					else
 					{
-						auto functionDef = parseFunction(isStatic, isAbstract);
+						auto functionDef = parseFunction(isStatic, isAbstract, rpc);
 
 						if (isStatic) staticFunctionDefinitions.push_back(functionDef);
 						else memberFunctionDefinitions.push_back(functionDef);
@@ -805,7 +837,7 @@ private:
 
 		if (!body) return nullptr;
 
-		return new LambdaSyntaxNode(token, new FunctionDefinitionSyntaxNode(prototype, body));
+		return new LambdaSyntaxNode(token, new FunctionDefinitionSyntaxNode(nullptr, prototype, body));
 	}
 
 	ValueSyntaxNode* parseValueExpression()

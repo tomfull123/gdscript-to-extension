@@ -278,6 +278,7 @@
     <ClInclude Include="src/XMLParser.h" />
     <ClInclude Include="src/XMLTokenStream.h" />
     <ClInclude Include="src\LambdaSyntaxNode.h" />
+    <ClInclude Include="src\RpcSyntaxNode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -33,11 +33,11 @@
     <ClCompile Include="src/main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src/CppClassData.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="src/CppData.cpp">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src/CppClassData.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +231,9 @@
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
     <ClInclude Include="src\LambdaSyntaxNode.h">
+      <Filter>Header Files\SyntaxNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RpcSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
   </ItemGroup>

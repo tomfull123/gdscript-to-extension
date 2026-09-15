@@ -214,6 +214,7 @@ private:
 		);
 
 		return new FunctionDefinitionSyntaxNode(
+			nullptr,
 			prototype,
 			new BodySyntaxNode({})
 		);
