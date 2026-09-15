@@ -488,11 +488,13 @@ private:
 			}
 
 			bool isAbstract = false;
+			bool isExported = false;
 
-			if (t->type == GDTokenType::Annotation && t->value == "abstract")
+			if (t->type == GDTokenType::Annotation)
 			{
-				next(); // eat abstract
-				isAbstract = true;
+				parseAnnotation();
+				if (t->value == "abstract") isAbstract = true;
+				if (t->value == "export") isExported = true;
 			}
 
 			bool isStatic = false;
@@ -533,7 +535,7 @@ private:
 				}
 				else if (value == "var" || value == "const")
 				{
-					auto variableDef = parseVariableDefinition(!isStatic, isStatic, false);
+					auto variableDef = parseVariableDefinition(!isStatic, isStatic, isExported);
 
 					if (isStatic) staticVariableDefinitions.push_back(variableDef);
 					else memberVariableDefinitions.push_back(variableDef);
@@ -554,16 +556,6 @@ private:
 				else
 				{
 					return (ClassDefinitionSyntaxNode*)addUnexpectedNextTokenError();
-				}
-			}
-			break;
-			case GDTokenType::Annotation:
-			{
-				Token* annotationToken = parseAnnotation();
-
-				if (isNextTokenKeyword("var"))
-				{
-					memberVariableDefinitions.push_back(parseVariableDefinition(!isStatic, isStatic, annotationToken->value == "export"));
 				}
 			}
 			break;
