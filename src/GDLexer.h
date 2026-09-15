@@ -91,6 +91,12 @@ private:
 			return nullptr;
 		}
 
+		if (inputStream_.peek() == '\\' && isNewLine(inputStream_.peek(1)))
+		{
+			inputStream_.next();
+			return nullptr;
+		}
+
 		if (end()) return nullptr;
 
 		char ch = inputStream_.peek();
