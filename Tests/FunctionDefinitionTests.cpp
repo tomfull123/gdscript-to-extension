@@ -363,3 +363,16 @@ TEST_F(TranspileTest, FunctionDefinitionRpcAuthorityCallLocalReliableChannel)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/multiplayer_api.hpp>\n#include <godot_cpp/classes/multiplayer_peer.hpp>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff()\n\t\t{\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\"), &Test::doStuff);\n\t\tDictionary doStuffRpcConfig;\t\tdoStuffRpcConfig[\"rpc_mode\"] = MultiplayerAPI::RPC_MODE_AUTHORITY;\n\t\tdoStuffRpcConfig[\"call_local\"] = true;\n\t\tdoStuffRpcConfig[\"transfer_mode\"] = MultiplayerPeer::TRANSFER_MODE_RELIABLE;\n\t\tdoStuffRpcConfig[\"channel\"] = 0;\n\t\tNode::rpc_config(\"doStuff\", doStuffRpcConfig);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, FunctionDefinitionReturnvoidInline)
+{
+	std::string input = R"(
+		func doStuff() -> void:
+			if false: return
+			print("");
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/utility_functions.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff()\n\t\t{\n\t\t\tif (false)\n\t\t\t{\n\t\t\t\treturn;\n\t\t\t}\n\t\t\tUtilityFunctions::print(\"\");\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}

@@ -962,7 +962,9 @@ private:
 
 		ValueSyntaxNode* value = nullptr;
 
-		if (!end() && peek()->indentDepth >= returnToken->indentDepth)
+		auto valueToken = peek();
+
+		if (!end() && valueToken->indentDepth == returnToken->indentDepth && valueToken->lineNumber == returnToken->lineNumber)
 		{
 			value = parseValueExpression();
 		}
