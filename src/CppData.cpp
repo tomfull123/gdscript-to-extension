@@ -3,6 +3,7 @@
 #include "TranspilerDefinitions.h"
 #include "SyntaxNode.h"
 #include "EnumDefinitionSyntaxNode.h"
+#include "FunctionDefinitionSyntaxNode.h"
 
 CppClassData* CppData::getClassDefinition(const std::string& className) const
 {

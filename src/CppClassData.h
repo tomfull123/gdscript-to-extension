@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <string>
+#include <vector>
 #include "GDLexer.h"
 #include "Type.h"
 #include "CppFunctionData.h"
@@ -20,13 +21,13 @@ struct CppClassData
 	std::unordered_map<std::string, VariableDefinitionSyntaxNode*> memberVariableDefinitions;
 	std::unordered_map<std::string, FunctionPrototypeSyntaxNode*> functionPrototypeDefinitions;
 	std::unordered_set<std::string> typeDefinitions;
-	std::vector<FunctionDefinitionSyntaxNode*> lambdaFunctionDefinitions;
 	std::string currentClassName;
 	Type* currentClassType;
 	Type* classInheritedType;
 	std::unordered_map<std::string, CppFunctionData*> functionData;
 	CppFunctionData* currentFunction;
 	std::unordered_map<std::string, std::string> constantValueMappings = {};
+	std::vector<FunctionDefinitionSyntaxNode*> lambdaFunctionDefinitions;
 
 	VariableDefinitionSyntaxNode* getLocalVariableDefinition(const std::string& variableName)
 	{
