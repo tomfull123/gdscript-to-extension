@@ -382,11 +382,11 @@ TEST_F(TranspileTest, IsTypeAsType)
 	std::string input = R"(
 		func doStuff(node: Node) -> void:
 			if node is Node2D:
-				(node as Node2D).global_position
+				(node as Node2D).look_at(Vector2.ZERO)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include \"Node2D.h\"\n#include <godot_cpp/classes/node.hpp>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff(Node* node)\n\t\t{\n\t\t\tif (std::is_same_v<decltype(node), Node2D*> == true)\n\t\t\t{\n\t\t\t\t((Node2D*)node)->get_global_position();\n\t\t\t}\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\", \"node\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include \"Node2D.h\"\n#include <godot_cpp/classes/node.hpp>\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/vector2.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff(Node* node)\n\t\t{\n\t\t\tif (std::is_same_v<decltype(node), Node2D*> == true)\n\t\t\t{\n\t\t\t\t((Node2D*)node)->look_at(Vector2::Vector2(0, 0));\n\t\t\t}\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\", \"node\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
 
@@ -404,5 +404,17 @@ TEST_F(TranspileTest, FunctionCallWithNextExpressionStartingWithBrackets)
 
 	auto actual = transpile(input);
 	std::string expected = "#pragma once\n\n#include \"Entity2DDefinition.h\"\n#include \"Entity3DDefinition.h\"\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\tprivate:\n\n\t\tvoid _update_camera()\n\t\t{\n\t\t\tif (std::is_same_v<decltype(_definition), Entity3DDefinition> == true)\n\t\t\t{\n\t\t\t\tauto is_controller = authority.is_multiplayer_authority();\n\t\t\t\t((Entity3DDefinition)_definition)->get_camera().update_camera(is_controller);\n\t\t\t}\n\t\t\telse if (std::is_same_v<decltype(_definition), Entity2DDefinition> == true)\n\t\t\t{\n\t\t\t\tauto is_controller = authority.is_multiplayer_authority();\n\t\t\t\t((Entity2DDefinition)_definition)->get_camera().update_camera(is_controller);\n\t\t\t}\n\t\t}\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, SetPropertyWithBrackets)
+{
+	std::string input = R"(
+		func doStuff() -> void:
+			(multiplayer as SceneMultiplayer).server_relay = true
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include \"SceneMultiplayer.h\"\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff()\n\t\t{\n\t\t\t((Ref<SceneMultiplayer>)multiplayer)->set_server_relay(true);\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }

@@ -999,7 +999,7 @@ private:
 
 				if (isNextTokenType(GDTokenType::IdentifierOrKeyword))
 				{
-					lhs = parseVariableOrFunctionCall(true, lhs);
+					lhs = parseVariableOrFunctionCall(false, lhs);
 					continue;
 				}
 			}
