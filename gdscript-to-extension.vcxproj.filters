@@ -39,6 +39,9 @@
     <ClCompile Include="src/CppClassData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\VariableDefinitionSyntaxNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src/FileIO.h">

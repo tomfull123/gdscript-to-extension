@@ -212,6 +212,7 @@
     <ClCompile Include="src/CppData.cpp" />
     <ClCompile Include="src/FileIO.cpp" />
     <ClCompile Include="src/main.cpp" />
+    <ClCompile Include="src\VariableDefinitionSyntaxNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src/AbstractSyntaxTree.h" />
