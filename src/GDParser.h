@@ -215,7 +215,7 @@ private:
 			assignmentValue = parseValueExpression();
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, false, false, false, false, nullptr, nullptr);
+		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, false, false, false, false, nullptr, nullptr, nullptr, nullptr);
 	}
 
 	FunctionPrototypeSyntaxNode* parseFunctionProtoype(bool isStatic, bool isAbstract)
@@ -334,6 +334,8 @@ private:
 
 		Token* getterName = nullptr;
 		Token* setterName = nullptr;
+		FunctionDefinitionSyntaxNode* getterFunctionDefinition = nullptr;
+		FunctionDefinitionSyntaxNode* setterFunctionDefinition = nullptr;
 
 		if (isClassMember)
 		{
@@ -345,41 +347,84 @@ private:
 				{
 					if (isNextTokenKeyword("set"))
 					{
-						next(); // eat set
+						auto setToken = next(); // eat set
 
-						consume(GDTokenType::AssignmentOperator);
+						if (isNextTokenType(GDTokenType::AssignmentOperator))
+						{
+							next(); // eat =
 
-						setterName = consume(GDTokenType::IdentifierOrKeyword);
+							setterName = consume(GDTokenType::IdentifierOrKeyword);
 
-						if (isNextTokenType(GDTokenType::CommaSeparator))
-							next(); // eat ,
-						else
-							break;
+							if (isNextTokenType(GDTokenType::CommaSeparator))
+								next(); // eat ,
+							else
+								break;
+						}
+						else if (isNextTokenType(GDTokenType::OpenBracketSeparator))
+						{
+							next(); // eat (
+
+							auto variableName = consume(GDTokenType::IdentifierOrKeyword);
+
+							consume(GDTokenType::CloseBracketSeparator);
+
+							consume(GDTokenType::ColonSeparator);
+
+							auto setterBody = parseBody(setToken->indentDepth, setToken->lineNumber);
+
+							setterFunctionDefinition = new FunctionDefinitionSyntaxNode(
+								nullptr,
+								new FunctionPrototypeSyntaxNode(
+									new Token("set_" + name->value),
+									{ new VariableDefinitionSyntaxNode(variableName, type, nullptr, false, false, false, false, nullptr, nullptr, nullptr, nullptr) },
+									type,
+									false,
+									false
+								),
+								setterBody
+							);
+						}
 					}
 					else if (isNextTokenKeyword("get"))
 					{
-						next(); // eat get
+						auto getToken = next(); // eat get
 
-						consume(GDTokenType::AssignmentOperator);
+						if (isNextTokenType(GDTokenType::AssignmentOperator))
+						{
+							next(); // eat =
 
-						getterName = consume(GDTokenType::IdentifierOrKeyword);
+							getterName = consume(GDTokenType::IdentifierOrKeyword);
 
-						if (isNextTokenType(GDTokenType::CommaSeparator))
-							next(); // eat ,
-						else
-							break;
+							if (isNextTokenType(GDTokenType::CommaSeparator))
+								next(); // eat ,
+							else
+								break;
+						}
+						else if (isNextTokenType(GDTokenType::ColonSeparator))
+						{
+							next(); // eat :
+
+							auto getterBody = parseBody(getToken->indentDepth, getToken->lineNumber);
+
+							getterFunctionDefinition = new FunctionDefinitionSyntaxNode(
+								nullptr,
+								new FunctionPrototypeSyntaxNode(new Token("get_" + name->value), {}, type, false, false),
+								getterBody
+							);
+						}
 					}
 					else break;
 				}
 			}
-			else
+
+			if (getterName == nullptr && setterName == nullptr)
 			{
 				getterName = new Token("get_" + name->value);
 				setterName = new Token("set_" + name->value);
 			}
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->value == "const", isClassMember, isStatic, exported, getterName, setterName);
+		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->value == "const", isClassMember, isStatic, exported, getterName, setterName, getterFunctionDefinition, setterFunctionDefinition);
 	}
 
 	VariableDefinitionSyntaxNode* parseSignalDefinitions()
@@ -408,7 +453,7 @@ private:
 			next(); // eat )
 		}
 
-		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false, true, false, false, nullptr, nullptr);
+		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false, true, false, false, nullptr, nullptr, nullptr, nullptr);
 	}
 
 	Token* parseAnnotation()
@@ -1227,7 +1272,7 @@ private:
 
 		auto body = parseBody(forToken->indentDepth, forToken->lineNumber);
 
-		auto variableDefinition = new VariableDefinitionSyntaxNode(variableToken, variableType, nullptr, false, false, false, false, nullptr, nullptr);
+		auto variableDefinition = new VariableDefinitionSyntaxNode(variableToken, variableType, nullptr, false, false, false, false, nullptr, nullptr, nullptr, nullptr);
 
 		return new ForSyntaxNode(variableDefinition, arrayToken, body);
 	}

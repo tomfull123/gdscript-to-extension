@@ -2,6 +2,8 @@
 
 #include "SyntaxNode.h"
 
+class FunctionDefinitionSyntaxNode;
+
 class VariableDefinitionSyntaxNode : public SyntaxNode
 {
 public:
@@ -14,7 +16,9 @@ public:
 		bool isStatic,
 		bool exported,
 		Token* getterName,
-		Token* setterName
+		Token* setterName,
+		FunctionDefinitionSyntaxNode* getterFunctionDefinition,
+		FunctionDefinitionSyntaxNode* setterFunctionDefinition
 	) :
 		name_(name),
 		dataType_(dataType),
@@ -24,7 +28,9 @@ public:
 		isStatic_(isStatic),
 		exported_(exported),
 		getterName_(getterName),
-		setterName_(setterName)
+		setterName_(setterName),
+		getterFunctionDefinition_(getterFunctionDefinition),
+		setterFunctionDefinition_(setterFunctionDefinition)
 	{
 	}
 
@@ -68,42 +74,26 @@ public:
 		return setterName_;
 	}
 
+	FunctionDefinitionSyntaxNode* getGetterFunctionDefinition() const
+	{
+		return getterFunctionDefinition_;
+	}
+
+	FunctionDefinitionSyntaxNode* getSetterFunctionDefinition() const
+	{
+		return setterFunctionDefinition_;
+	}
+
 	bool isTypeDef() const
 	{
 		return isClassMember_ && isConstant_ && initialValue_ && initialValue_->hasParent();
 	}
 
-	void hoist(CppData* data) override
-	{
-		if (isClassMember_ || isStatic_) data->currentClass->memberVariableDefinitions[name_->value] = this;
-		else data->currentClass->currentFunction->variableDefinitions[name_->value] = this;
-		if (initialValue_) initialValue_->hoist(data);
-	}
+	void hoist(CppData* data) override;
 
-	void resolveDefinitions(CppData* data) override
-	{
-		if (initialValue_) initialValue_->resolveDefinitions(data);
-	}
+	void resolveDefinitions(CppData* data) override;
 
-	void resolveTypes(CppData* data, Type* otherType = nullptr) override
-	{
-		if (initialValue_)
-		{
-			initialValue_->resolveTypes(data);
-
-			if (!dataType_) dataType_ = initialValue_->getType();
-			else
-			{
-				auto initialValueType = initialValue_->getType();
-				if (initialValueType && dataType_->subtypes.size() < initialValueType->subtypes.size())
-				{
-					dataType_ = initialValueType;
-				}
-			}
-		}
-
-		if (!dataType_) dataType_ = otherType;
-	}
+	void resolveTypes(CppData* data, Type* otherType = nullptr) override;
 
 	std::string variableDeclarationCpp(CppData* data, const std::string& indents)
 	{
@@ -144,6 +134,8 @@ private:
 	bool exported_;
 	Token* getterName_;
 	Token* setterName_;
+	FunctionDefinitionSyntaxNode* getterFunctionDefinition_;
+	FunctionDefinitionSyntaxNode* setterFunctionDefinition_;
 
 	std::string variableCpp(CppData* data, bool ref = false)
 	{

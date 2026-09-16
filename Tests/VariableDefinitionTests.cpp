@@ -421,6 +421,34 @@ TEST_F(TranspileTest, MemberVariableVarSetterGetter)
 	EXPECT_EQ(expected, actual);
 }
 
+TEST_F(TranspileTest, MemberVariableVarSetterGetterInline)
+{
+	std::string input = R"(
+		var x: Vector3:
+			set(newX):
+				x = newX
+			get:
+				return x
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/vector3.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tVector3 get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tVector3 set_x(Vector3 newX)\n\t\t{\n\t\t\tx = newX;\n\t\t}\n\n\t\tVector3 x;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Test::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newX\"), &Test::set_x);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::VECTOR3, \"x\", PROPERTY_HINT_NONE, \"\", PROPERTY_USAGE_NONE), \"set_x\", \"get_x\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, MemberVariableVarSetterGetterInlineSameLine)
+{
+	std::string input = R"(
+		var x: Vector3:
+			set(newX): x = newX
+			get: return x
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/vector3.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tVector3 get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tVector3 set_x(Vector3 newX)\n\t\t{\n\t\t\tx = newX;\n\t\t}\n\n\t\tVector3 x;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Test::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newX\"), &Test::set_x);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::VECTOR3, \"x\", PROPERTY_HINT_NONE, \"\", PROPERTY_USAGE_NONE), \"set_x\", \"get_x\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
 TEST_F(TranspileTest, MemberVariableVarSingleQuoteString)
 {
 	std::string input = R"(

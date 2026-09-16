@@ -384,16 +384,21 @@ private:
 
 	void addGetter(VariableDefinitionSyntaxNode* variableDefinition, CppData* data)
 	{
-		auto getterName = variableDefinition->getGetterName();
-		if (getterName == nullptr) return;
-		std::string name = getterName->value;
-		auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(name), {}, variableDefinition->getType(), false, false);
+		FunctionDefinitionSyntaxNode* getterFunctionDef = variableDefinition->getGetterFunctionDefinition();
 
-		auto returnVariableStatement = new ReturnSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, true));
+		if (!getterFunctionDef)
+		{
+			auto getterName = variableDefinition->getGetterName();
+			if (getterName == nullptr) return;
+			std::string name = getterName->value;
+			auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(name), {}, variableDefinition->getType(), false, false);
 
-		auto body = new BodySyntaxNode({ returnVariableStatement });
+			auto returnVariableStatement = new ReturnSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, true));
 
-		auto getterFunctionDef = new FunctionDefinitionSyntaxNode(nullptr, prototype, body);
+			auto body = new BodySyntaxNode({ returnVariableStatement });
+
+			getterFunctionDef = new FunctionDefinitionSyntaxNode(nullptr, prototype, body);
+		}
 
 		getterFunctionDef->hoist(data);
 		getterFunctionDef->resolveDefinitions(data);
@@ -404,17 +409,22 @@ private:
 
 	void addSetter(VariableDefinitionSyntaxNode* variableDefinition, CppData* data)
 	{
-		auto setterName = variableDefinition->getSetterName();
-		if (setterName == nullptr) return;
-		auto argNameToken = new GDToken("new" + variableDefinition->getName());
-		auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false, false, nullptr, nullptr);
-		auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(setterName->value), { arg }, new Type("void"), false, false);
+		FunctionDefinitionSyntaxNode* setterFunctionDef = variableDefinition->getSetterFunctionDefinition();
 
-		auto setVariableStatement = new AssignmentSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, false), new VariableSyntaxNode(argNameToken, nullptr, true));
+		if (!setterFunctionDef)
+		{
+			auto setterName = variableDefinition->getSetterName();
+			if (setterName == nullptr) return;
+			auto argNameToken = new GDToken("new" + variableDefinition->getName());
+			auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false, false, nullptr, nullptr, nullptr, nullptr);
+			auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(setterName->value), { arg }, new Type("void"), false, false);
 
-		auto body = new BodySyntaxNode({ setVariableStatement });
+			auto setVariableStatement = new AssignmentSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, false), new VariableSyntaxNode(argNameToken, nullptr, true));
 
-		auto setterFunctionDef = new FunctionDefinitionSyntaxNode(nullptr, prototype, body);
+			auto body = new BodySyntaxNode({ setVariableStatement });
+
+			setterFunctionDef = new FunctionDefinitionSyntaxNode(nullptr, prototype, body);
+		}
 
 		setterFunctionDef->hoist(data);
 		setterFunctionDef->resolveDefinitions(data);

@@ -1,4 +1,5 @@
 #include "VariableDefinitionSyntaxNode.h"
+#include "FunctionDefinitionSyntaxNode.h"
 
 void VariableDefinitionSyntaxNode::hoist(CppData* data)
 {
@@ -12,7 +13,7 @@ void VariableDefinitionSyntaxNode::resolveDefinitions(CppData* data)
 	if (initialValue_) initialValue_->resolveDefinitions(data);
 }
 
-void VariableDefinitionSyntaxNode::resolveTypes(CppData* data, Type* otherType = nullptr)
+void VariableDefinitionSyntaxNode::resolveTypes(CppData* data, Type* otherType)
 {
 	if (initialValue_)
 	{
