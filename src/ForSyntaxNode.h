@@ -71,7 +71,11 @@ public:
 		{
 			auto range = (RangeSyntaxNode*)array_;
 
-			code += "int " + varName + " = " + range->getStartValue()->toCpp(data, "") + "; "
+			std::string startValue = "0";
+
+			if (range->getStartValue()) startValue = range->getStartValue()->toCpp(data, "");
+
+			code += "int " + varName + " = " + startValue + "; "
 				+ varName + " < " + range->getEndValue()->toCpp(data, "") + "; ";
 
 			auto incrementValue = range->getIncrementValue();

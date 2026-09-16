@@ -769,18 +769,26 @@ private:
 		if (!consume(GDTokenType::OpenBracketSeparator)) return nullptr;
 
 		ValueSyntaxNode* startValue = parseValueExpression();
-
-		if (!consume(GDTokenType::CommaSeparator)) return nullptr;
-
-		ValueSyntaxNode* endValue = parseValueExpression();
-
-		if (isNextTokenType(GDTokenType::CommaSeparator)) next();
-
+		ValueSyntaxNode* endValue = nullptr;
 		ValueSyntaxNode* incrementValue = nullptr;
 
-		if (!isNextTokenType(GDTokenType::CloseBracketSeparator))
+		if (isNextTokenType(GDTokenType::CommaSeparator))
 		{
-			incrementValue = parseValueExpression();
+			next(); // eat ,
+
+			endValue = parseValueExpression();
+
+			if (isNextTokenType(GDTokenType::CommaSeparator)) next();
+
+			if (!isNextTokenType(GDTokenType::CloseBracketSeparator))
+			{
+				incrementValue = parseValueExpression();
+			}
+		}
+		else
+		{
+			endValue = startValue;
+			startValue = nullptr;
 		}
 
 		if (!consume(GDTokenType::CloseBracketSeparator)) return nullptr;

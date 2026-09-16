@@ -15,7 +15,8 @@ public:
 		startValue_(startValue),
 		endValue_(endValue),
 		incrementValue_(incrementValue)
-	{}
+	{
+	}
 
 	ValueSyntaxNode* getStartValue() { return startValue_; }
 	ValueSyntaxNode* getEndValue() { return endValue_; }
@@ -33,21 +34,21 @@ public:
 
 	void hoist(CppData* data) override
 	{
-		startValue_->hoist(data);
+		if (startValue_) startValue_->hoist(data);
 		endValue_->hoist(data);
 		if (incrementValue_) incrementValue_->hoist(data);
 	}
 
 	void resolveDefinitions(CppData* data) override
 	{
-		startValue_->resolveDefinitions(data);
+		if (startValue_) startValue_->resolveDefinitions(data);
 		endValue_->resolveDefinitions(data);
 		if (incrementValue_) incrementValue_->resolveDefinitions(data);
 	}
 
 	void resolveTypes(CppData* data, Type* otherType) override
 	{
-		startValue_->resolveTypes(data);
+		if (startValue_) startValue_->resolveTypes(data);
 		endValue_->resolveTypes(data);
 		if (incrementValue_) incrementValue_->resolveTypes(data);
 	}
