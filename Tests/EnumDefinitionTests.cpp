@@ -26,3 +26,33 @@ TEST_F(TranspileTest, EnumDefinitionWithValues)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tenum EnumType\n\t{\n\t\tFirstValue,\n\t\tSecondValue,\n\t\tThirdValue,\n\t};\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\nVARIANT_ENUM_CAST(EnumType);\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, EnumDefinitionAssignedInts)
+{
+	std::string input = R"(
+		enum EnumType {
+			FirstValue = 10,
+			SecondValue,
+			ThirdValue
+		}
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tenum EnumType\n\t{\n\t\tFirstValue = 10,\n\t\tSecondValue,\n\t\tThirdValue,\n\t};\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\nVARIANT_ENUM_CAST(EnumType);\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, EnumDefinitionAssignedInts2)
+{
+	std::string input = R"(
+		enum EnumType {
+			FirstValue,
+			SecondValue,
+			ThirdValue = 23
+		}
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tenum EnumType\n\t{\n\t\tFirstValue,\n\t\tSecondValue,\n\t\tThirdValue = 23,\n\t};\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\nVARIANT_ENUM_CAST(EnumType);\n";
+	EXPECT_EQ(expected, actual);
+}

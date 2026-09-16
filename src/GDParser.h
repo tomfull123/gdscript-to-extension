@@ -474,7 +474,17 @@ private:
 	{
 		auto name = consume(GDTokenType::IdentifierOrKeyword);
 		if (!name) return nullptr;
-		return new EnumValueSyntaxNode(name);
+
+		ValueSyntaxNode* initialValue = nullptr;
+
+		if (isNextTokenType(GDTokenType::AssignmentOperator))
+		{
+			next(); // eat =
+
+			initialValue = parseValueExpression();
+		}
+
+		return new EnumValueSyntaxNode(name, initialValue);
 	}
 
 	EnumDefinitionSyntaxNode* parseEnumDefinition()

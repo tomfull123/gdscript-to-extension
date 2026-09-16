@@ -120,7 +120,7 @@ private:
 			std::vector<EnumValueSyntaxNode*> enumValueNodes;
 			for (const auto& value : values)
 			{
-				enumValueNodes.push_back(new EnumValueSyntaxNode(value));
+				enumValueNodes.push_back(new EnumValueSyntaxNode(value, nullptr));
 			}
 			enumDefinitions.push_back(new EnumDefinitionSyntaxNode(new Token(enumName), enumValueNodes));
 		}

@@ -5,8 +5,12 @@
 class EnumValueSyntaxNode : public SyntaxNode
 {
 public:
-	explicit EnumValueSyntaxNode(Token* name) :
-		name_(name)
+	EnumValueSyntaxNode(
+		Token* name,
+		ValueSyntaxNode* initialValue
+	) :
+		name_(name),
+		initialValue_(initialValue)
 	{
 	}
 
@@ -24,9 +28,14 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return name_->value;
+		std::string code = name_->value;
+
+		if (initialValue_) code += " = " + initialValue_->toCpp(data, "");
+
+		return code;
 	}
 
 private:
 	Token* name_;
+	ValueSyntaxNode* initialValue_;
 };
