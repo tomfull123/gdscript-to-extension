@@ -437,7 +437,7 @@ private:
 
 		inputStream_.next(); // eat "
 
-		token->value = inputStream_.readUntil(isDoubleQuoteStringLiteral, false);
+		token->value = inputStream_.readUntil(isDoubleQuoteStringLiteral, false, true);
 		unescape(token->value);
 		token->type = GDTokenType::StringLiteral;
 
@@ -456,7 +456,7 @@ private:
 
 		inputStream_.next(); // eat '
 
-		token->value = inputStream_.readUntil(isSingleQuoteStringLiteral, false);
+		token->value = inputStream_.readUntil(isSingleQuoteStringLiteral, false, true);
 		unescape(token->value);
 		token->type = GDTokenType::StringLiteral;
 

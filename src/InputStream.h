@@ -46,13 +46,25 @@ public:
 	}
 
 	template<class Function>
-	std::string readUntil(const Function& function, bool includeLast = false)
+	std::string readUntil(const Function& function, bool includeLast = false, bool skipEscapedCharacters = false)
 	{
 		std::string str;
+		bool escapeNextChar = false;
 
 		while (!eof())
 		{
-			bool matches = function(peek());
+			char ch = peek();
+			bool matches = function(ch);
+			if (skipEscapedCharacters)
+			{
+				if (escapeNextChar)
+				{
+					escapeNextChar = false;
+					matches = false;
+				}
+
+				if (ch == '\\') escapeNextChar = true;
+			}
 			if (matches && !includeLast) break;
 			str += next();
 			if (matches) break;

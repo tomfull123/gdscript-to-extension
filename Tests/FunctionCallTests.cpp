@@ -182,3 +182,27 @@ TEST_F(TranspileTest, FunctionCallStaticGodotMethod)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/color.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tColor get_color()\n\t\t{\n\t\t\treturn color;\n\t\t}\n\n\t\tvoid set_color(Color newcolor)\n\t\t{\n\t\t\tcolor = newcolor;\n\t\t}\n\n\t\tColor color = Color::from_rgba8(114.0f, 162.0f, 104.0f);\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_color\"), &Test::get_color);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_color\", \"newcolor\"), &Test::set_color);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::COLOR, \"color\", PROPERTY_HINT_NONE, \"\", PROPERTY_USAGE_NONE), \"set_color\", \"get_color\");\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, StringWithEscapedQuotes)
+{
+	std::string input = R"(
+		func doStuff() -> void:
+			print("this is a \"test\"");
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/utility_functions.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff()\n\t\t{\n\t\t\tUtilityFunctions::print(\"this is a \\\"test\\\"\");\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, StringWithEscapedSingleQuotes)
+{
+	std::string input = R"(
+		func doStuff() -> void:
+			print('this is a \'test\'');
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/utility_functions.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff()\n\t\t{\n\t\t\tUtilityFunctions::print(\"this is a \\'test\\'\");\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
