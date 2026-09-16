@@ -1096,7 +1096,7 @@ private:
 			}
 
 			// Function call
-			if (isNextTokenType(GDTokenType::OpenBracketSeparator))
+			if (isNextTokenType(GDTokenType::OpenBracketSeparator) && peek()->lineNumber == name->lineNumber)
 			{
 				next(); // eat (
 

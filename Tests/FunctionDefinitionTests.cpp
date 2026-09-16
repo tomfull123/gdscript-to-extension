@@ -389,3 +389,20 @@ TEST_F(TranspileTest, IsTypeAsType)
 	std::string expected = "#pragma once\n\n#include \"Node2D.h\"\n#include <godot_cpp/classes/node.hpp>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff(Node* node)\n\t\t{\n\t\t\tif (std::is_same_v<decltype(node), Node2D*> == true)\n\t\t\t{\n\t\t\t\t((Node2D*)node)->get_global_position();\n\t\t\t}\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\", \"node\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, FunctionCallWithNextExpressionStartingWithBrackets)
+{
+	std::string input = R"(
+		func _update_camera() -> void:
+			if _definition is Entity3DDefinition:
+				var is_controller := authority.is_multiplayer_authority()
+				(_definition as Entity3DDefinition).camera.update_camera(is_controller)
+			elif _definition is Entity2DDefinition:
+				var is_controller := authority.is_multiplayer_authority()
+				(_definition as Entity2DDefinition).camera.update_camera(is_controller)
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include \"Entity2DDefinition.h\"\n#include \"Entity3DDefinition.h\"\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\tprivate:\n\n\t\tvoid _update_camera()\n\t\t{\n\t\t\tif (std::is_same_v<decltype(_definition), Entity3DDefinition> == true)\n\t\t\t{\n\t\t\t\tauto is_controller = authority.is_multiplayer_authority();\n\t\t\t\t((Entity3DDefinition)_definition)->get_camera().update_camera(is_controller);\n\t\t\t}\n\t\t\telse if (std::is_same_v<decltype(_definition), Entity2DDefinition> == true)\n\t\t\t{\n\t\t\t\tauto is_controller = authority.is_multiplayer_authority();\n\t\t\t\t((Entity2DDefinition)_definition)->get_camera().update_camera(is_controller);\n\t\t\t}\n\t\t}\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
