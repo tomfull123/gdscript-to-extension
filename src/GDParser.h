@@ -1344,6 +1344,6 @@ private:
 			else return parseVariableOrFunctionCall(false);
 		}
 
-		return addUnexpectedNextTokenError();
+		return parseValueExpression();
 	}
 };
