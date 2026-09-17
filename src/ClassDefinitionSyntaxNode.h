@@ -9,6 +9,7 @@
 #include "BodySyntaxNode.h"
 #include "ConstantValueMapping.h"
 #include <algorithm>
+#include <map>
 
 class ClassDefinitionSyntaxNode : public SyntaxNode
 {
@@ -26,7 +27,9 @@ public:
 		bool isInnerClass,
 		const std::string& fileName,
 		bool isDocsClass,
-		bool isAbstract
+		bool isAbstract,
+		const std::vector<ExportGroupSyntaxNode*>& exportGroups,
+		const std::vector<ExportGroupSyntaxNode*>& exportSubgroups
 	) :
 		name_(name),
 		extends_(extends),
@@ -40,7 +43,9 @@ public:
 		isInnerClass_(isInnerClass),
 		fileName_(fileName),
 		isDocsClass_(isDocsClass),
-		isAbstract_(isAbstract)
+		isAbstract_(isAbstract),
+		exportGroups_(exportGroups),
+		exportSubgroups_(exportSubgroups)
 	{
 	}
 
@@ -153,6 +158,8 @@ private:
 	std::string fileName_;
 	bool isDocsClass_;
 	bool isAbstract_;
+	const std::vector<ExportGroupSyntaxNode*> exportGroups_;
+	const std::vector<ExportGroupSyntaxNode*> exportSubgroups_;
 
 	std::string classBody(CppData* data)
 	{
@@ -190,7 +197,7 @@ private:
 
 		std::string privateMemberVariableDefinitionString;
 		std::string publicMemberVariableDefinitionString;
-		std::string bindPropertysString;
+		std::map<int, std::map<int, std::string>> groupedBindPropertys;
 
 		for (auto v : memberVariableDefinitions_)
 		{
@@ -210,8 +217,23 @@ private:
 				{
 					addGetter(v, data);
 					addSetter(v, data);
-					bindPropertysString += bindProperty(v, data, "\t\t\t");
+
+					auto bindPropertyString = bindProperty(v, data, "\t\t\t");
+
+					groupedBindPropertys[v->getExportGroup()][v->getExportSubgroup()] += bindPropertyString;
 				}
+			}
+		}
+
+		std::string groupedBindPropertysString;
+
+		for (const auto& [groupIndex, subgroups] : groupedBindPropertys)
+		{
+			if (groupIndex >= 0) groupedBindPropertysString += exportGroups_[groupIndex]->toCpp(className, "\t\t\t") + "\n";
+			for (const auto& [subgroupIndex, bindPropertyString] : subgroups)
+			{
+				if (subgroupIndex >= 0) groupedBindPropertysString += exportSubgroups_[subgroupIndex]->toCpp(className, "\t\t\t") + "\n";
+				groupedBindPropertysString += bindPropertyString;
 			}
 		}
 
@@ -271,7 +293,7 @@ private:
 			"\t\t{\n"
 			+ bindMethodsString
 			+ bindStaticMethodsString
-			+ bindPropertysString
+			+ groupedBindPropertysString
 			+ rpcMethodConfigsString +
 			"\t\t}\n"
 			"\t};\n";
@@ -416,7 +438,7 @@ private:
 			auto setterName = variableDefinition->getSetterName();
 			if (setterName == nullptr) return;
 			auto argNameToken = new GDToken("new" + variableDefinition->getName());
-			auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false, false, nullptr, nullptr, nullptr, nullptr);
+			auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false, false);
 			auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(setterName->value), { arg }, new Type("void"), false, false);
 
 			auto setVariableStatement = new AssignmentSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, false), new VariableSyntaxNode(argNameToken, nullptr, true));

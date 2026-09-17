@@ -157,3 +157,109 @@ TEST_F(TranspileTest, ClassAbstract)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Hello : public RefCounted\n\t{\n\t\tGDCLASS(Hello, RefCounted)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, ClassExportGroup)
+{
+	std::string input = R"(
+		@export_group("General")
+
+		@export var x: int = 1
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tint get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid set_x(int newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\t\tint x = 1;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Test::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newx\"), &Test::set_x);\n\t\t\tClassDB::add_property_group(\"Test\", \"General\", \"\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"x\", PROPERTY_HINT_NONE, \"\"), \"set_x\", \"get_x\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, ClassExportGroupWithPrefix)
+{
+	std::string input = R"(
+		@export_group("General", "general")
+
+		@export var x: int = 1
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tint get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid set_x(int newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\t\tint x = 1;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Test::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newx\"), &Test::set_x);\n\t\t\tClassDB::add_property_group(\"Test\", \"General\", \"general\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"x\", PROPERTY_HINT_NONE, \"\"), \"set_x\", \"get_x\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, ClassExportSubgroup)
+{
+	std::string input = R"(
+		@export_subgroup("General")
+
+		@export var x: int = 1
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tint get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid set_x(int newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\t\tint x = 1;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Test::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newx\"), &Test::set_x);\n\t\t\tClassDB::add_property_subgroup(\"Test\", \"General\", \"\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"x\", PROPERTY_HINT_NONE, \"\"), \"set_x\", \"get_x\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, ClassExportSubgroupWithPrefix)
+{
+	std::string input = R"(
+		@export_subgroup("General", "general")
+
+		@export var x: int = 1
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tint get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid set_x(int newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\t\tint x = 1;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Test::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newx\"), &Test::set_x);\n\t\t\tClassDB::add_property_subgroup(\"Test\", \"General\", \"general\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"x\", PROPERTY_HINT_NONE, \"\"), \"set_x\", \"get_x\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, ClassExportGroupWithMultipleSubgroups)
+{
+	std::string input = R"(
+		@export_group("General")
+		@export_subgroup("Subgroup1")
+
+		@export var x1: int = 1
+		@export var y1: int = 1
+
+		@export_subgroup("Subgroup2")
+
+		@export var x2: int = 1
+		@export var y2: int = 1
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tint get_x1()\n\t\t{\n\t\t\treturn x1;\n\t\t}\n\n\t\tvoid set_x1(int newx1)\n\t\t{\n\t\t\tx1 = newx1;\n\t\t}\n\n\t\tint get_y1()\n\t\t{\n\t\t\treturn y1;\n\t\t}\n\n\t\tvoid set_y1(int newy1)\n\t\t{\n\t\t\ty1 = newy1;\n\t\t}\n\n\t\tint get_x2()\n\t\t{\n\t\t\treturn x2;\n\t\t}\n\n\t\tvoid set_x2(int newx2)\n\t\t{\n\t\t\tx2 = newx2;\n\t\t}\n\n\t\tint get_y2()\n\t\t{\n\t\t\treturn y2;\n\t\t}\n\n\t\tvoid set_y2(int newy2)\n\t\t{\n\t\t\ty2 = newy2;\n\t\t}\n\n\t\tint x1 = 1;\n\t\tint y1 = 1;\n\t\tint x2 = 1;\n\t\tint y2 = 1;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x1\"), &Test::get_x1);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x1\", \"newx1\"), &Test::set_x1);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_y1\"), &Test::get_y1);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_y1\", \"newy1\"), &Test::set_y1);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x2\"), &Test::get_x2);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x2\", \"newx2\"), &Test::set_x2);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_y2\"), &Test::get_y2);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_y2\", \"newy2\"), &Test::set_y2);\n\t\t\tClassDB::add_property_group(\"Test\", \"General\", \"\");\n\t\t\tClassDB::add_property_subgroup(\"Test\", \"Subgroup1\", \"\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"x1\", PROPERTY_HINT_NONE, \"\"), \"set_x1\", \"get_x1\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"y1\", PROPERTY_HINT_NONE, \"\"), \"set_y1\", \"get_y1\");\n\t\t\tClassDB::add_property_subgroup(\"Test\", \"Subgroup2\", \"\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"x2\", PROPERTY_HINT_NONE, \"\"), \"set_x2\", \"get_x2\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"y2\", PROPERTY_HINT_NONE, \"\"), \"set_y2\", \"get_y2\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(TranspileTest, ClassExportMultipleGroupWithMultipleSubgroupsAndUngroupedProperties)
+{
+	std::string input = R"(
+		@export var x: int = 1
+		@export var y: int = 1
+
+		@export_group("Group1")
+		@export_subgroup("Subgroup1")
+
+		@export var x1: int = 1
+		@export var y1: int = 1
+
+		@export_subgroup("Subgroup2")
+
+		@export var x2: int = 1
+		@export var y2: int = 1
+
+		@export_group("Group2")
+		@export_subgroup("Subgroup1")
+
+		@export var x3: int = 1
+		@export var y3: int = 1
+
+		@export_subgroup("Subgroup2")
+
+		@export var x4: int = 1
+		@export var y4: int = 1
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tint get_x()\n\t\t{\n\t\t\treturn x;\n\t\t}\n\n\t\tvoid set_x(int newx)\n\t\t{\n\t\t\tx = newx;\n\t\t}\n\n\t\tint get_y()\n\t\t{\n\t\t\treturn y;\n\t\t}\n\n\t\tvoid set_y(int newy)\n\t\t{\n\t\t\ty = newy;\n\t\t}\n\n\t\tint get_x1()\n\t\t{\n\t\t\treturn x1;\n\t\t}\n\n\t\tvoid set_x1(int newx1)\n\t\t{\n\t\t\tx1 = newx1;\n\t\t}\n\n\t\tint get_y1()\n\t\t{\n\t\t\treturn y1;\n\t\t}\n\n\t\tvoid set_y1(int newy1)\n\t\t{\n\t\t\ty1 = newy1;\n\t\t}\n\n\t\tint get_x2()\n\t\t{\n\t\t\treturn x2;\n\t\t}\n\n\t\tvoid set_x2(int newx2)\n\t\t{\n\t\t\tx2 = newx2;\n\t\t}\n\n\t\tint get_y2()\n\t\t{\n\t\t\treturn y2;\n\t\t}\n\n\t\tvoid set_y2(int newy2)\n\t\t{\n\t\t\ty2 = newy2;\n\t\t}\n\n\t\tint get_x3()\n\t\t{\n\t\t\treturn x3;\n\t\t}\n\n\t\tvoid set_x3(int newx3)\n\t\t{\n\t\t\tx3 = newx3;\n\t\t}\n\n\t\tint get_y3()\n\t\t{\n\t\t\treturn y3;\n\t\t}\n\n\t\tvoid set_y3(int newy3)\n\t\t{\n\t\t\ty3 = newy3;\n\t\t}\n\n\t\tint get_x4()\n\t\t{\n\t\t\treturn x4;\n\t\t}\n\n\t\tvoid set_x4(int newx4)\n\t\t{\n\t\t\tx4 = newx4;\n\t\t}\n\n\t\tint get_y4()\n\t\t{\n\t\t\treturn y4;\n\t\t}\n\n\t\tvoid set_y4(int newy4)\n\t\t{\n\t\t\ty4 = newy4;\n\t\t}\n\n\t\tint x = 1;\n\t\tint y = 1;\n\t\tint x1 = 1;\n\t\tint y1 = 1;\n\t\tint x2 = 1;\n\t\tint y2 = 1;\n\t\tint x3 = 1;\n\t\tint y3 = 1;\n\t\tint x4 = 1;\n\t\tint y4 = 1;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x\"), &Test::get_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x\", \"newx\"), &Test::set_x);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_y\"), &Test::get_y);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_y\", \"newy\"), &Test::set_y);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x1\"), &Test::get_x1);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x1\", \"newx1\"), &Test::set_x1);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_y1\"), &Test::get_y1);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_y1\", \"newy1\"), &Test::set_y1);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x2\"), &Test::get_x2);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x2\", \"newx2\"), &Test::set_x2);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_y2\"), &Test::get_y2);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_y2\", \"newy2\"), &Test::set_y2);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x3\"), &Test::get_x3);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x3\", \"newx3\"), &Test::set_x3);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_y3\"), &Test::get_y3);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_y3\", \"newy3\"), &Test::set_y3);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_x4\"), &Test::get_x4);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_x4\", \"newx4\"), &Test::set_x4);\n\t\t\tClassDB::bind_method(D_METHOD(\"get_y4\"), &Test::get_y4);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_y4\", \"newy4\"), &Test::set_y4);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"x\", PROPERTY_HINT_NONE, \"\"), \"set_x\", \"get_x\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"y\", PROPERTY_HINT_NONE, \"\"), \"set_y\", \"get_y\");\n\t\t\tClassDB::add_property_group(\"Test\", \"Group1\", \"\");\n\t\t\tClassDB::add_property_subgroup(\"Test\", \"Subgroup1\", \"\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"x1\", PROPERTY_HINT_NONE, \"\"), \"set_x1\", \"get_x1\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"y1\", PROPERTY_HINT_NONE, \"\"), \"set_y1\", \"get_y1\");\n\t\t\tClassDB::add_property_subgroup(\"Test\", \"Subgroup2\", \"\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"x2\", PROPERTY_HINT_NONE, \"\"), \"set_x2\", \"get_x2\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"y2\", PROPERTY_HINT_NONE, \"\"), \"set_y2\", \"get_y2\");\n\t\t\tClassDB::add_property_group(\"Test\", \"Group2\", \"\");\n\t\t\tClassDB::add_property_subgroup(\"Test\", \"Subgroup1\", \"\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"x3\", PROPERTY_HINT_NONE, \"\"), \"set_x3\", \"get_x3\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"y3\", PROPERTY_HINT_NONE, \"\"), \"set_y3\", \"get_y3\");\n\t\t\tClassDB::add_property_subgroup(\"Test\", \"Subgroup2\", \"\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"x4\", PROPERTY_HINT_NONE, \"\"), \"set_x4\", \"get_x4\");\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::INT, \"y4\", PROPERTY_HINT_NONE, \"\"), \"set_y4\", \"get_y4\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SyntaxNode.h"
+#include "ExportGroupSyntaxNode.h"
 
 class FunctionDefinitionSyntaxNode;
 
@@ -15,10 +16,12 @@ public:
 		bool isClassMember,
 		bool isStatic,
 		bool exported,
-		Token* getterName,
-		Token* setterName,
-		FunctionDefinitionSyntaxNode* getterFunctionDefinition,
-		FunctionDefinitionSyntaxNode* setterFunctionDefinition
+		Token* getterName = nullptr,
+		Token* setterName = nullptr,
+		FunctionDefinitionSyntaxNode* getterFunctionDefinition = nullptr,
+		FunctionDefinitionSyntaxNode* setterFunctionDefinition = nullptr,
+		int exportGroupIndex = -1,
+		int exportSubgroupIndex = -1
 	) :
 		name_(name),
 		dataType_(dataType),
@@ -30,7 +33,9 @@ public:
 		getterName_(getterName),
 		setterName_(setterName),
 		getterFunctionDefinition_(getterFunctionDefinition),
-		setterFunctionDefinition_(setterFunctionDefinition)
+		setterFunctionDefinition_(setterFunctionDefinition),
+		exportGroupIndex_(exportGroupIndex),
+		exportSubgroupIndex_(exportSubgroupIndex)
 	{
 	}
 
@@ -82,6 +87,16 @@ public:
 	FunctionDefinitionSyntaxNode* getSetterFunctionDefinition() const
 	{
 		return setterFunctionDefinition_;
+	}
+
+	int getExportGroup() const
+	{
+		return exportGroupIndex_;
+	}
+
+	int getExportSubgroup() const
+	{
+		return exportSubgroupIndex_;
 	}
 
 	bool isTypeDef() const
@@ -136,6 +151,8 @@ private:
 	Token* setterName_;
 	FunctionDefinitionSyntaxNode* getterFunctionDefinition_;
 	FunctionDefinitionSyntaxNode* setterFunctionDefinition_;
+	int exportGroupIndex_;
+	int exportSubgroupIndex_;
 
 	std::string variableCpp(CppData* data, bool ref = false)
 	{

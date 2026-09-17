@@ -138,7 +138,9 @@ private:
 			false,
 			fileName,
 			true,
-			false
+			false,
+			{},
+			{}
 		);
 	}
 
@@ -184,11 +186,7 @@ private:
 						false,
 						false,
 						false,
-						false,
-						nullptr,
-						nullptr,
-						nullptr,
-						nullptr
+						false
 					));
 				}
 			}
@@ -252,9 +250,7 @@ private:
 			false,
 			false,
 			memberTag->getProperty("getter"),
-			memberTag->getProperty("setter"),
-			nullptr,
-			nullptr
+			memberTag->getProperty("setter")
 		);
 	}
 };

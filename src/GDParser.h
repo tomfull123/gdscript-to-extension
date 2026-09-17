@@ -37,6 +37,7 @@
 #include "MatchSyntaxNode.h"
 #include "MatchCaseSyntaxNode.h"
 #include "LambdaSyntaxNode.h"
+#include "ExportGroupSyntaxNode.h"
 
 struct Result
 {
@@ -215,7 +216,7 @@ private:
 			assignmentValue = parseValueExpression();
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, false, false, false, false, nullptr, nullptr, nullptr, nullptr);
+		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, false, false, false, false);
 	}
 
 	FunctionPrototypeSyntaxNode* parseFunctionProtoype(bool isStatic, bool isAbstract)
@@ -305,7 +306,7 @@ private:
 		return consume(GDTokenType::IdentifierOrKeyword);
 	}
 
-	VariableDefinitionSyntaxNode* parseVariableDefinition(bool isClassMember, bool isStatic, bool exported)
+	VariableDefinitionSyntaxNode* parseVariableDefinition(bool isClassMember, bool isStatic, bool exported, int exportGroupIndex, int exportSubgroupIndex)
 	{
 		auto varOrConst = next();
 
@@ -376,7 +377,7 @@ private:
 								nullptr,
 								new FunctionPrototypeSyntaxNode(
 									new Token("set_" + name->value),
-									{ new VariableDefinitionSyntaxNode(variableName, type, nullptr, false, false, false, false, nullptr, nullptr, nullptr, nullptr) },
+									{ new VariableDefinitionSyntaxNode(variableName, type, nullptr, false, false, false, false) },
 									type,
 									false,
 									false
@@ -424,7 +425,21 @@ private:
 			}
 		}
 
-		return new VariableDefinitionSyntaxNode(name, type, assignmentValue, varOrConst->value == "const", isClassMember, isStatic, exported, getterName, setterName, getterFunctionDefinition, setterFunctionDefinition);
+		return new VariableDefinitionSyntaxNode(
+			name,
+			type,
+			assignmentValue,
+			varOrConst->value == "const",
+			isClassMember,
+			isStatic,
+			exported,
+			getterName,
+			setterName,
+			getterFunctionDefinition,
+			setterFunctionDefinition,
+			exportGroupIndex,
+			exportSubgroupIndex
+		);
 	}
 
 	VariableDefinitionSyntaxNode* parseSignalDefinitions()
@@ -453,7 +468,7 @@ private:
 			next(); // eat )
 		}
 
-		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false, true, false, false, nullptr, nullptr, nullptr, nullptr);
+		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false, true, false, false);
 	}
 
 	Token* parseAnnotation()
@@ -544,6 +559,31 @@ private:
 		return new RpcSyntaxNode(args);
 	}
 
+	ExportGroupSyntaxNode* parseExportGroup(bool isSubgroup)
+	{
+		next(); // eat export_group
+
+		consume(GDTokenType::OpenBracketSeparator);
+
+		GDToken* nameToken = consume(GDTokenType::StringLiteral);
+		std::string prefix = "";
+
+		if (isNextTokenType(GDTokenType::CommaSeparator))
+		{
+			next(); // eat ,
+
+			auto prefixToken = consume(GDTokenType::StringLiteral);
+
+			if (!prefixToken) return nullptr;
+
+			prefix = prefixToken->value;
+		}
+
+		consume(GDTokenType::CloseBracketSeparator);
+
+		return new ExportGroupSyntaxNode(nameToken->value, prefix, isSubgroup);
+	}
+
 	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, const std::string& fileName, GDToken* nameToken = nullptr, bool isInnerClass = false, GDToken* overrideExtends = nullptr, bool overrideIsAbstract = false)
 	{
 		GDToken* name = nameToken;
@@ -556,6 +596,9 @@ private:
 		std::vector<FunctionDefinitionSyntaxNode*> staticFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> staticVariableDefinitions;
 		std::vector<ClassDefinitionSyntaxNode*> innerClasses;
+
+		std::vector<ExportGroupSyntaxNode*> exportGroups;
+		std::vector<ExportGroupSyntaxNode*> exportSubgroups;
 
 		bool endOfClass = false;
 
@@ -578,6 +621,16 @@ private:
 				if (t->value == "rpc")
 				{
 					rpc = parseRpc();
+				}
+				else if (t->value == "export_group")
+				{
+					exportGroups.push_back(parseExportGroup(false));
+					continue;
+				}
+				else if (t->value == "export_subgroup")
+				{
+					exportSubgroups.push_back(parseExportGroup(true));
+					continue;
 				}
 				else
 				{
@@ -625,7 +678,7 @@ private:
 				}
 				else if (value == "var" || value == "const")
 				{
-					auto variableDef = parseVariableDefinition(!isStatic, isStatic, isExported);
+					auto variableDef = parseVariableDefinition(!isStatic, isStatic, isExported, exportGroups.size() - 1, exportSubgroups.size() - 1);
 
 					if (isStatic) staticVariableDefinitions.push_back(variableDef);
 					else memberVariableDefinitions.push_back(variableDef);
@@ -667,7 +720,9 @@ private:
 			isInnerClass,
 			fileName,
 			false,
-			isClassAbstract
+			isClassAbstract,
+			exportGroups,
+			exportSubgroups
 		);
 	}
 
@@ -1290,7 +1345,7 @@ private:
 
 		auto body = parseBody(forToken->indentDepth, forToken->lineNumber);
 
-		auto variableDefinition = new VariableDefinitionSyntaxNode(variableToken, variableType, nullptr, false, false, false, false, nullptr, nullptr, nullptr, nullptr);
+		auto variableDefinition = new VariableDefinitionSyntaxNode(variableToken, variableType, nullptr, false, false, false, false);
 
 		return new ForSyntaxNode(variableDefinition, arrayToken, body);
 	}
@@ -1350,7 +1405,7 @@ private:
 			else if (value == "break") return parseBreakStatement();
 			else if (value == "continue") return parseContinueStatement();
 			else if (value == "if") return parseIfStatement();
-			else if (value == "var" || value == "const") return parseVariableDefinition(false, false, false);
+			else if (value == "var" || value == "const") return parseVariableDefinition(false, false, false, -1, -1);
 			else if (value == "pass")
 			{
 				next(); // eat pass
