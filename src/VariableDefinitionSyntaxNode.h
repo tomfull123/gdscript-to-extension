@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SyntaxNode.h"
-#include "ExportGroupSyntaxNode.h"
+#include "ExportRangeSyntaxNode.h"
 
 class FunctionDefinitionSyntaxNode;
 
@@ -21,7 +21,8 @@ public:
 		FunctionDefinitionSyntaxNode* getterFunctionDefinition = nullptr,
 		FunctionDefinitionSyntaxNode* setterFunctionDefinition = nullptr,
 		int exportGroupIndex = -1,
-		int exportSubgroupIndex = -1
+		int exportSubgroupIndex = -1,
+		ExportRangeSyntaxNode* exportRange = nullptr
 	) :
 		name_(name),
 		dataType_(dataType),
@@ -35,7 +36,8 @@ public:
 		getterFunctionDefinition_(getterFunctionDefinition),
 		setterFunctionDefinition_(setterFunctionDefinition),
 		exportGroupIndex_(exportGroupIndex),
-		exportSubgroupIndex_(exportSubgroupIndex)
+		exportSubgroupIndex_(exportSubgroupIndex),
+		exportRange_(exportRange)
 	{
 	}
 
@@ -99,6 +101,11 @@ public:
 		return exportSubgroupIndex_;
 	}
 
+	ExportRangeSyntaxNode* getExportRange() const
+	{
+		return exportRange_;
+	}
+
 	bool isTypeDef() const
 	{
 		return isClassMember_ && isConstant_ && initialValue_ && initialValue_->hasParent();
@@ -153,6 +160,7 @@ private:
 	FunctionDefinitionSyntaxNode* setterFunctionDefinition_;
 	int exportGroupIndex_;
 	int exportSubgroupIndex_;
+	ExportRangeSyntaxNode* exportRange_;
 
 	std::string variableCpp(CppData* data, bool ref = false)
 	{

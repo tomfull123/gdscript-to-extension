@@ -279,6 +279,7 @@
     <ClInclude Include="src/XMLParser.h" />
     <ClInclude Include="src/XMLTokenStream.h" />
     <ClInclude Include="src\ExportGroupSyntaxNode.h" />
+    <ClInclude Include="src\ExportRangeSyntaxNode.h" />
     <ClInclude Include="src\LambdaSyntaxNode.h" />
     <ClInclude Include="src\RpcSyntaxNode.h" />
   </ItemGroup>

@@ -242,5 +242,8 @@
     <ClInclude Include="src\ExportGroupSyntaxNode.h">
       <Filter>Header Files\SyntaxNodes</Filter>
     </ClInclude>
+    <ClInclude Include="src\ExportRangeSyntaxNode.h">
+      <Filter>Header Files\SyntaxNodes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

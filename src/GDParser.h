@@ -38,6 +38,7 @@
 #include "MatchCaseSyntaxNode.h"
 #include "LambdaSyntaxNode.h"
 #include "ExportGroupSyntaxNode.h"
+#include "ExportRangeSyntaxNode.h"
 
 struct Result
 {
@@ -306,7 +307,7 @@ private:
 		return consume(GDTokenType::IdentifierOrKeyword);
 	}
 
-	VariableDefinitionSyntaxNode* parseVariableDefinition(bool isClassMember, bool isStatic, bool exported, int exportGroupIndex, int exportSubgroupIndex)
+	VariableDefinitionSyntaxNode* parseVariableDefinition(bool isClassMember, bool isStatic, bool exported, int exportGroupIndex, int exportSubgroupIndex, ExportRangeSyntaxNode* exportRange)
 	{
 		auto varOrConst = next();
 
@@ -438,7 +439,8 @@ private:
 			getterFunctionDefinition,
 			setterFunctionDefinition,
 			exportGroupIndex,
-			exportSubgroupIndex
+			exportSubgroupIndex,
+			exportRange
 		);
 	}
 
@@ -584,6 +586,31 @@ private:
 		return new ExportGroupSyntaxNode(nameToken->value, prefix, isSubgroup);
 	}
 
+	ExportRangeSyntaxNode* parseExportRange()
+	{
+		next(); // eat export_range
+
+		consume(GDTokenType::OpenBracketSeparator);
+
+		ValueSyntaxNode* min = parseValueExpression();
+
+		if (!consume(GDTokenType::CommaSeparator)) return (ExportRangeSyntaxNode*)addUnexpectedNextTokenError();;
+
+		ValueSyntaxNode* max = parseValueExpression();
+		ValueSyntaxNode* step = nullptr;
+
+		if (isNextTokenType(GDTokenType::CommaSeparator))
+		{
+			next(); // eat ,
+
+			step = parseValueExpression();
+		}
+
+		consume(GDTokenType::CloseBracketSeparator);
+
+		return new ExportRangeSyntaxNode(min, max, step);
+	}
+
 	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, const std::string& fileName, GDToken* nameToken = nullptr, bool isInnerClass = false, GDToken* overrideExtends = nullptr, bool overrideIsAbstract = false)
 	{
 		GDToken* name = nameToken;
@@ -615,6 +642,7 @@ private:
 			bool isAbstract = false;
 			bool isExported = false;
 			RpcSyntaxNode* rpc = nullptr;
+			ExportRangeSyntaxNode* exportRange = nullptr;
 
 			if (t->type == GDTokenType::Annotation)
 			{
@@ -631,6 +659,10 @@ private:
 				{
 					exportSubgroups.push_back(parseExportGroup(true));
 					continue;
+				}
+				else if (t->value == "export_range")
+				{
+					exportRange = parseExportRange();
 				}
 				else
 				{
@@ -678,7 +710,7 @@ private:
 				}
 				else if (value == "var" || value == "const")
 				{
-					auto variableDef = parseVariableDefinition(!isStatic, isStatic, isExported, exportGroups.size() - 1, exportSubgroups.size() - 1);
+					auto variableDef = parseVariableDefinition(!isStatic, isStatic, isExported, exportGroups.size() - 1, exportSubgroups.size() - 1, exportRange);
 
 					if (isStatic) staticVariableDefinitions.push_back(variableDef);
 					else memberVariableDefinitions.push_back(variableDef);
@@ -1405,7 +1437,7 @@ private:
 			else if (value == "break") return parseBreakStatement();
 			else if (value == "continue") return parseContinueStatement();
 			else if (value == "if") return parseIfStatement();
-			else if (value == "var" || value == "const") return parseVariableDefinition(false, false, false, -1, -1);
+			else if (value == "var" || value == "const") return parseVariableDefinition(false, false, false, -1, -1, nullptr);
 			else if (value == "pass")
 			{
 				next(); // eat pass

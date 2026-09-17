@@ -7,6 +7,7 @@
 #include "VariableSyntaxNode.h"
 #include "AssignmentSyntaxNode.h"
 #include "BodySyntaxNode.h"
+#include "ExportGroupSyntaxNode.h"
 #include "ConstantValueMapping.h"
 #include <algorithm>
 #include <map>
@@ -380,6 +381,10 @@ private:
 		if (data->isResourceType(typeName))
 		{
 			code += ", PROPERTY_HINT_RESOURCE_TYPE, \"" + typeName + "\"";
+		}
+		else if (variableDefinition->getExportRange())
+		{
+			code += ", " + variableDefinition->getExportRange()->toCpp(data);
 		}
 		else code += ", PROPERTY_HINT_NONE, \"\"";
 
