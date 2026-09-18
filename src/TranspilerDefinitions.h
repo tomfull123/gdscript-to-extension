@@ -56,6 +56,7 @@ const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS =
 	{"append", "push_back"},
 	{"clampf", "Math::clamp"},
 	{"randf", "UtilityFunctions::randf"},
+	{"str", "UtilityFunctions::str"},
 };
 
 const std::unordered_set<std::string> CPP_PRIMITIVE_TYPES = {

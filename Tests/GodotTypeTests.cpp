@@ -360,3 +360,14 @@ TEST_F(TranspileTest, GodotImageAndImageFormat)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/image.hpp>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff()\n\t\t{\n\t\t\tbool with_alpha = false;\n\t\t\tauto format = with_alpha ? Image::FORMAT_RGBA8 : Image::FORMAT_RGB8;\n\t\t\tRef<Image> image = Image::create(0, 0, false, format);\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, GodotStr)
+{
+	std::string input = R"(
+		var string := str("string")
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tauto get_string()\n\t\t{\n\t\t\treturn string;\n\t\t}\n\n\t\tvoid set_string(Variant newstring)\n\t\t{\n\t\t\tstring = newstring;\n\t\t}\n\n\t\tauto string = UtilityFunctions::str(\"string\");\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_string\"), &Test::get_string);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_string\", \"newstring\"), &Test::set_string);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::OBJECT, \"string\", PROPERTY_HINT_NONE, \"\", PROPERTY_USAGE_NONE), \"set_string\", \"get_string\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
