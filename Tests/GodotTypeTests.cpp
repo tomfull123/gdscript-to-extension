@@ -313,3 +313,14 @@ TEST_F(TranspileTest, GodotImageType)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/image.hpp>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tRef<Image> get_image()\n\t\t{\n\t\t\treturn image;\n\t\t}\n\n\t\tvoid set_image(Ref<Image> newimage)\n\t\t{\n\t\t\timage = newimage;\n\t\t}\n\n\t\tRef<Image> image = Ref(memnew(Image));\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_image\"), &Test::get_image);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_image\", \"newimage\"), &Test::set_image);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::OBJECT, \"image\", PROPERTY_HINT_RESOURCE_TYPE, \"Image\", PROPERTY_USAGE_NONE), \"set_image\", \"get_image\");\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, GodotInfinity)
+{
+	std::string input = R"(
+		var infinity: float = INF
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/core/math_defs.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tfloat get_infinity()\n\t\t{\n\t\t\treturn infinity;\n\t\t}\n\n\t\tvoid set_infinity(float newinfinity)\n\t\t{\n\t\t\tinfinity = newinfinity;\n\t\t}\n\n\t\tfloat infinity = MATH_INF;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_infinity\"), &Test::get_infinity);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_infinity\", \"newinfinity\"), &Test::set_infinity);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::FLOAT, \"infinity\", PROPERTY_HINT_NONE, \"\", PROPERTY_USAGE_NONE), \"set_infinity\", \"get_infinity\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}

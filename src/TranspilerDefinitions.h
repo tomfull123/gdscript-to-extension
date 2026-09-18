@@ -31,7 +31,8 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"Mesh", "Mesh"},
 	{"RenderingServer", "RenderingServer::get_singleton()"},
 	{"ResourceLoader", "ResourceLoader::get_singleton()"},
-	{"Viewport", "Viewport"}
+	{"Viewport", "Viewport"},
+	{"INF", "MATH_INF"},
 };
 
 const std::unordered_set<std::string> GDSINGLETON_TYPES = {
@@ -130,6 +131,7 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"Texture", "<godot_cpp/classes/texture.hpp>"},
 	{"ImageTexture", "<godot_cpp/classes/image_texture.hpp>"},
 	{"Image", "<godot_cpp/classes/image.hpp>"},
+	{"MATH_INF", "<godot_cpp/core/math_defs.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
