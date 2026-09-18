@@ -11,6 +11,7 @@
 #include "ConstantValueMapping.h"
 #include <algorithm>
 #include <map>
+#include <set>
 
 class ClassDefinitionSyntaxNode : public SyntaxNode
 {
@@ -272,7 +273,7 @@ private:
 		{
 			innerClassesString += innerClass->toCpp(data, "\t") + "\n";
 		}
-
+		setCurrentClass(data);
 		return ""
 			+ enumDefString
 			+ innerClassesString +
@@ -305,6 +306,12 @@ private:
 		const auto& types = data->currentClass->types;
 		const auto& externalFunctions = data->currentClass->externalFunctions;
 		const auto& typeDefinitions = data->currentClass->typeDefinitions;
+		std::set<std::string> innerClassNames;
+
+		for (auto innerClass : innerClasses_)
+		{
+			innerClassNames.emplace(innerClass->getName());
+		}
 
 		std::string code = "";
 
@@ -317,6 +324,8 @@ private:
 				if (type == data->currentClass->currentClassName) continue;
 
 				if (typeDefinitions.contains(type)) continue;
+
+				if (innerClassNames.contains(type)) continue;
 
 				auto include = data->currentClass->getIncludePath(type);
 				if (include != "") includes.push_back(include);

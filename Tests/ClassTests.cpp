@@ -130,7 +130,7 @@ TEST_F(TranspileTest, InnerClassInlineExtends)
 	)";
 
 	auto actual = transpile(input);
-	std::string expected = "#pragma once\n\n#include \"Stuff.h\"\n\nnamespace godot\n{\n\tclass Stuff : public RefCounted\n\t{\n\t\tGDCLASS(Stuff, RefCounted)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n\n\tclass MyClass : public Stuff\n\t{\n\t\tGDCLASS(MyClass, Stuff)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Stuff : public RefCounted\n\t{\n\t\tGDCLASS(Stuff, RefCounted)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n\n\tclass MyClass : public Stuff\n\t{\n\t\tGDCLASS(MyClass, Stuff)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
 
