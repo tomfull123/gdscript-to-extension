@@ -269,3 +269,14 @@ TEST_F(TranspileTest, GodotViewportSetDebugDraw)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/classes/viewport.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tvoid doStuff()\n\t\t{\n\t\t\tget_viewport()->set_debug_draw(Viewport::DEBUG_DRAW_WIREFRAME);\n\t\t}\n\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"doStuff\"), &Test::doStuff);\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, GodotMutexType)
+{
+	std::string input = R"(
+		var mutex := Mutex.new()
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/mutex.hpp>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tRef<Mutex> get_mutex()\n\t\t{\n\t\t\treturn mutex;\n\t\t}\n\n\t\tvoid set_mutex(Ref<Mutex> newmutex)\n\t\t{\n\t\t\tmutex = newmutex;\n\t\t}\n\n\t\tRef<Mutex> mutex = Ref(memnew(Mutex));\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_mutex\"), &Test::get_mutex);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_mutex\", \"newmutex\"), &Test::set_mutex);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::OBJECT, \"mutex\", PROPERTY_HINT_NONE, \"\", PROPERTY_USAGE_NONE), \"set_mutex\", \"get_mutex\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
