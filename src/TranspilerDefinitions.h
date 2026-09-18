@@ -53,6 +53,7 @@ const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS =
 	{"load", "ResourceLoader::get_singleton()->load"},
 	{"get_viewport", "get_viewport"},
 	{"append", "push_back"},
+	{"clampf", "Math::clamp"},
 };
 
 const std::unordered_set<std::string> CPP_PRIMITIVE_TYPES = {

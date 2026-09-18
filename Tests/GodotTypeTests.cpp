@@ -324,3 +324,14 @@ TEST_F(TranspileTest, GodotInfinity)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/core/math_defs.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tfloat get_infinity()\n\t\t{\n\t\t\treturn infinity;\n\t\t}\n\n\t\tvoid set_infinity(float newinfinity)\n\t\t{\n\t\t\tinfinity = newinfinity;\n\t\t}\n\n\t\tfloat infinity = Math_INF;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_infinity\"), &Test::get_infinity);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_infinity\", \"newinfinity\"), &Test::set_infinity);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::FLOAT, \"infinity\", PROPERTY_HINT_NONE, \"\", PROPERTY_USAGE_NONE), \"set_infinity\", \"get_infinity\");\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, GodotClampf)
+{
+	std::string input = R"(
+		var clamped := clampf(1.0, 10.0, 5.0)
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tauto get_clamped()\n\t\t{\n\t\t\treturn clamped;\n\t\t}\n\n\t\tvoid set_clamped(Variant newclamped)\n\t\t{\n\t\t\tclamped = newclamped;\n\t\t}\n\n\t\tauto clamped = Math::clamp(1.0f, 10.0f, 5.0f);\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_clamped\"), &Test::get_clamped);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_clamped\", \"newclamped\"), &Test::set_clamped);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::OBJECT, \"clamped\", PROPERTY_HINT_NONE, \"\", PROPERTY_USAGE_NONE), \"set_clamped\", \"get_clamped\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
