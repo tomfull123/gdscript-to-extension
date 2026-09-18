@@ -335,3 +335,14 @@ TEST_F(TranspileTest, GodotClampf)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tauto get_clamped()\n\t\t{\n\t\t\treturn clamped;\n\t\t}\n\n\t\tvoid set_clamped(Variant newclamped)\n\t\t{\n\t\t\tclamped = newclamped;\n\t\t}\n\n\t\tauto clamped = Math::clamp(1.0f, 10.0f, 5.0f);\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_clamped\"), &Test::get_clamped);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_clamped\", \"newclamped\"), &Test::set_clamped);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::OBJECT, \"clamped\", PROPERTY_HINT_NONE, \"\", PROPERTY_USAGE_NONE), \"set_clamped\", \"get_clamped\");\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, GodotRandf)
+{
+	std::string input = R"(
+		var random_float := randf()
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tauto get_random_float()\n\t\t{\n\t\t\treturn random_float;\n\t\t}\n\n\t\tvoid set_random_float(Variant newrandom_float)\n\t\t{\n\t\t\trandom_float = newrandom_float;\n\t\t}\n\n\t\tauto random_float = UtilityFunctions::randf();\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_random_float\"), &Test::get_random_float);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_random_float\", \"newrandom_float\"), &Test::set_random_float);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::OBJECT, \"random_float\", PROPERTY_HINT_NONE, \"\", PROPERTY_USAGE_NONE), \"set_random_float\", \"get_random_float\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}

@@ -54,6 +54,7 @@ const std::unordered_map<std::string, std::string> GDFUNCTIONS_TO_CPPFUNCTIONS =
 	{"get_viewport", "get_viewport"},
 	{"append", "push_back"},
 	{"clampf", "Math::clamp"},
+	{"randf", "UtilityFunctions::randf"},
 };
 
 const std::unordered_set<std::string> CPP_PRIMITIVE_TYPES = {
