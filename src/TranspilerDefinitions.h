@@ -128,6 +128,7 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"MultiplayerPeer", "<godot_cpp/classes/multiplayer_peer.hpp>"},
 	{"Mutex", "<godot_cpp/classes/mutex.hpp>"},
 	{"Texture", "<godot_cpp/classes/texture.hpp>"},
+	{"ImageTexture", "<godot_cpp/classes/image_texture.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
