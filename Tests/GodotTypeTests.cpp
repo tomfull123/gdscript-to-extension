@@ -302,3 +302,14 @@ TEST_F(TranspileTest, GodotImageTextureType)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/image_texture.hpp>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tRef<ImageTexture> get_image_texture()\n\t\t{\n\t\t\treturn image_texture;\n\t\t}\n\n\t\tvoid set_image_texture(Ref<ImageTexture> newimage_texture)\n\t\t{\n\t\t\timage_texture = newimage_texture;\n\t\t}\n\n\t\tRef<ImageTexture> image_texture = Ref(memnew(ImageTexture));\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_image_texture\"), &Test::get_image_texture);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_image_texture\", \"newimage_texture\"), &Test::set_image_texture);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::OBJECT, \"image_texture\", PROPERTY_HINT_RESOURCE_TYPE, \"ImageTexture\", PROPERTY_USAGE_NONE), \"set_image_texture\", \"get_image_texture\");\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, GodotImageType)
+{
+	std::string input = R"(
+		var image := Image.new()
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/image.hpp>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tRef<Image> get_image()\n\t\t{\n\t\t\treturn image;\n\t\t}\n\n\t\tvoid set_image(Ref<Image> newimage)\n\t\t{\n\t\t\timage = newimage;\n\t\t}\n\n\t\tRef<Image> image = Ref(memnew(Image));\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_image\"), &Test::get_image);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_image\", \"newimage\"), &Test::set_image);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::OBJECT, \"image\", PROPERTY_HINT_RESOURCE_TYPE, \"Image\", PROPERTY_USAGE_NONE), \"set_image\", \"get_image\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}

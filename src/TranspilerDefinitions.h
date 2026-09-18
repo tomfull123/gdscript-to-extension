@@ -129,6 +129,7 @@ const std::unordered_map<std::string, std::string> GODOTTYPES_TO_INCLUDE_PATH = 
 	{"Mutex", "<godot_cpp/classes/mutex.hpp>"},
 	{"Texture", "<godot_cpp/classes/texture.hpp>"},
 	{"ImageTexture", "<godot_cpp/classes/image_texture.hpp>"},
+	{"Image", "<godot_cpp/classes/image.hpp>"},
 };
 
 const std::unordered_map<std::string, std::string> CPPTYPES_TO_FUNCTION = {
