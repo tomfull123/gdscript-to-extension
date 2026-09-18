@@ -172,7 +172,7 @@ public:
 		}
 		// static call
 		else if (!parentInstance_ && !memberVarDef && GDTYPES_TO_CPPTYPES.contains(name_->value))
-			code += data->toCppType(new Type(name_));
+			code += data->toCppType(new Type(name_), nullptr, true);
 		else if (data->currentClass->isClassMethod(name_->value, data))
 			if (memberVarDef)
 			{

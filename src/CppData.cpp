@@ -113,7 +113,7 @@ std::string CppData::toWrappedCppFunction(ValueSyntaxNode* parentInstance, const
 	return name;
 }
 
-std::string CppData::toCppType(const Type* type, const Type* parentType)
+std::string CppData::toCppType(const Type* type, const Type* parentType, bool isStatic)
 {
 	if (!type) return "auto";
 
@@ -134,7 +134,8 @@ std::string CppData::toCppType(const Type* type, const Type* parentType)
 
 	if (it != GDTYPES_TO_CPPTYPES.end())
 	{
-		currentClass->types.emplace(it->second);
+		auto cppType = it->second;
+		currentClass->types.emplace(cppType);
 
 		std::string subtypesString;
 
@@ -153,7 +154,11 @@ std::string CppData::toCppType(const Type* type, const Type* parentType)
 			subtypesString = "<" + subtypesString + ">";
 		}
 
-		return it->second + subtypesString;
+		cppType += subtypesString;
+
+		if (!isStatic && isRefType(cppType)) cppType = "Ref<" + cppType + ">";
+
+		return cppType;
 	}
 
 	if (typeName[0] == '_') typeName.erase(0, 1);

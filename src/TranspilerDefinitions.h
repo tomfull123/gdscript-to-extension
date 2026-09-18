@@ -33,6 +33,7 @@ const std::unordered_map<std::string, std::string> GDTYPES_TO_CPPTYPES = {
 	{"ResourceLoader", "ResourceLoader::get_singleton()"},
 	{"Viewport", "Viewport"},
 	{"INF", "Math_INF"},
+	{"Image", "Image"},
 };
 
 const std::unordered_set<std::string> GDSINGLETON_TYPES = {
