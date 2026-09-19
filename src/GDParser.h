@@ -611,6 +611,17 @@ private:
 		return new ExportRangeSyntaxNode(min, max, step);
 	}
 
+	void parseExportCategory()
+	{
+		next(); // eat export_category
+
+		consume(GDTokenType::OpenBracketSeparator);
+
+		GDToken* nameToken = consume(GDTokenType::StringLiteral);
+
+		consume(GDTokenType::CloseBracketSeparator);
+	}
+
 	ClassDefinitionSyntaxNode* parseScriptBody(int indentDepth, const std::string& fileName, GDToken* nameToken = nullptr, bool isInnerClass = false, GDToken* overrideExtends = nullptr, bool overrideIsAbstract = false)
 	{
 		GDToken* name = nameToken;
@@ -658,6 +669,11 @@ private:
 				else if (t->value == "export_subgroup")
 				{
 					exportSubgroups.push_back(parseExportGroup(true));
+					continue;
+				}
+				else if (t->value == "export_category")
+				{
+					parseExportCategory(); // TODO: Add generation logic
 					continue;
 				}
 				else if (t->value == "export_range")

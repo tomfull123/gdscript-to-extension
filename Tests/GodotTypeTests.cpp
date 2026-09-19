@@ -371,3 +371,15 @@ TEST_F(TranspileTest, GodotStr)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tauto get_string()\n\t\t{\n\t\t\treturn string;\n\t\t}\n\n\t\tvoid set_string(Variant newstring)\n\t\t{\n\t\t\tstring = newstring;\n\t\t}\n\n\t\tauto string = UtilityFunctions::str(\"string\");\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_string\"), &Test::get_string);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_string\", \"newstring\"), &Test::set_string);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::OBJECT, \"string\", PROPERTY_HINT_NONE, \"\", PROPERTY_USAGE_NONE), \"set_string\", \"get_string\");\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, GodotExportCategory)
+{
+	std::string input = R"(
+		@export_category("Category1")
+		@export var name: String
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/string.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tString get_name()\n\t\t{\n\t\t\treturn name;\n\t\t}\n\n\t\tvoid set_name(String newname)\n\t\t{\n\t\t\tname = newname;\n\t\t}\n\n\t\tString name;\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_name\"), &Test::get_name);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_name\", \"newname\"), &Test::set_name);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::STRING, \"name\", PROPERTY_HINT_NONE, \"\"), \"set_name\", \"get_name\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}
