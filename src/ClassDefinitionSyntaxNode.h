@@ -31,7 +31,8 @@ public:
 		bool isDocsClass,
 		bool isAbstract,
 		const std::vector<ExportGroupSyntaxNode*>& exportGroups,
-		const std::vector<ExportGroupSyntaxNode*>& exportSubgroups
+		const std::vector<ExportGroupSyntaxNode*>& exportSubgroups,
+		const std::vector<FunctionPrototypeSyntaxNode*>& abstractPrototypeDefintions
 	) :
 		name_(name),
 		extends_(extends),
@@ -47,7 +48,8 @@ public:
 		isDocsClass_(isDocsClass),
 		isAbstract_(isAbstract),
 		exportGroups_(exportGroups),
-		exportSubgroups_(exportSubgroups)
+		exportSubgroups_(exportSubgroups),
+		abstractPrototypeDefintions_(abstractPrototypeDefintions)
 	{
 	}
 
@@ -94,6 +96,7 @@ public:
 		for (auto f : staticFunctionDefinitions_) f->hoist(data);
 		for (auto v : memberVariableDefinitions_) v->hoist(data);
 		for (auto f : memberFunctionDefinitions_) f->hoist(data);
+		for (auto f : abstractPrototypeDefintions_) f->hoist(data);
 		for (auto c : innerClasses_) c->hoist(data);
 		data->classData[getName()] = currentClass;
 	}
@@ -107,6 +110,7 @@ public:
 		for (auto f : staticFunctionDefinitions_) f->resolveDefinitions(data);
 		for (auto v : memberVariableDefinitions_) v->resolveDefinitions(data);
 		for (auto f : memberFunctionDefinitions_) f->resolveDefinitions(data);
+		for (auto f : abstractPrototypeDefintions_) f->resolveDefinitions(data);
 		for (auto c : innerClasses_) c->resolveDefinitions(data);
 	}
 
@@ -119,6 +123,7 @@ public:
 		for (auto f : staticFunctionDefinitions_) f->resolveTypes(data);
 		for (auto v : memberVariableDefinitions_) v->resolveTypes(data);
 		for (auto f : memberFunctionDefinitions_) f->resolveTypes(data);
+		for (auto f : abstractPrototypeDefintions_) f->resolveTypes(data);
 		for (auto c : innerClasses_) c->resolveTypes(data);
 	}
 
@@ -162,6 +167,7 @@ private:
 	bool isAbstract_;
 	const std::vector<ExportGroupSyntaxNode*> exportGroups_;
 	const std::vector<ExportGroupSyntaxNode*> exportSubgroups_;
+	const std::vector<FunctionPrototypeSyntaxNode*> abstractPrototypeDefintions_;
 
 	std::string classBody(CppData* data)
 	{
@@ -239,6 +245,13 @@ private:
 			}
 		}
 
+		std::string abstractFunctionPrototypeString;
+
+		for (auto f : abstractPrototypeDefintions_)
+		{
+			abstractFunctionPrototypeString += "\t\tvirtual " + f->toCpp(data, "") + ";\n";
+		}
+
 		std::string publicMemberFunctionDefinitionString;
 		std::string privateMemberFunctionDefinitionString;
 		std::string bindMethodsString;
@@ -281,6 +294,7 @@ private:
 			"\t{\n"
 			"\t\tGDCLASS(" + className + ", " + inheritsName + ")\n"
 			"\tpublic:\n"
+			+ abstractFunctionPrototypeString
 			+ publicMemberFunctionDefinitionString
 			+ publicStaticFunctionDefinitionString
 			+ staticVariablesString

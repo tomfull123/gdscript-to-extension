@@ -634,6 +634,7 @@ private:
 		std::vector<FunctionDefinitionSyntaxNode*> staticFunctionDefinitions;
 		std::vector<VariableDefinitionSyntaxNode*> staticVariableDefinitions;
 		std::vector<ClassDefinitionSyntaxNode*> innerClasses;
+		std::vector<FunctionPrototypeSyntaxNode*> abstractPrototypeDefintions;
 
 		std::vector<ExportGroupSyntaxNode*> exportGroups;
 		std::vector<ExportGroupSyntaxNode*> exportSubgroups;
@@ -714,7 +715,7 @@ private:
 				{
 					if (isAbstract)
 					{
-						parseFunctionProtoype(false, isAbstract); // eat abstract function prototype
+						abstractPrototypeDefintions.push_back(parseFunctionProtoype(false, isAbstract)); // eat abstract function prototype
 					}
 					else
 					{
@@ -770,7 +771,8 @@ private:
 			false,
 			isClassAbstract,
 			exportGroups,
-			exportSubgroups
+			exportSubgroups,
+			abstractPrototypeDefintions
 		);
 	}
 
