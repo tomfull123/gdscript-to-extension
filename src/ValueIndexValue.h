@@ -8,10 +8,12 @@ class ValueIndexValue : public ValueSyntaxNode
 public:
 	ValueIndexValue(
 		ValueSyntaxNode* variable,
-		ValueSyntaxNode* index
+		ValueSyntaxNode* index,
+		bool asValue
 	) :
 		variable_(variable),
-		index_(index)
+		index_(index),
+		asValue_(asValue)
 	{
 	}
 
@@ -47,10 +49,24 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents) override
 	{
-		return variable_->toCpp(data, indents) + "[" + index_->toCpp(data, "") + "]";
+		auto arrayType = variable_->getType();
+		auto lastSubtypeIndex = arrayType->subtypes.size() - 1;
+		auto elementType = arrayType->subtype(lastSubtypeIndex);
+		bool shouldExplicitlyCast = asValue_ && elementType;
+
+		std::string code;
+
+		if (shouldExplicitlyCast) code += "((" + data->toCppType(elementType) + ")";
+
+		code += variable_->toCpp(data, indents) + "[" + index_->toCpp(data, "") + "]";
+
+		if (shouldExplicitlyCast) code += ")";
+
+		return code;
 	}
 
 private:
 	ValueSyntaxNode* variable_;
 	ValueSyntaxNode* index_;
+	bool asValue_;
 };

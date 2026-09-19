@@ -1157,7 +1157,7 @@ private:
 		return new ContinueSyntaxNode();
 	}
 
-	ValueSyntaxNode* parseValueIndexValue(ValueSyntaxNode* variable)
+	ValueSyntaxNode* parseValueIndexValue(ValueSyntaxNode* variable, bool asValue)
 	{
 		if (isNextTokenType(GDTokenType::OpenSquareBracket))
 		{
@@ -1169,7 +1169,7 @@ private:
 
 			next(); // eat ]
 
-			return new ValueIndexValue(variable, indexNode);
+			return new ValueIndexValue(variable, indexNode, asValue);
 		}
 
 		return (ValueSyntaxNode*)addUnexpectedNextTokenError();
@@ -1249,7 +1249,7 @@ private:
 
 			if (isNextTokenType(GDTokenType::OpenSquareBracket))
 			{
-				variable = parseValueIndexValue(variable);
+				variable = parseValueIndexValue(variable, asValue);
 				continue;
 			}
 
