@@ -42,10 +42,10 @@ public:
 		lhs_->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		return "std::is_same_v<decltype(" +
-			lhs_->toCpp(data, indents) +
+			lhs_->toCpp(data, indents, true) +
 			"), " +
 			data->toCppType(rhs_) +
 			"> == true";

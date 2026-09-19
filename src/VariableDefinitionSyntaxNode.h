@@ -122,7 +122,7 @@ public:
 		return variableCpp(data) + assignInitialValueCpp(data, indents);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		if (isStatic_)
 		{
@@ -198,7 +198,7 @@ private:
 
 			code += data->castValue(dataType_, initialValue_->getType());
 
-			code += initialValue_->toCpp(data, indents);
+			code += initialValue_->toCpp(data, indents, true);
 
 			return code;
 		}

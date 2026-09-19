@@ -30,11 +30,11 @@ public:
 		if (value_) value_->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		std::string code = "return";
 
-		if (value_) code += " " + value_->toCpp(data, "");
+		if (value_) code += " " + value_->toCpp(data, "", true);
 
 		return code;
 	}

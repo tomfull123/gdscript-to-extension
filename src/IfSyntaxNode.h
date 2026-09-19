@@ -45,18 +45,18 @@ public:
 		if (elseBody_) elseBody_->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
-		std::string thenString = thenBody_->toCpp(data, indents);
+		std::string thenString = thenBody_->toCpp(data, indents, false);
 
 		std::string elseString;
 
 		if (elseBody_)
 		{
-			elseString = elseBody_->toCpp(data, indents);
+			elseString = elseBody_->toCpp(data, indents, false);
 		}
 
-		return "if (" + condition_->toCpp(data, "") + ")\n"
+		return "if (" + condition_->toCpp(data, "", true) + ")\n"
 			+ thenString
 			+ elseString;
 	}

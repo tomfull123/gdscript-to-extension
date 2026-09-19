@@ -43,11 +43,13 @@ public:
 		assignmentValue_->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
+		auto variableCode = variable_->toCpp(data, indents, false);
+		auto assignmentCode = assignmentValue_->toCpp(data, "", true);
 		if (variable_->isFunction(data))
-			return variable_->toCpp(data, indents) + "(" + assignmentValue_->toCpp(data, "") + ")";
-		return variable_->toCpp(data, indents) + " = " + assignmentValue_->toCpp(data, "");
+			return variableCode + "(" + assignmentCode + ")";
+		return variableCode + " = " + assignmentCode;
 	}
 
 private:

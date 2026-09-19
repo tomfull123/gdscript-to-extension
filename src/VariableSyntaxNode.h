@@ -6,10 +6,9 @@
 class VariableSyntaxNode : public ValueSyntaxNode
 {
 public:
-	VariableSyntaxNode(GDToken* name, ValueSyntaxNode* parentInstance, bool asValue) :
+	VariableSyntaxNode(GDToken* name, ValueSyntaxNode* parentInstance) :
 		name_(name),
-		parentInstance_(parentInstance),
-		asValue_(asValue)
+		parentInstance_(parentInstance)
 	{
 	}
 
@@ -28,7 +27,7 @@ public:
 	{
 		if (CppClassData::isProperty(parentInstance_, name_, data)) return false;
 
-		if (parentInstance_ && !asValue_ && parentInstance_->getName() != "self")
+		if (parentInstance_ && parentInstance_->getName() != "self")
 		{
 			return true;
 		}
@@ -116,13 +115,13 @@ public:
 		}
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		std::string code;
 
 		if (parentInstance_)
 		{
-			code += parentInstance_->toCpp(data, indents);
+			code += parentInstance_->toCpp(data, indents, asValue);
 
 			auto parentName = parentInstance_->getName();
 
@@ -176,7 +175,7 @@ public:
 		else if (data->currentClass->isClassMethod(name_->value, data))
 			if (memberVarDef)
 			{
-				if (asValue_) // getter
+				if (asValue) // getter
 				{
 					code += memberVarDef->getGetterName()->value + "()";
 				}
@@ -203,7 +202,7 @@ public:
 				}
 				else
 				{
-					if (asValue_) // getter
+					if (asValue) // getter
 					{
 						code += "get_" + name_->value + "()";
 					}
@@ -247,7 +246,6 @@ public:
 private:
 	GDToken* name_;
 	ValueSyntaxNode* parentInstance_;
-	bool asValue_;
 	Type* type_ = nullptr;
 	VariableDefinitionSyntaxNode* variableDefinition_ = nullptr;
 	EnumDefinitionSyntaxNode* enumDefinition_ = nullptr;

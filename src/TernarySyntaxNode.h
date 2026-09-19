@@ -13,7 +13,8 @@ public:
 		condition_(condition),
 		thenValue_(thenValue),
 		elseValue_(elseValue)
-	{}
+	{
+	}
 
 	Type* getType() override
 	{
@@ -46,13 +47,13 @@ public:
 		elseValue_->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
-		return condition_->toCpp(data, "")
+		return condition_->toCpp(data, "", true)
 			+ " ? "
-			+ thenValue_->toCpp(data, "")
+			+ thenValue_->toCpp(data, "", true)
 			+ " : "
-			+ elseValue_->toCpp(data, "");
+			+ elseValue_->toCpp(data, "", true);
 	}
 
 private:

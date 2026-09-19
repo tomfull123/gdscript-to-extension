@@ -21,7 +21,7 @@ struct DocsTest : testing::Test
 			c->hoist(&data);
 			c->resolveDefinitions(&data);
 			c->resolveTypes(&data);
-			return c->toCpp(&data, "");
+			return c->toCpp(&data, "", false);
 		}
 
 		return "";

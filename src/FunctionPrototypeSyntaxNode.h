@@ -78,7 +78,7 @@ public:
 		for (auto a : argDefs_) a->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		setCurrentFunction(data);
 		std::string argsString;
@@ -90,7 +90,7 @@ public:
 		for (int a = 0; a < argDefs_.size(); a++)
 		{
 			auto arg = argDefs_[a];
-			argsString += arg->toCpp(data, "");
+			argsString += arg->toCpp(data, "", true);
 			bool islastArg = a >= (argDefs_.size() - 1);
 			if (!islastArg) argsString += ",";
 			if (eachArgOnNewLine)

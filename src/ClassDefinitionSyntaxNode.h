@@ -127,7 +127,7 @@ public:
 		for (auto c : innerClasses_) c->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		setCurrentClass(data);
 
@@ -177,7 +177,7 @@ private:
 
 		for (auto v : staticVariableDefinitions_)
 		{
-			staticVariablesString += v->toCpp(data, "\t\t");
+			staticVariablesString += v->toCpp(data, "\t\t", false);
 		}
 
 		std::string publicStaticFunctionDefinitionString;
@@ -186,7 +186,7 @@ private:
 
 		for (auto f : staticFunctionDefinitions_)
 		{
-			std::string functionDefString = f->toCpp(data, "\t\t") + "\n";
+			std::string functionDefString = f->toCpp(data, "\t\t", false) + "\n";
 
 			if (f->isPrivate()) privateStaticFunctionDefinitionString += functionDefString;
 			else
@@ -200,7 +200,7 @@ private:
 
 		for (auto enumDef : enumDefinitions_)
 		{
-			enumDefString += "\t" + enumDef->toCpp(data, "\t");
+			enumDefString += "\t" + enumDef->toCpp(data, "\t", false);
 		}
 
 		std::string privateMemberVariableDefinitionString;
@@ -215,7 +215,7 @@ private:
 				continue;
 			}
 
-			std::string variableDefString = "\t\t" + v->toCpp(data, "\t\t") + ";\n";
+			std::string variableDefString = "\t\t" + v->toCpp(data, "\t\t", false) + ";\n";
 
 			if (v->isPrivate()) privateMemberVariableDefinitionString += variableDefString;
 			else
@@ -249,7 +249,7 @@ private:
 
 		for (auto f : abstractPrototypeDefintions_)
 		{
-			abstractFunctionPrototypeString += "\t\tvirtual " + f->toCpp(data, "") + ";\n";
+			abstractFunctionPrototypeString += "\t\tvirtual " + f->toCpp(data, "", false) + ";\n";
 		}
 
 		std::string publicMemberFunctionDefinitionString;
@@ -259,7 +259,7 @@ private:
 
 		for (auto f : memberFunctionDefinitions_)
 		{
-			std::string functionDefString = f->toCpp(data, "\t\t") + "\n";
+			std::string functionDefString = f->toCpp(data, "\t\t", false) + "\n";
 
 			if (f->isPrivate()) privateMemberFunctionDefinitionString += functionDefString;
 			else
@@ -284,7 +284,7 @@ private:
 
 		for (auto innerClass : innerClasses_)
 		{
-			innerClassesString += innerClass->toCpp(data, "\t") + "\n";
+			innerClassesString += innerClass->toCpp(data, "\t", false) + "\n";
 		}
 		setCurrentClass(data);
 		return ""
@@ -443,7 +443,7 @@ private:
 			std::string name = getterName->value;
 			auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(name), {}, variableDefinition->getType(), false, false);
 
-			auto returnVariableStatement = new ReturnSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, true));
+			auto returnVariableStatement = new ReturnSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr));
 
 			auto body = new BodySyntaxNode({ returnVariableStatement });
 
@@ -469,7 +469,7 @@ private:
 			auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false, false);
 			auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(setterName->value), { arg }, new Type("void"), false, false);
 
-			auto setVariableStatement = new AssignmentSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr, false), new VariableSyntaxNode(argNameToken, nullptr, true));
+			auto setVariableStatement = new AssignmentSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr), new VariableSyntaxNode(argNameToken, nullptr));
 
 			auto body = new BodySyntaxNode({ setVariableStatement });
 

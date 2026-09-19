@@ -51,10 +51,10 @@ public:
 		body_->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
-		std::string prototypeString = prototype_->toCpp(data, indents) + "\n";
-		std::string bodyString = body_->toCpp(data, indents);
+		std::string prototypeString = prototype_->toCpp(data, indents, false) + "\n";
+		std::string bodyString = body_->toCpp(data, indents, false);
 		return ""
 			+ prototypeString
 			+ bodyString;

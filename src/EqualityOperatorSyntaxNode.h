@@ -45,9 +45,9 @@ public:
 		rhs_->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
-		return "(" + lhs_->toCpp(data, "") + " " + operatorToken_->value + " " + rhs_->toCpp(data, "") + ")";
+		return "(" + lhs_->toCpp(data, "", true) + " " + operatorToken_->value + " " + rhs_->toCpp(data, "", true) + ")";
 	}
 
 private:

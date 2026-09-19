@@ -40,9 +40,9 @@ public:
 		value_->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
-		return "!" + value_->toCpp(data, "");
+		return "!" + value_->toCpp(data, "", true);
 	}
 
 private:

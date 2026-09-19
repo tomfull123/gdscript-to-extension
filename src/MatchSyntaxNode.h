@@ -33,16 +33,16 @@ public:
 		for (auto c : cases_) c->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		std::string code;
 
-		code += "switch (" + condition_->toCpp(data, "") + ")\n";
+		code += "switch (" + condition_->toCpp(data, "", true) + ")\n";
 		code += indents + "{";
 
 		for (auto c : cases_)
 		{
-			code += c->toCpp(data, indents);
+			code += c->toCpp(data, indents, true);
 		}
 
 		code += indents + "}";

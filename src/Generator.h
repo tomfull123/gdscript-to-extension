@@ -42,7 +42,7 @@ private:
 			const auto& classNameToken = classDef->getNameToken();
 			if (classNameToken && classNameToken->value[0] == '_')
 			{
-				cppModule->classes.emplace_back(classDef->toCpp(data, ""), classDef->getName());
+				cppModule->classes.emplace_back(classDef->toCpp(data, "", false), classDef->getName());
 			}
 		}
 

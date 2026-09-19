@@ -40,7 +40,7 @@ public:
 		functionDefinition_->resolveTypes(data, otherType);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		return functionDefinition_->getName();
 	}

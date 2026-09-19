@@ -32,9 +32,9 @@ public:
 		ifSyntaxNode_->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
-		return indents + "else " + ifSyntaxNode_->toCpp(data, indents);
+		return indents + "else " + ifSyntaxNode_->toCpp(data, indents, false);
 	}
 
 private:

@@ -26,11 +26,11 @@ public:
 	{
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		std::string code = name_->value;
 
-		if (initialValue_) code += " = " + initialValue_->toCpp(data, "");
+		if (initialValue_) code += " = " + initialValue_->toCpp(data, "", true);
 
 		return code;
 	}

@@ -59,7 +59,7 @@ public:
 		type_ = new Type("Dictionary", subtypes);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		if (keys_.empty()) return "{}";
 
@@ -69,7 +69,7 @@ public:
 		{
 			auto key = keys_[i];
 			auto value = values_[i];
-			valuesString += indents + "\t{" + key->toCpp(data, indents) + "," + value->toCpp(data, "") + "},\n";
+			valuesString += indents + "\t{" + key->toCpp(data, indents, true) + "," + value->toCpp(data, "", true) + "},\n";
 		}
 
 		return "{\n" + valuesString + indents + "}";

@@ -32,16 +32,16 @@ public:
 		body_->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		std::string code;
 
 		for (auto v : values_)
 		{
-			code += indents + "case" + v->toCpp(data, "") + ":\n";
+			code += indents + "case" + v->toCpp(data, "", true) + ":\n";
 		}
 
-		code += body_->toCpp(data, indents);
+		code += body_->toCpp(data, indents, false);
 
 		if (!body_->returnsValue()) code += indents + "break;\n";
 

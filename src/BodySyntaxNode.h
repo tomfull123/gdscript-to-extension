@@ -34,9 +34,9 @@ public:
 		for (auto n : nodes_) n->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
-		std::string nodesString = getNodesString(data, indents);
+		std::string nodesString = getNodesString(data, indents, asValue);
 
 		return ""
 			+ indents + "{\n"
@@ -47,13 +47,13 @@ public:
 private:
 	std::vector<SyntaxNode*> nodes_;
 
-	std::string getNodesString(CppData* data, const std::string& indents) const
+	std::string getNodesString(CppData* data, const std::string& indents, bool asValue) const
 	{
 		std::string nodesString;
 
 		for (auto node : nodes_)
 		{
-			nodesString += indents + "\t" + node->toCpp(data, indents + "\t");
+			nodesString += indents + "\t" + node->toCpp(data, indents + "\t", asValue);
 			if (node->needsSemiColon()) nodesString += ";\n";
 		}
 		return nodesString;

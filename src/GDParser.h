@@ -279,7 +279,7 @@ private:
 		{
 			auto thisToken = new GDToken();
 			thisToken->value = "this";
-			nodes.push_back(new ReturnSyntaxNode(new VariableSyntaxNode(thisToken, nullptr, false)));
+			nodes.push_back(new ReturnSyntaxNode(new VariableSyntaxNode(thisToken, nullptr)));
 		}
 
 		return new BodySyntaxNode(nodes);
@@ -1201,7 +1201,7 @@ private:
 			asValue = true; // getter
 		}
 
-		ValueSyntaxNode* variable = new VariableSyntaxNode(name, instance, asValue);
+		ValueSyntaxNode* variable = new VariableSyntaxNode(name, instance);
 
 		while (true)
 		{

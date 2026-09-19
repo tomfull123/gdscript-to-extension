@@ -18,9 +18,9 @@ public:
 
 	std::string toCpp(CppData* data)
 	{
-		std::string code = "PROPERTY_HINT_RANGE, \"" + min_->toCpp(data, "") + "," + max_->toCpp(data, "");
+		std::string code = "PROPERTY_HINT_RANGE, \"" + min_->toCpp(data, "", true) + "," + max_->toCpp(data, "", true);
 
-		if (step_) code += "," + step_->toCpp(data, "");
+		if (step_) code += "," + step_->toCpp(data, "", true);
 
 		code += "\"";
 

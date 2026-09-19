@@ -47,7 +47,7 @@ public:
 		index_->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		auto arrayType = variable_->getType();
 		auto lastSubtypeIndex = arrayType->subtypes.size() - 1;
@@ -58,7 +58,7 @@ public:
 
 		if (shouldExplicitlyCast) code += "((" + data->toCppType(elementType) + ")";
 
-		code += variable_->toCpp(data, indents) + "[" + index_->toCpp(data, "") + "]";
+		code += variable_->toCpp(data, indents, true) + "[" + index_->toCpp(data, "", true) + "]";
 
 		if (shouldExplicitlyCast) code += ")";
 

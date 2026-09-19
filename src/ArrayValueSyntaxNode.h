@@ -44,11 +44,11 @@ public:
 		type_ = new Type("Array", subtypes);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		std::string code = "{";
 
-		code += getExpressionsString(data, indents);
+		code += getExpressionsString(data, indents, asValue);
 
 		return code + "}";
 	}
@@ -78,7 +78,7 @@ private:
 		return elementType;
 	}
 
-	std::string getExpressionsString(CppData* data, const std::string& indents) const
+	std::string getExpressionsString(CppData* data, const std::string& indents, bool asValue) const
 	{
 		std::string expressionsString;
 		bool putOnNewLine = expressions_.size() > 2;
@@ -90,7 +90,7 @@ private:
 		for (int i = 0; i < expressions_.size(); i++)
 		{
 			auto e = expressions_[i];
-			auto expressionString = e->toCpp(data, indents + "\t");
+			auto expressionString = e->toCpp(data, indents + "\t", asValue);
 
 			if (i == 0)
 			{

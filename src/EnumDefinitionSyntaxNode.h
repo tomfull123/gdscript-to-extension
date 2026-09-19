@@ -36,13 +36,13 @@ public:
 		for (auto v : values_) v->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		std::string valuesString;
 
 		for (auto v : values_)
 		{
-			valuesString += indents + "\t" + v->toCpp(data, indents) + ",\n";
+			valuesString += indents + "\t" + v->toCpp(data, indents, asValue) + ",\n";
 		}
 
 		return "enum " + name_->value + "\n"

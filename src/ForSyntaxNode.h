@@ -57,7 +57,7 @@ public:
 		body_->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		std::string code = "for (";
 		auto arrayType = array_->getType();
@@ -66,21 +66,21 @@ public:
 		Type* varType = variableDefinition_->getType();
 
 		if (arrayType && arrayType->getName() == "int")
-			code += "int " + varName + " = 0; " + varName + " < " + array_->toCpp(data, "") + "; " + varName + "++";
+			code += "int " + varName + " = 0; " + varName + " < " + array_->toCpp(data, "", true) + "; " + varName + "++";
 		else if (typeid(*array_) == typeid(RangeSyntaxNode))
 		{
 			auto range = (RangeSyntaxNode*)array_;
 
 			std::string startValue = "0";
 
-			if (range->getStartValue()) startValue = range->getStartValue()->toCpp(data, "");
+			if (range->getStartValue()) startValue = range->getStartValue()->toCpp(data, "", true);
 
 			code += "int " + varName + " = " + startValue + "; "
-				+ varName + " < " + range->getEndValue()->toCpp(data, "") + "; ";
+				+ varName + " < " + range->getEndValue()->toCpp(data, "", true) + "; ";
 
 			auto incrementValue = range->getIncrementValue();
 
-			if (incrementValue) code += varName + " += " + incrementValue->toCpp(data, "");
+			if (incrementValue) code += varName + " += " + incrementValue->toCpp(data, "", true);
 			else code += varName + "++";
 		}
 		else
@@ -90,12 +90,12 @@ public:
 			{
 				elementType = data->toCppType(varType) + "&";
 			}
-			code += "const " + elementType + " " + varName + " : " + array_->toCpp(data, "");
+			code += "const " + elementType + " " + varName + " : " + array_->toCpp(data, "", true);
 		}
 
 		code += ")\n";
 
-		return code + body_->toCpp(data, indents);
+		return code + body_->toCpp(data, indents, false);
 	}
 
 private:

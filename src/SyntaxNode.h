@@ -27,7 +27,7 @@ public:
 
 	virtual void resolveTypes(CppData* data, Type* otherType = nullptr) = 0;
 
-	virtual std::string toCpp(CppData* data, const std::string& indents) = 0;
+	virtual std::string toCpp(CppData* data, const std::string& indents, bool asValue) = 0;
 };
 
 class ValueSyntaxNode : public SyntaxNode

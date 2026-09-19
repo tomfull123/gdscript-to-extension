@@ -80,7 +80,7 @@ public:
 		}
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		std::string code;
 
@@ -97,7 +97,7 @@ public:
 			}
 			else
 			{
-				code += instance_->toCpp(data, indents);
+				code += instance_->toCpp(data, indents, true);
 
 				if (!isConstructorCall)
 				{
@@ -173,7 +173,7 @@ private:
 		for (int a = 0; a < args_.size(); a++)
 		{
 			auto arg = args_[a];
-			argsString += arg->toCpp(data, "");
+			argsString += arg->toCpp(data, "", true);
 			if (a < args_.size() - 1) argsString += ", ";
 		}
 		return argsString;

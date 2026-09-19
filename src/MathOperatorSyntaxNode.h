@@ -46,11 +46,11 @@ public:
 		if (!type_) resolveOperatorType();
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
 		auto operatorValue = operatorToken_->value;
-		auto leftValue = lhs_->toCpp(data, "");
-		auto rightValue = rhs_->toCpp(data, "");
+		auto leftValue = lhs_->toCpp(data, "", true);
+		auto rightValue = rhs_->toCpp(data, "", true);
 
 		if (operatorValue == "%" && lhs_->getType()->getName() == "String")
 		{

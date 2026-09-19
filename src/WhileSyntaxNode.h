@@ -38,10 +38,10 @@ public:
 		body_->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
-		return "while (" + condition_->toCpp(data, "") + ")\n"
-			+ body_->toCpp(data, indents);
+		return "while (" + condition_->toCpp(data, "", true) + ")\n"
+			+ body_->toCpp(data, indents, false);
 	}
 
 private:

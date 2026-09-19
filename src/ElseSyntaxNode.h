@@ -32,9 +32,9 @@ public:
 		body_->resolveTypes(data);
 	}
 
-	std::string toCpp(CppData* data, const std::string& indents) override
+	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
-		return indents + "else\n" + body_->toCpp(data, indents);
+		return indents + "else\n" + body_->toCpp(data, indents, asValue);
 	}
 
 private:
