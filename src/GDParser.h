@@ -1037,7 +1037,20 @@ private:
 		return new LambdaSyntaxNode(token, new FunctionDefinitionSyntaxNode(nullptr, prototype, body));
 	}
 
-	ValueSyntaxNode* parseValueExpression()
+	int getOperatorPrecedence(const GDToken* operatorToken)
+	{
+		std::string operatorString = operatorToken->value;
+
+		if (operatorString == "-") return 10;
+		if (operatorString == "+") return 11;
+		if (operatorString == "/") return 12;
+		if (operatorString == "*") return 13;
+		if (operatorString == "%") return 14;
+
+		return 0;
+	}
+
+	ValueSyntaxNode* parseValueExpression(int operatorPrecedence = 0)
 	{
 		const GDToken* name = peek();
 
@@ -1071,15 +1084,20 @@ private:
 				|| isNextTokenType(GDTokenType::GreaterThanSeparator) || isNextTokenType(GDTokenType::GreaterThanEqualSeparator)
 				|| isNextTokenType(GDTokenType::LessThanSeparator) || isNextTokenType(GDTokenType::LessThanEqualSeparator))
 			{
-				GDToken* boolOperator = next();
+				auto currentOperatorPrecedence = 5;
 
-				ValueSyntaxNode* rhs = parseValueExpression();
+				if (operatorPrecedence <= currentOperatorPrecedence)
+				{
+					GDToken* boolOperator = next();
 
-				if (!rhs) return nullptr;
+					ValueSyntaxNode* rhs = parseValueExpression(5);
 
-				lhs = new EqualityOperatorSyntaxNode(boolOperator, lhs, rhs);
+					if (!rhs) return nullptr;
 
-				continue;
+					lhs = new EqualityOperatorSyntaxNode(boolOperator, lhs, rhs);
+
+					continue;
+				}
 			}
 
 			if (isNextTokenKeyword("is"))
@@ -1096,17 +1114,22 @@ private:
 			// Math operators
 			if (isNextTokenType(GDTokenType::Operator))
 			{
-				GDToken* operatorToken = next();
+				auto currentOperatorPrecedence = getOperatorPrecedence(peek());
 
-				ValueSyntaxNode* rhs = nullptr;
+				if (operatorPrecedence <= currentOperatorPrecedence)
+				{
+					GDToken* operatorToken = next();
 
-				rhs = parseValueExpression();
+					ValueSyntaxNode* rhs = nullptr;
 
-				if (!rhs) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
+					rhs = parseValueExpression(currentOperatorPrecedence);
 
-				lhs = new MathOperatorSyntaxNode(operatorToken, lhs, rhs);
+					if (!rhs) return (ValueSyntaxNode*)addUnexpectedNextTokenError();
 
-				continue;
+					lhs = new MathOperatorSyntaxNode(operatorToken, lhs, rhs);
+
+					continue;
+				}
 			}
 
 			if (isNextTokenType(GDTokenType::AndOperator) || isNextTokenType(GDTokenType::OrOperator) || isNextTokenKeyword("or") || isNextTokenKeyword("and"))
@@ -1116,7 +1139,7 @@ private:
 				if (booleanOperator->value == "or") booleanOperator->type = GDTokenType::OrOperator;
 				if (booleanOperator->value == "and") booleanOperator->type = GDTokenType::AndOperator;
 
-				ValueSyntaxNode* rhs = parseValueExpression();
+				ValueSyntaxNode* rhs = parseValueExpression(5);
 
 				lhs = new BooleanOperatorSyntaxNode(booleanOperator, lhs, rhs);
 				continue;
