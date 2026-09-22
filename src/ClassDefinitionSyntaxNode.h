@@ -77,6 +77,11 @@ public:
 		return className;
 	}
 
+	bool isAbstract() const
+	{
+		return isAbstract_;
+	}
+
 	void hoist(CppData* data) override
 	{
 		auto currentClass = new CppClassData();

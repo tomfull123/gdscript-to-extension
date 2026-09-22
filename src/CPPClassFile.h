@@ -5,5 +5,5 @@
 struct CPPClassFile
 {
 	std::string code;
-	std::string className;
+	ClassDefinitionSyntaxNode* classDefinition;
 };

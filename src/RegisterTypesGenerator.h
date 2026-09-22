@@ -31,8 +31,12 @@ public:
 		for (int i = cppModule.classes.size() - 1; i >= 0; i--)
 		{
 			const auto& classFile = cppModule.classes[i];
-			includes += "#include \"" + classFile.className + ".h\"\n";
-			registerClasses += "\tGDREGISTER_CLASS(" + classFile.className + ")\n";
+			auto className = classFile.classDefinition->getName();
+			includes += "#include \"" + className + ".h\"\n";
+			if (classFile.classDefinition->isAbstract())
+				registerClasses += "\tGDREGISTER_ABSTRACT_CLASS(" + className + ")\n";
+			else
+				registerClasses += "\tGDREGISTER_CLASS(" + className + ")\n";
 		}
 
 		return includes

@@ -23,7 +23,7 @@ private:
 
 	static void writeClassToFile(const CPPClassFile& classFile, const std::string& outputPath, bool header = true)
 	{
-		std::string outputCppPath = FileNameTransformer::getOutputFilePath(classFile.className, outputPath, header);
+		std::string outputCppPath = FileNameTransformer::getOutputFilePath(classFile.classDefinition->getName(), outputPath, header);
 		std::ofstream file(outputCppPath);
 		file << classFile.code;
 		file.close();

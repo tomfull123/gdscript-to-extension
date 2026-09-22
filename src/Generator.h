@@ -42,13 +42,13 @@ private:
 			const auto& classNameToken = classDef->getNameToken();
 			if (classNameToken && classNameToken->value[0] == '_')
 			{
-				cppModule->classes.emplace_back(classDef->toCpp(data, "", false), classDef->getName());
+				cppModule->classes.emplace_back(classDef->toCpp(data, "", false), classDef);
 			}
 		}
 
-		cppModule->registerTypeHeader.className = RegisterTypesGenerator::filename;
+		cppModule->registerTypeHeader.classDefinition = new ClassDefinitionSyntaxNode(new Token(RegisterTypesGenerator::filename), nullptr, {}, {}, {}, {}, {}, {}, {}, false, "", false, false, {}, {}, {});
 		cppModule->registerTypeHeader.code = RegisterTypesGenerator::generateHeader();
-		cppModule->registerTypeSource.className = RegisterTypesGenerator::filename;
+		cppModule->registerTypeSource.classDefinition = new ClassDefinitionSyntaxNode(new Token(RegisterTypesGenerator::filename), nullptr, {}, {}, {}, {}, {}, {}, {}, false, "", false, false, {}, {}, {});
 		cppModule->registerTypeSource.code = RegisterTypesGenerator::generateSource(*cppModule);
 
 		return cppModule;
