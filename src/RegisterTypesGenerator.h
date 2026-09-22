@@ -28,8 +28,9 @@ public:
 
 		includes += "#include \"" + filename + ".h\"\n\n";
 
-		for (const auto& classFile : cppModule.classes)
+		for (int i = cppModule.classes.size() - 1; i >= 0; i--)
 		{
+			const auto& classFile = cppModule.classes[i];
 			includes += "#include \"" + classFile.className + ".h\"\n";
 			registerClasses += "\tGDREGISTER_CLASS(" + classFile.className + ")\n";
 		}
