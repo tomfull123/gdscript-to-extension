@@ -421,8 +421,10 @@ private:
 
 			if (getterName == nullptr && setterName == nullptr)
 			{
-				getterName = new Token("get_" + name->value);
-				setterName = new Token("set_" + name->value);
+				std::string variableName = name->value;
+				if (variableName[0] == '_') variableName.erase(0, 1);
+				getterName = new Token("get_" + variableName);
+				setterName = new Token("set_" + variableName);
 			}
 		}
 

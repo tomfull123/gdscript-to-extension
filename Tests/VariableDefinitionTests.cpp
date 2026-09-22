@@ -530,3 +530,14 @@ TEST_F(TranspileTest, ExportedArrayWithUnderscoredClassElementType)
 	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/ref.hpp>\n#include <godot_cpp/variant/typed_array.hpp>\n\nnamespace godot\n{\n\tclass Stuff : public RefCounted\n\t{\n\t\tGDCLASS(Stuff, RefCounted)\n\tpublic:\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t}\n\t};\n\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tTypedArray<Ref<Stuff>> get_stuff_array()\n\t\t{\n\t\t\treturn stuff_array;\n\t\t}\n\n\t\tvoid set_stuff_array(TypedArray<Ref<Stuff>> newstuff_array)\n\t\t{\n\t\t\tstuff_array = newstuff_array;\n\t\t}\n\n\t\tTypedArray<Ref<Stuff>> stuff_array = {};\n\tprivate:\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_stuff_array\"), &Test::get_stuff_array);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_stuff_array\", \"newstuff_array\"), &Test::set_stuff_array);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::ARRAY, \"stuff_array\", PROPERTY_HINT_ARRAY_TYPE, \"Stuff\"), \"set_stuff_array\", \"get_stuff_array\");\n\t\t}\n\t};\n}\n";
 	EXPECT_EQ(expected, actual);
 }
+
+TEST_F(TranspileTest, ExportedPrivateMemberVariable)
+{
+	std::string input = R"(
+		@export var _noise: FastNoiseLite
+	)";
+
+	auto actual = transpile(input);
+	std::string expected = "#pragma once\n\n#include <godot_cpp/classes/fast_noise_lite.hpp>\n#include <godot_cpp/classes/ref.hpp>\n\nnamespace godot\n{\n\tclass Test : public RefCounted\n\t{\n\t\tGDCLASS(Test, RefCounted)\n\tpublic:\n\t\tRef<FastNoiseLite> get_noise()\n\t\t{\n\t\t\treturn _noise;\n\t\t}\n\n\t\tvoid set_noise(Ref<FastNoiseLite> newnoise)\n\t\t{\n\t\t\t_noise = newnoise;\n\t\t}\n\n\tprivate:\n\t\tRef<FastNoiseLite> _noise;\n\n\tprotected:\n\t\tstatic void _bind_methods()\n\t\t{\n\t\t\tClassDB::bind_method(D_METHOD(\"get_noise\"), &Test::get_noise);\n\t\t\tClassDB::bind_method(D_METHOD(\"set_noise\", \"newnoise\"), &Test::set_noise);\n\t\t\tADD_PROPERTY(PropertyInfo(Variant::OBJECT, \"_noise\", PROPERTY_HINT_RESOURCE_TYPE, \"FastNoiseLite\"), \"set_noise\", \"get_noise\");\n\t\t}\n\t};\n}\n";
+	EXPECT_EQ(expected, actual);
+}

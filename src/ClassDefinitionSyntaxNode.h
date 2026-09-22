@@ -218,18 +218,16 @@ private:
 			std::string variableDefString = "\t\t" + v->toCpp(data, "\t\t", false) + ";\n";
 
 			if (v->isPrivate()) privateMemberVariableDefinitionString += variableDefString;
-			else
+			else publicMemberVariableDefinitionString += variableDefString;
+
+			if (!v->isConstant() && (!v->isPrivate() || v->isExported()))
 			{
-				publicMemberVariableDefinitionString += variableDefString;
-				if (!v->isConstant())
-				{
-					addGetter(v, data);
-					addSetter(v, data);
+				addGetter(v, data);
+				addSetter(v, data);
 
-					auto bindPropertyString = bindProperty(v, data, "\t\t\t");
+				auto bindPropertyString = bindProperty(v, data, "\t\t\t");
 
-					groupedBindPropertys[v->getExportGroup()][v->getExportSubgroup()] += bindPropertyString;
-				}
+				groupedBindPropertys[v->getExportGroup()][v->getExportSubgroup()] += bindPropertyString;
 			}
 		}
 
@@ -481,7 +479,9 @@ private:
 		{
 			auto setterName = variableDefinition->getSetterName();
 			if (setterName == nullptr) return;
-			auto argNameToken = new GDToken("new" + variableDefinition->getName());
+			std::string variableName = variableDefinition->getName();
+			if (variableName[0] == '_') variableName.erase(0, 1);
+			auto argNameToken = new GDToken("new" + variableName);
 			auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false);
 			auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(setterName->value), { arg }, new Type("void"), false, false);
 
