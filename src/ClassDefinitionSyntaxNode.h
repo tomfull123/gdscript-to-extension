@@ -405,9 +405,9 @@ private:
 		{
 			code += ", PROPERTY_HINT_RESOURCE_TYPE, \"" + typeName + "\"";
 		}
-		else if (variableDefinition->getExportRange())
+		else if (variableDefinition->getExport())
 		{
-			code += ", " + variableDefinition->getExportRange()->toCpp(data);
+			code += ", " + variableDefinition->getExport()->toCpp(data);
 		}
 		else code += ", PROPERTY_HINT_NONE, \"\"";
 
@@ -466,7 +466,7 @@ private:
 			auto setterName = variableDefinition->getSetterName();
 			if (setterName == nullptr) return;
 			auto argNameToken = new GDToken("new" + variableDefinition->getName());
-			auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false, false);
+			auto arg = new VariableDefinitionSyntaxNode(argNameToken, variableDefinition->getType(), nullptr, false, false, false);
 			auto prototype = new FunctionPrototypeSyntaxNode(new GDToken(setterName->value), { arg }, new Type("void"), false, false);
 
 			auto setVariableStatement = new AssignmentSyntaxNode(new VariableSyntaxNode(new GDToken(variableDefinition->getName()), nullptr), new VariableSyntaxNode(argNameToken, nullptr));

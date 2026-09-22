@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SyntaxNode.h"
-#include "ExportRangeSyntaxNode.h"
+#include "ExportSyntaxNode.h"
 
 class FunctionDefinitionSyntaxNode;
 
@@ -15,14 +15,13 @@ public:
 		bool isConstant,
 		bool isClassMember,
 		bool isStatic,
-		bool exported,
 		Token* getterName = nullptr,
 		Token* setterName = nullptr,
 		FunctionDefinitionSyntaxNode* getterFunctionDefinition = nullptr,
 		FunctionDefinitionSyntaxNode* setterFunctionDefinition = nullptr,
 		int exportGroupIndex = -1,
 		int exportSubgroupIndex = -1,
-		ExportRangeSyntaxNode* exportRange = nullptr
+		ExportSyntaxNode* exportSyntaxNode = nullptr
 	) :
 		name_(name),
 		dataType_(dataType),
@@ -30,14 +29,13 @@ public:
 		isConstant_(isConstant),
 		isClassMember_(isClassMember),
 		isStatic_(isStatic),
-		exported_(exported),
 		getterName_(getterName),
 		setterName_(setterName),
 		getterFunctionDefinition_(getterFunctionDefinition),
 		setterFunctionDefinition_(setterFunctionDefinition),
 		exportGroupIndex_(exportGroupIndex),
 		exportSubgroupIndex_(exportSubgroupIndex),
-		exportRange_(exportRange)
+		exportSyntaxNode_(exportSyntaxNode)
 	{
 	}
 
@@ -68,7 +66,7 @@ public:
 
 	bool isExported() const
 	{
-		return exported_;
+		return exportSyntaxNode_ != nullptr;
 	}
 
 	Token* getGetterName() const
@@ -101,9 +99,9 @@ public:
 		return exportSubgroupIndex_;
 	}
 
-	ExportRangeSyntaxNode* getExportRange() const
+	ExportSyntaxNode* getExport() const
 	{
-		return exportRange_;
+		return exportSyntaxNode_;
 	}
 
 	bool isTypeDef() const
@@ -153,14 +151,13 @@ private:
 	bool isConstant_;
 	bool isClassMember_;
 	bool isStatic_;
-	bool exported_;
 	Token* getterName_;
 	Token* setterName_;
 	FunctionDefinitionSyntaxNode* getterFunctionDefinition_;
 	FunctionDefinitionSyntaxNode* setterFunctionDefinition_;
 	int exportGroupIndex_;
 	int exportSubgroupIndex_;
-	ExportRangeSyntaxNode* exportRange_;
+	ExportSyntaxNode* exportSyntaxNode_;
 
 	std::string variableCpp(CppData* data, bool ref = false)
 	{
