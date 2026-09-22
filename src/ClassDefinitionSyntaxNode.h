@@ -254,10 +254,13 @@ private:
 		}
 
 		std::string abstractFunctionPrototypeString;
+		std::string bindAbstractMethodsString;
 
 		for (auto f : abstractPrototypeDefintions_)
 		{
-			abstractFunctionPrototypeString += "\t\tvirtual " + f->toCpp(data, "", false) + ";\n";
+			abstractFunctionPrototypeString += "\t\tvirtual " + f->toCpp(data, "", false) + " = 0;\n";
+
+			bindAbstractMethodsString += "\t\t\t" + bindVirtualMethod(f) + "\n";
 		}
 
 		std::string publicMemberFunctionDefinitionString;
@@ -315,6 +318,7 @@ private:
 			"\tprotected:\n"
 			"\t\tstatic void _bind_methods()\n"
 			"\t\t{\n"
+			+ bindAbstractMethodsString
 			+ bindMethodsString
 			+ bindStaticMethodsString
 			+ groupedBindPropertysString
@@ -440,6 +444,35 @@ private:
 		code += ")";
 
 		code += ", \"" + setterName + "\", \"" + getterName + "\");\n";
+
+		return code;
+	}
+
+	std::string bindVirtualMethod(const FunctionPrototypeSyntaxNode* prototype) const
+	{
+		std::string code = "ClassDB::add_virtual_method(get_class_static(), ";
+
+		auto returnType = prototype->getReturnType();
+		code += "MethodInfo(Variant::" + getVariantType(returnType->getName()) + ", \"" + prototype->getName() + "\"";
+
+		const auto argDefs = prototype->getArgDefs();
+		for (auto arg : argDefs)
+		{
+			auto argType = arg->getType();
+			code += ", PropertyInfo(Variant::" + getVariantType(argType->getName()) + ", \"" + arg->getName() + "\")";
+		}
+
+		code += "), { ";
+
+		for (int a = 0; a < argDefs.size(); a++)
+		{
+			auto arg = argDefs[a];
+			code += "\"" + arg->getName() + "\"";
+			bool isLast = a == argDefs.size() - 1;
+			if (!isLast) code += ", ";
+		}
+
+		code += " });";
 
 		return code;
 	}
