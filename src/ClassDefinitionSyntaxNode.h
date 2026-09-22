@@ -82,6 +82,11 @@ public:
 		return isAbstract_;
 	}
 
+	std::vector<ClassDefinitionSyntaxNode*> getInnerClasses() const
+	{
+		return innerClasses_;
+	}
+
 	void hoist(CppData* data) override
 	{
 		auto currentClass = new CppClassData();

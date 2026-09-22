@@ -33,10 +33,23 @@ public:
 			const auto& classFile = cppModule.classes[i];
 			auto className = classFile.classDefinition->getName();
 			includes += "#include \"" + className + ".h\"\n";
+			for (auto innerClass : classFile.classDefinition->getInnerClasses())
+			{
+				auto innerClassName = innerClass->getName();
+				if (innerClass->getNameToken()->value[0] == '_')
+				{
+					if (innerClass->isAbstract())
+						registerClasses += "\tGDREGISTER_ABSTRACT_CLASS(";
+					else
+						registerClasses += "\tGDREGISTER_CLASS(";
+					registerClasses += innerClassName + ")\n";
+				}
+			}
 			if (classFile.classDefinition->isAbstract())
-				registerClasses += "\tGDREGISTER_ABSTRACT_CLASS(" + className + ")\n";
+				registerClasses += "\tGDREGISTER_ABSTRACT_CLASS(";
 			else
-				registerClasses += "\tGDREGISTER_CLASS(" + className + ")\n";
+				registerClasses += "\tGDREGISTER_CLASS(";
+			registerClasses += className + ")\n";
 		}
 
 		return includes
