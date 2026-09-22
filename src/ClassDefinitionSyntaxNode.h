@@ -389,6 +389,8 @@ private:
 		Type* type = variableDefinition->getType();
 		std::string typeName;
 		if (type) typeName = type->getName();
+		if (typeName[0] == '_') typeName.erase(0, 1);
+
 		std::string name = variableDefinition->getName();
 		std::string getterName;
 		Token* getterNameToken = variableDefinition->getGetterName();
@@ -399,11 +401,25 @@ private:
 
 		std::string code = indents + "ADD_PROPERTY(";
 
-		code += "PropertyInfo(Variant::" + getVariantType(type) + ", \"" + name + "\"";
+		code += "PropertyInfo(Variant::" + getVariantType(typeName) + ", \"" + name + "\"";
 
 		if (data->isResourceType(typeName))
 		{
 			code += ", PROPERTY_HINT_RESOURCE_TYPE, \"" + typeName + "\"";
+		}
+		else if (typeName == "Array")
+		{
+			code += ", PROPERTY_HINT_ARRAY_TYPE, \"";
+
+			auto subtype = type->subtype(0);
+			if (subtype)
+			{
+				std::string subtypeName = subtype->getName();
+				if (subtypeName[0] == '_') subtypeName.erase(0, 1);
+				code += subtypeName;
+			}
+
+			code += "\"";
 		}
 		else if (variableDefinition->getExport())
 		{
@@ -495,11 +511,8 @@ private:
 		data->currentClass = data->classData[getName()];
 	}
 
-	std::string getVariantType(const Type* type) const
+	std::string getVariantType(const std::string_view& typeName) const
 	{
-		std::string typeName;
-		if (type) typeName = type->getName();
-
 		if (typeName == "bool") return "BOOL";
 		if (typeName == "int") return "INT";
 		if (typeName == "float") return "FLOAT";
