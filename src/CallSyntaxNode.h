@@ -85,6 +85,7 @@ public:
 		std::string code;
 
 		bool isConstructorCall = name_->value == "new";
+		bool isRefType = false;
 
 		if (instance_)
 		{
@@ -92,8 +93,14 @@ public:
 			if (instanceName[0] == '_') instanceName.erase(0, 1);
 			if (isConstructorCall)
 			{
-				code += "Ref(memnew(" + instanceName;
-				if (!args_.empty()) code += "))->init";
+				isRefType = data->isRefType(instanceName);
+				if (isRefType) code += "Ref(";
+				code += "memnew(" + instanceName;
+				if (!args_.empty())
+				{
+					if (isRefType) code += ")";
+					code += ")->init";
+				}
 			}
 			else
 			{
@@ -156,7 +163,11 @@ public:
 			if (!isConstructorCall || !args_.empty()) code += "(" + argsString + ")";
 		}
 
-		if (isConstructorCall && args_.empty()) code += "))";
+		if (isConstructorCall && args_.empty())
+		{
+			if (isRefType) code += ")";
+			code += ")";
+		}
 
 		return code;
 	}
