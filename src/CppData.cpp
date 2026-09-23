@@ -146,7 +146,11 @@ std::string CppData::toCppType(const Type* type, const Type* parentType, bool is
 			for (int i = 0; i < type->subtypes.size(); i++)
 			{
 				const Type* subtype = type->subtypes[i];
-				subtypesString += toCppType(subtype, type);
+				// Fixes an issue with nested arrays
+				if (typeName == "Array" && subtype->getName() == "Array")
+					subtypesString += subtype->getName();
+				else
+					subtypesString += toCppType(subtype, type);
 
 				if (i < lastIndex) subtypesString += ", ";
 			}
