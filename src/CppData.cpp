@@ -173,7 +173,7 @@ std::string CppData::toCppType(const Type* type, const Type* parentType, bool is
 
 	if (isRefType(typeName)) return "Ref<" + typeName + ">";
 
-	if (parentTypeName != "Array") // currently not supported
+	if (parentTypeName != "Array" && parentTypeName != "Dictionary") // currently not supported
 	{
 		if (isObjectType(typeName)) return typeName + "*";
 	}
