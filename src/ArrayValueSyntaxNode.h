@@ -46,11 +46,19 @@ public:
 
 	std::string toCpp(CppData* data, const std::string& indents, bool asValue) override
 	{
-		std::string code = "{";
+		std::string code;
+
+		code += "Array(";
+
+		code += "{";
 
 		code += getExpressionsString(data, indents, asValue);
 
-		return code + "}";
+		code += "}";
+
+		code += ")";
+
+		return code;
 	}
 
 private:
