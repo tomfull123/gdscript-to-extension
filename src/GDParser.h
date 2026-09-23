@@ -471,7 +471,12 @@ private:
 			next(); // eat )
 		}
 
-		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false, true, false);
+		std::string variableName = signalName->value;
+		if (variableName[0] == '_') variableName.erase(0, 1);
+		auto getterName = new Token("get_" + variableName);
+		auto setterName = new Token("set_" + variableName);
+
+		return new VariableDefinitionSyntaxNode(signalName, new Type("Signal"), nullptr, false, true, false, getterName, setterName);
 	}
 
 	Token* parseAnnotation()
