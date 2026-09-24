@@ -219,25 +219,26 @@ public:
 			else
 			{
 				code += data->toWrappedCppFunction(parentInstance_, name_);
-				if (memberVarDef)
-				{
-					Type* varType = memberVarDef->getType();
-					if (type_ && varType)
-					{
-						std::string typeName = type_->getName();
-						std::string varTypeName = varType->getName();
-						if (typeName == "bool" && data->isRefType(varTypeName))
-						{
-							code += ".is_valid()";
-						}
-					}
-				}
 			}
 		}
 
 		if (varDef && varDef->isStatic())
 		{
 			code += "()";
+		}
+
+		if (memberVarDef)
+		{
+			Type* varType = memberVarDef->getType();
+			if (type_ && varType)
+			{
+				std::string typeName = type_->getName();
+				std::string varTypeName = varType->getName();
+				if (typeName == "bool" && data->isRefType(varTypeName))
+				{
+					code += ".is_valid()";
+				}
+			}
 		}
 
 		return code;
